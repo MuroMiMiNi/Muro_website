@@ -223,8 +223,8 @@
 
 .floating-gif {
     position: fixed;
-    left: 2rem;
-    bottom: 2rem;
+    left: 53%;
+    top: 12%;
     width: 112px;
     height: 112px;
     padding: 0;
@@ -234,6 +234,7 @@
     z-index: 1100;
     user-select: none;
     touch-action: none;
+    transform: translateX(-50%);
 }
 
 .floating-gif.dragging {
