@@ -1,0 +1,45 @@
+.top-controls {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 1000;
+}
+
+.glass-nav,
+.lang-switch {
+    display: flex;
+    gap: 1rem;
+}
+
+.lang-switch {
+    position: relative;
+}
+
+.floating-sub-nav {
+    position: fixed;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 220px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    padding: 1.5rem;
+    display: none;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 999;
+    box-shadow: -10px 10px 30px rgba(0, 0, 0, 0.1);
+    animation: fadeInRight 0.5s ease forwards;
+}
+
+.display-area {
+    width: var(--circle-size);
+    height: var(--circle-size);
+    position: relative;
+}

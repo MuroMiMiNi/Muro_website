@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個人網站 | Muro_MiMiNi</title>
+    <link rel="stylesheet" href="./styles/base.css">
+    <link rel="stylesheet" href="./styles/layout.css">
+    <link rel="stylesheet" href="./styles/components.css">
+    <link rel="stylesheet" href="./styles/responsive.css">
+</head>
+<body>
+    <div class="top-controls">
+        <div class="glass-nav" id="mainNav"></div>
+        <div class="lang-switch" id="langSwitch">
+            <button class="glass-btn lang-toggle" id="langToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu">
+                <span class="lang-toggle-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2Zm6.93 9h-3.18a15.3 15.3 0 0 0-1.38-5.01A8.03 8.03 0 0 1 18.93 11ZM12 4.04c.83 1.2 1.98 3.63 2.39 6.96H9.61C10.02 7.67 11.17 5.24 12 4.04ZM4.26 13h3.18c.16 1.77.63 3.46 1.38 5.01A8.03 8.03 0 0 1 4.26 13Zm3.18-2H4.26a8.03 8.03 0 0 1 4.56-5.01A15.3 15.3 0 0 0 7.44 11Zm4.56 8.96c-.83-1.2-1.98-3.63-2.39-6.96h4.78c-.41 3.33-1.56 5.76-2.39 6.96ZM14.8 13h3.76a13.31 13.31 0 0 1-1.73 4.9c-.84.37-1.73.63-2.65.77.34-1.11.55-2.34.62-3.67ZM14.8 11a12.3 12.3 0 0 0-.62-3.67c.92.14 1.81.4 2.65.77A13.31 13.31 0 0 1 18.56 11H14.8Zm-5.6 0H5.44a13.31 13.31 0 0 1 1.73-4.9c.84-.37 1.73-.63 2.65-.77A12.3 12.3 0 0 0 9.2 11Zm0 2c.07 1.33.28 2.56.62 3.67-.92-.14-1.81-.4-2.65-.77A13.31 13.31 0 0 1 5.44 13H9.2Z"></path>
+                    </svg>
+                </span>
+                <span class="lang-toggle-label" id="langCurrent">ZH</span>
+            </button>
+            <div class="lang-menu" id="langMenu" role="menu" aria-labelledby="langToggle" hidden>
+                <button class="lang-menu-item" id="langZh" type="button" role="menuitem">中文</button>
+                <button class="lang-menu-item" id="langEn" type="button" role="menuitem">English</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-sub-nav" id="subPanel">
+        <div class="sub-title" id="catLabel">CATEGORY</div>
+        <ul class="sub-list" id="subList"></ul>
+    </div>
+
+    <div class="display-area" id="displayArea"></div>
+
+    <script type="module" src="./scripts/app.js"></script>
+</body>
+</html>

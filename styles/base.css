@@ -1,0 +1,88 @@
+:root {
+    --bg-gradient: linear-gradient(135deg, #7acdff 0%, #a29bfe 100%);
+    --text-color: #2d3436;
+    --accent-color: #0984e3;
+    --glass-bg: rgba(255, 255, 255, 0.2);
+    --card-bg: rgba(251, 219, 180, 0.7);
+    --transition-fluid: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    --circle-size: 80vmin;
+    --main-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--main-font);
+}
+
+body {
+    background: var(--bg-gradient);
+    background-attachment: fixed;
+    color: var(--text-color);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+body::before,
+body::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+    opacity: 0.5;
+}
+
+body::before {
+    width: 400px;
+    height: 400px;
+    background: #fff;
+    top: -100px;
+    left: -100px;
+    animation: float 15s infinite alternate;
+}
+
+body::after {
+    width: 300px;
+    height: 300px;
+    background: #ff7675;
+    bottom: -50px;
+    right: -50px;
+    animation: float 20s infinite alternate-reverse;
+}
+
+@keyframes float {
+    from {
+        transform: translate(0, 0);
+    }
+
+    to {
+        transform: translate(100px, 50px);
+    }
+}
+
+@keyframes light-move {
+    0% {
+        transform: translate(-50%, -50%);
+    }
+
+    100% {
+        transform: translate(10%, 10%);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translate(20px, -50%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, -50%);
+    }
+}
