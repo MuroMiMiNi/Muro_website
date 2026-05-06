@@ -65,9 +65,10 @@ export const siteData = [
         subs: [
             {
                 type: "p",
+                layout: "artwork-gallery",
                 label: { zh: "作品集", en: "Portfolio" },
-                title: { zh: "Commissions", en: "Commissions" },
-                copy: { zh: "建置中", en: "Coming Soon" }
+                title: { zh: "作品集", en: "Portfolio" },
+                copy: { zh: "請點選外圍縮圖查看作品。", en: "Select a thumbnail to preview the artwork." }
             },
             {
                 type: "p",

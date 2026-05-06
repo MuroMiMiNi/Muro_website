@@ -65,8 +65,34 @@
         padding: 3rem 2rem;
     }
 
+    .section-gallery {
+        padding: 1.75rem 1.35rem 2rem;
+    }
+
+    .gallery-shell {
+        gap: 0.6rem;
+    }
+
+    .gallery-preview {
+        width: 36%;
+        transform: translate(-50%, -52%);
+    }
+
+    .gallery-bubble {
+        --bubble-base-size: clamp(2.9rem, 11vw, 4rem);
+    }
+
+    .gallery-description {
+        font-size: 0.92rem;
+        max-width: 18rem;
+    }
+
     .section-title {
         font-size: 2rem;
+    }
+
+    .gallery-art-title {
+        font-size: 1.55rem;
     }
 
     .floating-gif {
