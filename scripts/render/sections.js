@@ -4,36 +4,47 @@ import { state, updateState } from "../state.js";
 const GALLERY_LAYOUT = "artwork-gallery";
 const GOLDEN_ANGLE = 137.508;
 const GALLERY_SCATTER = {
-    minRadius: 35,
-    radiusStep: 6.2,
-    yScale: 0.86,
-    previewCenterY: -2,
-    previewSafeRadius: 35,
+    minRadius: 24,
+    radiusStep: 5.6,
+    yScale: 0.98,
     collisionPadding: 2.8,
-    maxPlacementAttempts: 240,
+    maxPlacementAttempts: 320,
     bounds: {
-        left: -100,
-        right: 100,
-        top: -52,
-        bottom: 48
+        left: -49,
+        right: 49,
+        top: -49,
+        bottom: 49
     },
-    textSafeZone: {
-        yMin: 18,
-        halfWidth: 16
+    focusPanel: {
+        left: -31,
+        right: 31,
+        top: -30,
+        bottom: 30
     }
 };
 const BUBBLE_SIZE_PATTERN = [1.18, 0.9, 1.08, 0.84, 1.12, 0.96, 1.22, 0.88];
 const FALLBACK_PHASES = ["Now", "Next", "Later"];
 const FALLBACK_PILLARS = ["Core Loop", "World", "Feel", "Progression"];
+const GALLERY_PROMPT = {
+    zh: "請點選外圍縮圖查看作品。",
+    en: "Select a thumbnail around the frame to preview the artwork."
+};
+const ABOUT_PROFILE_IMAGE = {
+    src: "./assets/profile/profile.png",
+    alt: {
+        zh: "About me 個人照片",
+        en: "About me profile image"
+    }
+};
 const PAGE_BUILDERS = {
     "0-0": createAboutPosterSection,
-    "0-1": createManifestSection,
-    "0-2": context => createRosterSection(context, "page-online", "Party List"),
-    "0-3": context => createRosterSection(context, "page-mobile", "Pocket Log"),
-    "0-4": createCollageSection,
-    "0-5": createSpotlightSection,
+    "0-1": createFavoriteGameTypeSection,
+    "0-2": createOnlineGameSection,
+    "0-3": createMobileGameSection,
+    "0-4": createAcgLikesSection,
+    "0-5": createOtherLikesSection,
     "1-0": createGallerySection,
-    "1-1": createNoticeBoardSection,
+    "1-1": createCommissionGuideSection,
     "1-2": createMenuSection,
     "1-3": createTimelineSection,
     "2-0": createBlueprintSection,
@@ -205,33 +216,43 @@ function createPageContext({ category, categoryIndex, sub, subIndex, currentLang
 function createAboutPosterSection(context) {
     const section = createSectionBase("page-about");
     const shell = createDiv("page-shell about-shell");
-    const header = createHeaderBlock(context, "Profile");
-    const leadText = context.paragraphs[0] ?? context.copy;
-    const noteLines = ensureItems(context.lines.slice(1), [context.label, context.category.name[context.currentLang]]);
-    const hero = createDiv("about-hero");
-    const profileCard = createDiv("about-profile-card page-card");
-    const notes = createDiv("about-notes");
+    const photoCard = createDiv("about-photo-card page-card");
+    const photoSlot = createDiv("about-photo-slot");
+    const blankCard = createDiv("about-blank-card page-card");
+    const contentCard = createDiv("about-content-card page-card");
 
-    hero.appendChild(header);
-    hero.appendChild(createRichTextElement("p", "about-lead", leadText));
+    photoSlot.dataset.aboutPhotoSlot = "true";
+    photoSlot.appendChild(createAboutPhotoImage(context.currentLang));
+    photoCard.appendChild(photoSlot);
 
-    profileCard.appendChild(createTextElement("p", "page-card-label", "Current snapshot"));
-    profileCard.appendChild(createTextElement("p", "about-profile-name", context.label));
-    profileCard.appendChild(createTextElement("p", "about-profile-meta", context.category.name[context.currentLang]));
+    contentCard.appendChild(createHeaderBlock(context, "Profile"));
+    contentCard.appendChild(createParagraphStack(
+        ensureItems(context.paragraphs, [context.copy]),
+        "about-copy",
+        "about-paragraph"
+    ));
 
-    noteLines.forEach((line, index) => {
-        const note = createDiv(`about-note page-card about-note-${(index % 3) + 1}`);
-        note.appendChild(createTextElement("p", "page-card-label", `Note ${String(index + 1).padStart(2, "0")}`));
-        note.appendChild(createRichTextElement("p", "page-note-copy", line));
-        notes.appendChild(note);
-    });
-
-    shell.appendChild(hero);
-    shell.appendChild(profileCard);
-    shell.appendChild(notes);
+    shell.appendChild(photoCard);
+    shell.appendChild(blankCard);
+    shell.appendChild(contentCard);
     section.appendChild(shell);
 
     return section;
+}
+
+function createAboutPhotoImage(currentLang) {
+    const image = document.createElement("img");
+
+    image.className = "about-photo-image";
+    image.src = ABOUT_PROFILE_IMAGE.src;
+    image.alt = ABOUT_PROFILE_IMAGE.alt[currentLang];
+    image.loading = "lazy";
+
+    image.addEventListener("error", () => {
+        image.hidden = true;
+    }, { once: true });
+
+    return image;
 }
 
 function createManifestSection(context) {
@@ -260,6 +281,87 @@ function createManifestSection(context) {
     return section;
 }
 
+function createFavoriteGameTypeSection(context) {
+    return createStackedTopicSection(context, {
+        pageClass: "page-favorite-type",
+        shellClass: "favorite-type-shell",
+        titleCardClass: "favorite-type-title-card",
+        titleClass: "favorite-type-title",
+        listClass: "favorite-type-list",
+        itemClass: "favorite-type-item",
+        copyClass: "favorite-type-copy",
+        itemCount: 6
+    });
+}
+
+function createOnlineGameSection(context) {
+    return createStackedTopicSection(context, {
+        pageClass: "page-online",
+        shellClass: "topic-stack-shell",
+        titleCardClass: "topic-stack-title-card",
+        titleClass: "topic-stack-title",
+        listClass: "topic-stack-list topic-stack-list-4",
+        itemClass: "topic-stack-item",
+        copyClass: "topic-stack-copy",
+        itemCount: 4
+    });
+}
+
+function createMobileGameSection(context) {
+    return createStackedTopicSection(context, {
+        pageClass: "page-mobile",
+        shellClass: "topic-stack-shell",
+        titleCardClass: "topic-stack-title-card",
+        titleClass: "topic-stack-title",
+        listClass: "topic-stack-list topic-stack-list-4",
+        itemClass: "topic-stack-item",
+        copyClass: "topic-stack-copy",
+        itemCount: 4
+    });
+}
+
+function getFixedItems(items, count) {
+    const normalizedItems = ensureItems(items, [""]);
+    const result = normalizedItems.slice(0, count);
+
+    while (result.length < count) {
+        result.push("");
+    }
+
+    return result;
+}
+
+function createStackedTopicSection(context, {
+    pageClass,
+    shellClass,
+    titleCardClass,
+    titleClass,
+    listClass,
+    itemClass,
+    copyClass,
+    itemCount
+}) {
+    const section = createSectionBase(pageClass);
+    const shell = createDiv(`page-shell ${shellClass}`);
+    const titleCard = createDiv(`${titleCardClass} page-card`);
+    const sentenceGrid = createDiv(listClass);
+    const items = getFixedItems(context.lines, itemCount);
+
+    titleCard.appendChild(createTextElement("h2", `section-title ${titleClass}`, context.title));
+    shell.appendChild(titleCard);
+
+    items.forEach(item => {
+        const card = createDiv(`${itemClass} page-card`);
+        card.appendChild(createRichTextElement("p", copyClass, item));
+        sentenceGrid.appendChild(card);
+    });
+
+    shell.appendChild(sentenceGrid);
+    section.appendChild(shell);
+
+    return section;
+}
+
 function createRosterSection(context, pageClass, listLabel) {
     const section = createSectionBase(pageClass);
     const shell = createDiv("page-shell roster-shell");
@@ -283,44 +385,32 @@ function createRosterSection(context, pageClass, listLabel) {
     return section;
 }
 
-function createCollageSection(context) {
-    const section = createSectionBase("page-collage");
-    const shell = createDiv("page-shell collage-shell");
-    const segments = ensureItems(context.segments, context.lines);
-    const spotlightItems = ensureItems(segments.slice(0, 2), [context.label, context.category.name[context.currentLang]]);
-
-    shell.appendChild(createHeaderBlock(context, "Favorites atlas"));
-    shell.appendChild(createParagraphStack(ensureItems(context.paragraphs, [context.copy]), "collage-copy", "collage-paragraph"));
-    shell.appendChild(createChipCloud(ensureItems(segments, [context.copy]), "collage-cloud", "collage-chip page-card"));
-
-    const rail = createDiv("collage-rail");
-
-    spotlightItems.forEach((item, index) => {
-        const card = createDiv(`collage-rail-card page-card collage-rail-card-${index + 1}`);
-        card.appendChild(createTextElement("p", "page-card-label", index === 0 ? "Top pick" : "Also in orbit"));
-        card.appendChild(createRichTextElement("p", "page-note-copy", item));
-        rail.appendChild(card);
-    });
-
-    shell.appendChild(rail);
-    section.appendChild(shell);
-
-    return section;
+function createAcgLikesSection(context) {
+    return createLikesCollectionSection(context, "page-acg-likes");
 }
 
-function createSpotlightSection(context) {
-    const section = createSectionBase("page-spotlight");
-    const shell = createDiv("page-shell spotlight-shell");
-    const items = ensureItems(context.lines, [context.copy || context.label]);
-    const focusCard = createDiv("spotlight-focus page-card");
+function createOtherLikesSection(context) {
+    return createLikesCollectionSection(context, "page-other-likes", context.lines);
+}
 
-    shell.appendChild(createHeaderBlock(context, "Shortlist"));
+function createLikesCollectionSection(context, pageClass, customSourceItems = null) {
+    const section = createSectionBase(pageClass);
+    const shell = createDiv("page-shell likes-collection-shell");
+    const titleCard = createDiv("likes-collection-title-card page-card");
+    const grid = createDiv("likes-collection-list");
+    const sourceItems = customSourceItems ?? (context.segments.length > 0 ? context.segments : context.lines);
+    const items = getFixedItems(sourceItems, 6);
 
-    focusCard.appendChild(createTextElement("p", "page-card-label", "Spotlight"));
-    focusCard.appendChild(createRichTextElement("p", "spotlight-focus-copy", items[0]));
-    shell.appendChild(focusCard);
+    titleCard.appendChild(createTextElement("h2", "section-title likes-collection-title", context.title));
+    shell.appendChild(titleCard);
 
-    shell.appendChild(createLineList(ensureItems(items.slice(1), [context.label]), "spotlight-list", "spotlight-item page-card"));
+    items.forEach(item => {
+        const card = createDiv("likes-collection-item page-card");
+        card.appendChild(createRichTextElement("p", "likes-collection-copy", item));
+        grid.appendChild(card);
+    });
+
+    shell.appendChild(grid);
     section.appendChild(shell);
 
     return section;
@@ -371,15 +461,15 @@ function isInsideScatterBounds(x, y, radius) {
     );
 }
 
-function overlapsPreview(x, y, radius) {
-    const distanceToPreview = Math.hypot(x, y - GALLERY_SCATTER.previewCenterY);
-    return distanceToPreview < GALLERY_SCATTER.previewSafeRadius + radius;
-}
+function overlapsFocusPanel(x, y, radius) {
+    const { left, right, top, bottom } = GALLERY_SCATTER.focusPanel;
 
-function overlapsTextZone(x, y, radius) {
-    const { yMin, halfWidth } = GALLERY_SCATTER.textSafeZone;
-
-    return y + radius > yMin && Math.abs(x) < halfWidth + radius;
+    return !(
+        x + radius < left ||
+        x - radius > right ||
+        y + radius < top ||
+        y - radius > bottom
+    );
 }
 
 function overlapsOtherBubbles(x, y, radius, placements) {
@@ -405,11 +495,7 @@ function createBubblePlacement(index, radius, placements) {
             continue;
         }
 
-        if (overlapsPreview(x, y, radius)) {
-            continue;
-        }
-
-        if (overlapsTextZone(x, y, radius)) {
+        if (overlapsFocusPanel(x, y, radius)) {
             continue;
         }
 
@@ -522,12 +608,14 @@ function createGallerySection(context) {
     const activeArtwork = getActiveArtwork();
     const shell = createDiv("gallery-shell");
     const orbit = createDiv("gallery-orbit");
+    const focusPanel = createDiv("gallery-focus-panel");
+    const counter = createTextElement("p", "gallery-counter", "");
+    const guide = createTextElement("p", "gallery-guide", GALLERY_PROMPT[context.currentLang] ?? GALLERY_PROMPT.en);
     const preview = createDiv("gallery-preview");
     const previewFrame = createDiv("gallery-preview-frame");
     const previewImage = document.createElement("img");
-    const meta = createDiv("gallery-meta");
-    const summary = createDiv("gallery-summary");
-    const counter = createTextElement("p", "gallery-counter", "");
+    const infoBox = createDiv("gallery-info-box");
+    const infoHeader = createTextElement("p", "gallery-info-label", context.title);
     const bubbleLayouts = createBubbleLayouts(artworksData);
 
     previewFrame.dataset.galleryPreviewFrame = "true";
@@ -535,7 +623,23 @@ function createGallerySection(context) {
     previewImage.dataset.galleryPreviewImage = "true";
     previewFrame.appendChild(previewImage);
     preview.appendChild(previewFrame);
-    orbit.appendChild(preview);
+    counter.dataset.galleryCounter = "true";
+
+    const artworkTitle = createTextElement("h2", "section-title gallery-art-title", "");
+    artworkTitle.dataset.galleryArtTitle = "true";
+
+    const description = createTextElement("p", "section-copy gallery-description", "");
+    description.dataset.galleryDescription = "true";
+
+    infoBox.appendChild(infoHeader);
+    infoBox.appendChild(artworkTitle);
+    infoBox.appendChild(description);
+
+    focusPanel.appendChild(counter);
+    focusPanel.appendChild(preview);
+    focusPanel.appendChild(guide);
+    focusPanel.appendChild(infoBox);
+    orbit.appendChild(focusPanel);
 
     artworksData.forEach((artwork, index) => {
         const bubble = document.createElement("button");
@@ -562,26 +666,7 @@ function createGallerySection(context) {
 
         orbit.appendChild(bubble);
     });
-
-    summary.appendChild(createTextElement("p", "page-card-label", "Portfolio"));
-    summary.appendChild(counter);
-    summary.appendChild(createTextElement("p", "gallery-support-copy", context.copy));
-    counter.dataset.galleryCounter = "true";
-
-    meta.appendChild(createHeaderBlock(context, "Selected work"));
-
-    const artworkTitle = createTextElement("h2", "section-title gallery-art-title", "");
-    artworkTitle.dataset.galleryArtTitle = "true";
-
-    const description = createTextElement("p", "section-copy gallery-description", "");
-    description.dataset.galleryDescription = "true";
-
-    meta.appendChild(artworkTitle);
-    meta.appendChild(description);
-    meta.appendChild(summary);
-
     shell.appendChild(orbit);
-    shell.appendChild(meta);
     section.appendChild(shell);
 
     updateGallerySection(section, activeArtwork, context.currentLang);
@@ -589,20 +674,40 @@ function createGallerySection(context) {
     return section;
 }
 
-function createNoticeBoardSection(context) {
+function createCommissionGuideSection(context) {
+    const guideContent = context.currentLang === "zh"
+        ? {
+            title: "委託須知",
+            paragraphs: [
+                "確認委託即默認買家成年&詳閱下列注意事項",
+                "不接受一切難以理解之理由取消委託，付款後除我方問題外恕不退款",
+                "✎請務必以你覺得最醜的那張圖來當作參考\n✎因要素呈現不易，成圖會有適當簡化\n✎硬性要求與色票相同者請繞道\n✎一律只有灰色背景，如需簡易背景請加購（+NT$10）\n✎繪製完成後會上水印展示\n✎驚喜包除設定畫錯之外，完稿限修改一次，第二次及以上需加價",
+                "♠︎非商價格 - 如價目表定價所示\n♥︎商用價格 - 定價X2\n♦︎非商用買斷價格 - 定價X3\n♣︎商用買斷價格 - 定價X5\nꕤ繪師著作人格權以外買斷價格 - 定價X10"
+            ]
+        }
+        : {
+            title: "Commission Guide",
+            paragraphs: [
+                "Confirming a commission means the buyer is an adult and has read the notes below.",
+                "Cancellation is not accepted for vague reasons. After payment, refunds are only available for issues on my side.",
+                "Use the least flattering reference image as your main reference.\nComplex design elements may be simplified in the final piece.\nIf you require exact color-picking matches, this service is not a fit.\nThe default background is gray. A simple background add-on is +NT$10.\nFinished artwork may be shown with a watermark.",
+                "♠ Non-commercial price - listed menu price\n♥ Commercial price - base price x2\n♦ Non-commercial buyout - base price x3\n♣ Commercial buyout - base price x5\nꕤ Buyout excluding moral rights - base price x10"
+            ]
+        };
     const section = createSectionBase("page-notice");
-    const shell = createDiv("page-shell notice-shell");
-    const notes = ensureItems(context.lines, [context.copy || context.label]);
+    const shell = createDiv("page-shell commission-guide-shell");
+    const titleCard = createDiv("commission-guide-title-card page-card");
+    const board = createDiv("commission-guide-list");
+    const paragraphs = getFixedItems(guideContent.paragraphs, 4);
 
-    shell.appendChild(createHeaderBlock(context, "Important"));
+    titleCard.appendChild(createTextElement("h2", "section-title commission-guide-title", guideContent.title));
+    shell.appendChild(titleCard);
 
-    const board = createDiv("notice-board");
-
-    notes.forEach((note, index) => {
-        const ticket = createDiv(`notice-ticket page-card notice-ticket-${(index % 4) + 1}`);
-        ticket.appendChild(createTextElement("p", "page-card-label", `Memo ${String(index + 1).padStart(2, "0")}`));
-        ticket.appendChild(createRichTextElement("p", "page-note-copy", note));
-        board.appendChild(ticket);
+    paragraphs.forEach((paragraph, index) => {
+        const card = createDiv(`commission-guide-item page-card commission-guide-item-${index + 1}`);
+        card.appendChild(createTextElement("p", "page-card-label commission-guide-label", `0${index + 1}`));
+        card.appendChild(createRichTextElement("div", "commission-guide-copy", paragraph));
+        board.appendChild(card);
     });
 
     shell.appendChild(board);
@@ -611,20 +716,40 @@ function createNoticeBoardSection(context) {
     return section;
 }
 
+function getMenuContent(currentLang) {
+    if (currentLang === "zh") {
+        return {
+            offer: "★目前開設項目★\n頭像驚喜包 - 肩膀以上，7 Day（不含周日）\n指定頭像 - 7 Day\n\n試營運\n半身驚喜包 - 腰部以上，14 Day （不含周日）\n指定半身 - 14 Day",
+            details: [
+                "- 驚喜包 -\n頭像驚喜包 - NT$ 400\n半身驚喜包 - NT$ 900",
+                "- 指定項目 -\n肩上頭像 - NT$ 500\n腰上半身 - NT$ 1000"
+            ]
+        };
+    }
+
+    return {
+        offer: "★ Open Commissions ★\nSurprise icon pack - above the shoulders, 7 days (Sunday excluded)\nSpecified icon - 7 days\n\nTrial run\nSurprise half-body - above the waist, 14 days (Sunday excluded)\nSpecified half-body - 14 days",
+        details: [
+            "- Surprise Pack -\nIcon surprise pack - NT$ 400\nHalf-body surprise pack - NT$ 900",
+            "- Specified Item -\nShoulder-up icon - NT$ 500\nWaist-up half-body - NT$ 1000"
+        ]
+    };
+}
+
 function createMenuSection(context) {
     const section = createSectionBase("page-menu");
     const shell = createDiv("page-shell menu-shell");
-    const paragraphs = ensureItems(context.paragraphs, [context.copy]);
+    const menuContent = getMenuContent(context.currentLang);
     const offerCard = createDiv("menu-offer page-card");
     const sideStack = createDiv("menu-side-stack");
 
     shell.appendChild(createHeaderBlock(context, "Commission menu"));
 
     offerCard.appendChild(createTextElement("p", "page-card-label", "Main offer"));
-    offerCard.appendChild(createRichTextElement("div", "menu-offer-copy", paragraphs[0]));
+    offerCard.appendChild(createRichTextElement("div", "menu-offer-copy", menuContent.offer));
     shell.appendChild(offerCard);
 
-    ensureItems(context.lines.slice(1), [context.label, context.category.name[context.currentLang]]).forEach((line, index) => {
+    menuContent.details.forEach((line, index) => {
         const card = createDiv(`menu-side-card page-card menu-side-card-${(index % 2) + 1}`);
         card.appendChild(createTextElement("p", "page-card-label", index === 0 ? "Details" : "Notes"));
         card.appendChild(createRichTextElement("p", "page-note-copy", line));

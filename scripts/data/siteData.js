@@ -1,7 +1,7 @@
 export const siteData = [
     {
-        nav: { zh: "關於", en: "ME" },
-        name: { zh: "關於", en: "Me" },
+        nav: { zh: "關於", en: "ABOUT" },
+        name: { zh: "關於", en: "About" },
         subs: [
             {
                 type: "p",
@@ -9,7 +9,7 @@ export const siteData = [
                 title: { zh: "About me", en: "About me" },
                 copy: {
                     zh: "卯咪寶寶巴士工作室繪師\n木洛 / muro / 楊莫\n可以用各種形式稱呼我，歡迎幫我想愛稱\n＊＊＊＊\n練習像素（Pixel Art）風格中 沒什麼特別的雷點\n講話會注音文\n笑聲超大聲\n講話很機車\n＊＊＊＊\n重度網癮者，歡迎找我打遊戲",
-                    en: "木洛 / muro / 楊莫\n可以用各種形式稱呼我，歡迎幫我想愛稱\n＊＊＊＊\n練習像素（Pixel Art）風格中 沒什麼特別的雷點\n講話會注音文\n笑聲超大聲\n講話很機車\n＊＊＊＊\n重度網癮者，歡迎找我打遊戲"
+                    en: "Illustrator at Mao Mi Baby Bus Studio\nMuro / muro / Yang Mo\nYou can call me in any form you like, and nickname ideas are always welcome\n＊＊＊＊\nCurrently practicing a Pixel Art style, and I do not really have any special dealbreakers\nI type with bopomofo-style slang\nI laugh very loudly\nI can be pretty sharp-tongued\n＊＊＊＊\nI am heavily internet-addicted, so feel free to ask me to play games"
                 }
             },
             {
@@ -18,7 +18,7 @@ export const siteData = [
                 title: { zh: "Favorite game type", en: "Favorite game type" },
                 copy: { 
                     zh: "⚀ 牧場經營類型\n⚁ 競技類（含DOTA、射擊、賽車等）\n⚂ 刺客教條（還沒變成無雙以前的潛行玩法）\n⚃ 解謎類（鏽湖、我們在此系列等）\n⚄ 恐R&恐遊類（會怕但愛玩愛看）\n⚅ 氛圍向遊戲（Coffee Talk、VA-11 Hall-A之類的）", 
-                    en: "Coming Soon" 
+                    en: "⚀ Farm and ranch management games\n⚁ Competitive games (including DOTA, shooters, racing games, and more)\n⚂ Assassin's Creed (the stealth-focused gameplay from before it turned musou-like)\n⚃ Puzzle games (Rusty Lake, the We Were Here series, and similar titles)\n⚄ Horror RPGs and horror games (I get scared, but I still love playing and watching them)\n⚅ Atmosphere-driven games (things like Coffee Talk and VA-11 Hall-A)" 
                 }
             },
             {
@@ -27,7 +27,7 @@ export const siteData = [
                 title: { zh: "Online Game", en: "Online Game" },
                 copy: { 
                     zh: "♣ Final Fantasy XIV\n♦ Wuthering Waves\n♥ League of Legends\n♠", 
-                    en: "Coming Soon"  
+                    en: "♣ Final Fantasy XIV\n♦ Wuthering Waves\n♥ League of Legends"  
                 }
             },
             {
@@ -36,7 +36,7 @@ export const siteData = [
                 title: { zh: "Mobile Game", en: "Mobile Game" },
                 copy: { 
                     zh: "❤︎ A3! - Best Love - 推し Shitoron、Arisugawa Homare❤︎\nღ ES!! - 推し Nagisa、wataru、kaoru、Arashi\nღ Degrees of Lewdity - Sydney\nღ Welcome to Dreamland - Frank", 
-                    en: "Coming Soon" 
+                    en: "❤︎ A3! - Best Love - oshis Shitoron and Arisugawa Homare ❤︎\nღ ES!! - oshis Nagisa, Wataru, Kaoru, and Arashi\nღ Degrees of Lewdity - Sydney\nღ Welcome to Dreamland - Frank" 
                 }
             },
             {
@@ -45,7 +45,7 @@ export const siteData = [
                 title: { zh: "ACG Likes", en: "ACG Likes" },
                 copy: { 
                     zh: "Snow White with the Red Hair - My favorite Obi\n/\nHolostars - 主推★Aragami Oga、Noir Vesper、Josuiji Shinri\n副☆箱推し\n/\nWuthering Waves - Male ALL（目前缺Xiangli Yao）\n/\nHonkai: Star Rail - Anaxagoras、Sunday、Aventurine\n/\nMystic Messenger - 箱推し", 
-                    en: "Coming Soon" 
+                    en: "Snow White with the Red Hair - My favorite is Obi\n/\nHolostars - Main oshis: Aragami Oga, Noir Vesper, and Josuiji Shinri\nSecondary: I like the whole group\n/\nWuthering Waves - All of the male characters (currently missing Xiangli Yao)\n/\nHonkai: Star Rail - Anaxagoras, Sunday, and Aventurine\n/\nMystic Messenger - I like the whole cast" 
                 }
             },
             {
@@ -54,7 +54,7 @@ export const siteData = [
                 title: { zh: "Other Likes", en: "Other Likes" },
                 copy: { 
                     zh: "ღ プロセカ - Kamishiro Rui\nღ Love and Deepspace - Caleb", 
-                    en: "Coming Soon" 
+                    en: "ღ Project Sekai - Kamishiro Rui\nღ Love and Deepspace - Caleb" 
                 }
             }
         ]
@@ -127,14 +127,14 @@ export const siteData = [
         ]
     },
     {
-        nav: { zh: "連結", en: "LINK" },
-        name: { zh: "連結", en: "Link" },
+        nav: { zh: "聯繫我", en: "LINK" },
+        name: { zh: "聯繫我", en: "Link" },
         subs: [
             {
                 type: "p",
-                label: { zh: "社群連結", en: "Links" },
-                title: { zh: "社群連結", en: "Links" },
-                copy: { zh: "建置中", en: "Coming Soon" }
+                label: { zh: "聯繫我", en: "Links" },
+                title: { zh: "聯繫我", en: "Links" },
+                copy: { zh: "可以在這些地方找到我", en: "You can find me here" }
             },
             {
                 type: "l",
@@ -142,6 +142,13 @@ export const siteData = [
                 title: { zh: "重新導向", en: "Redirecting" },
                 copy: { zh: "將在新分頁開啟 Twitter/X。", en: "Opening Twitter/X in a new tab." },
                 url: "https://x.com/muro_mimini"
+            },
+            {
+                type: "l",
+                label: { zh: "Facebook", en: "Facebook" },
+                title: { zh: "重新導向", en: "Redirecting" },
+                copy: { zh: "將在新分頁開啟 Facebook。", en: "Opening Facebook in a new tab." },
+                url: "https://www.facebook.com/yang.mo.338901"
             },
             {
                 type: "l",

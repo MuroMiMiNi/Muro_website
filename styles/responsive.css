@@ -13,7 +13,7 @@
         grid-template-columns: 1fr;
     }
 
-    .about-profile-card,
+    .about-content-card,
     .collage-rail {
         grid-column: auto;
         grid-row: auto;
@@ -21,7 +21,7 @@
 
     .about-notes,
     .roster-track,
-    .notice-board,
+    .commission-guide-list,
     .timeline-rail,
     .blueprint-panel,
     .gameplay-stack,
@@ -118,10 +118,39 @@
         grid-template-rows: auto;
     }
 
+    .about-photo-card,
+    .about-blank-card {
+        min-height: 9rem;
+    }
+
+    .favorite-type-title-card {
+        width: fit-content;
+        max-width: min(100%, 22rem);
+        min-width: min(100%, 18rem);
+    }
+
+    .topic-stack-title-card {
+        width: fit-content;
+        max-width: min(100%, 20rem);
+        min-width: min(100%, 16rem);
+    }
+
+    .likes-collection-title-card {
+        width: fit-content;
+        max-width: min(100%, 20rem);
+        min-width: min(100%, 16rem);
+    }
+
+    .commission-guide-title-card {
+        width: fit-content;
+        max-width: min(100%, 20rem);
+        min-width: min(100%, 16rem);
+    }
+
     .about-notes,
     .roster-track,
     .collage-cloud,
-    .notice-board,
+    .commission-guide-list,
     .timeline-rail,
     .blueprint-panel,
     .spotlight-list,
@@ -135,25 +164,32 @@
     }
 
     .gallery-shell {
-        gap: 0.6rem;
+        padding: 0.6rem;
+    }
+
+    .gallery-focus-panel {
+        width: min(72%, 20rem);
+        height: min(70%, 24rem);
+        min-width: 16rem;
+        min-height: 18rem;
+    }
+
+    .gallery-guide {
+        max-width: 6.6rem;
+        font-size: 0.62rem;
     }
 
     .gallery-preview {
-        width: 36%;
-        transform: translate(-50%, -52%);
+        width: min(67%, 12rem);
+        top: 39%;
     }
 
     .gallery-bubble {
-        --bubble-base-size: clamp(2.9rem, 11vw, 4rem);
+        --bubble-base-size: clamp(2.55rem, 10vw, 3.6rem);
     }
 
     .gallery-description {
-        font-size: 0.92rem;
-        max-width: 18rem;
-    }
-
-    .gallery-meta {
-        gap: 0.55rem;
+        font-size: 0.78rem;
     }
 
     .section-title {
@@ -161,7 +197,7 @@
     }
 
     .gallery-art-title {
-        font-size: 1.55rem;
+        font-size: 1rem;
     }
 
     .manifest-card-2,
@@ -179,6 +215,58 @@
     .contact-card,
     .devlog-terminal {
         padding: 1rem;
+    }
+
+    .favorite-type-title-card {
+        width: min(100%, 22rem);
+        min-height: 4.8rem;
+    }
+
+    .favorite-type-list {
+        grid-template-rows: repeat(6, auto);
+    }
+
+    .favorite-type-item {
+        min-height: 4rem;
+        padding: 0.85rem 0.95rem;
+    }
+
+    .topic-stack-title-card {
+        width: min(100%, 20rem);
+        min-height: 4.6rem;
+    }
+
+    .topic-stack-list-4 {
+        grid-template-rows: repeat(4, auto);
+    }
+
+    .topic-stack-item {
+        min-height: 4rem;
+        padding: 0.85rem 0.95rem;
+    }
+
+    .likes-collection-title-card {
+        width: min(100%, 20rem);
+        min-height: 4.6rem;
+    }
+
+    .likes-collection-list {
+        grid-template-rows: repeat(6, auto);
+    }
+
+    .likes-collection-item {
+        min-height: 4rem;
+        padding: 0.85rem 0.95rem;
+    }
+
+    .commission-guide-title-card {
+        width: min(100%, 20rem);
+        min-height: 4.6rem;
+    }
+
+    .commission-guide-item {
+        min-height: 0;
+        padding: 0.9rem 0.95rem;
     }
 
     .floating-gif {
