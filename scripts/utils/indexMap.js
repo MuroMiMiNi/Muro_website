@@ -1,3 +1,15 @@
+export function isPageSub(sub) {
+    return sub?.type === "p";
+}
+
+export function isHiddenSub(sub) {
+    return sub?.hidden === true;
+}
+
+export function isBrowsablePageSub(sub) {
+    return isPageSub(sub) && !isHiddenSub(sub);
+}
+
 export function getFlatIndex(siteData, catIdx, subIdx) {
     let index = 0;
 
@@ -9,7 +21,7 @@ export function getFlatIndex(siteData, catIdx, subIdx) {
 }
 
 export function getFirstPageSubIndex(siteData, catIdx) {
-    return siteData[catIdx].subs.findIndex(sub => sub.type === "p");
+    return siteData[catIdx].subs.findIndex(isBrowsablePageSub);
 }
 
 export function findPageSubIndex(siteData, catIdx, startSubIdx, direction) {
@@ -17,7 +29,7 @@ export function findPageSubIndex(siteData, catIdx, startSubIdx, direction) {
     let target = startSubIdx + direction;
 
     while (target >= 0 && target < subs.length) {
-        if (subs[target].type === "p") {
+        if (isBrowsablePageSub(subs[target])) {
             return target;
         }
 
@@ -29,7 +41,8 @@ export function findPageSubIndex(siteData, catIdx, startSubIdx, direction) {
 
 export function getSafePageSubIndex(siteData, catIdx, preferredSubIdx) {
     const preferred = siteData[catIdx].subs[preferredSubIdx];
-    if (preferred && preferred.type === "p") {
+
+    if (preferred && isPageSub(preferred) && !isHiddenSub(preferred)) {
         return preferredSubIdx;
     }
 

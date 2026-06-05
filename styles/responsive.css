@@ -1,4 +1,167 @@
+@media (max-width: 1440px), (max-height: 860px) {
+    body {
+        display: block;
+        overflow: auto;
+        padding: 1rem 1rem 2rem;
+    }
+
+    .site-signature {
+        top: 0.95rem;
+        left: 1rem;
+        font-size: clamp(1.6rem, 3vw, 2.3rem);
+    }
+
+    .top-controls {
+        position: sticky;
+        top: 0.8rem;
+        right: auto;
+        left: auto;
+        width: min(100%, 1100px);
+        margin: 0 auto;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .glass-nav,
+    .lang-switch {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .floating-sub-nav {
+        position: sticky;
+        top: 5.8rem;
+        right: auto;
+        left: auto;
+        transform: none;
+        width: min(100%, 1100px);
+        margin: 0.85rem auto 0;
+        border-radius: 22px;
+        animation: none;
+    }
+
+    .display-area {
+        width: min(100%, 1100px);
+        height: auto;
+        margin: 1rem auto 0;
+    }
+
+    .section {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: auto;
+        min-height: min(46rem, calc(100vh - 9rem));
+        display: none;
+        opacity: 1;
+        transform: none;
+        pointer-events: none;
+        overflow: visible;
+        border-radius: 2.2rem;
+    }
+
+    .section.active {
+        display: block;
+        pointer-events: auto;
+    }
+
+    .section.exit {
+        display: none;
+    }
+
+    .section.category-enter {
+        animation: none;
+    }
+
+    .page-shell {
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+        padding-right: 0;
+    }
+
+    .page-menu {
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        width: 100%;
+        transform: none;
+    }
+
+    .page-menu.active,
+    .page-menu.exit {
+        transform: none;
+    }
+
+    .floating-gif {
+        width: 86px;
+        height: 86px;
+        left: auto;
+        right: 1rem;
+        top: 6.2rem;
+        transform: none;
+    }
+
+    .about-shell,
+    .manifest-shell,
+    .collage-shell,
+    .menu-shell,
+    .gallery-shell,
+    .story-shell,
+    .roster-shell {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    .about-content-card,
+    .collage-rail {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .about-notes,
+    .roster-track,
+    .commission-guide-list,
+    .timeline-rail,
+    .blueprint-panel,
+    .gameplay-stack,
+    .links-grid,
+    .spotlight-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .menu-shell {
+        gap: 1rem;
+    }
+
+    .gallery-shell {
+        min-height: 38rem;
+    }
+}
+
 @media (max-width: 1100px) {
+    .page-menu {
+        width: 100%;
+    }
+
+    .menu-showcase-body {
+        width: min(52%, 20rem);
+    }
+
+    .menu-showcase-mask--full {
+        width: 48%;
+    }
+
+    .menu-showcase-mask--half {
+        width: 46%;
+    }
+
+    .menu-showcase-mask--icon {
+        width: min(36%, 9.5rem);
+    }
+
     .top-controls {
         flex-direction: column;
         align-items: flex-end;
@@ -35,6 +198,92 @@
 }
 
 @media (max-width: 768px) {
+    .page-menu {
+        width: 100%;
+    }
+
+    .menu-showcase-card {
+        padding: 1.1rem;
+    }
+
+    .menu-showcase-body,
+    .menu-showcase-card--icon .menu-showcase-body,
+    .menu-showcase-card--half .menu-showcase-body {
+        width: min(58%, 14rem);
+        padding-top: 0.9rem;
+        padding-bottom: 4.9rem;
+        gap: 0.9rem;
+    }
+
+    .menu-showcase-card--icon .menu-showcase-body {
+        width: min(44%, 10.4rem);
+        padding-top: 0;
+        padding-bottom: 5.2rem;
+        padding-left: 0;
+        margin-top: -1.6rem;
+        margin-left: clamp(3rem, 12%, 4rem);
+        gap: 0.78rem;
+    }
+
+    .menu-showcase-card--half .menu-showcase-body {
+        width: min(49%, 11.2rem);
+        padding-bottom: 5.15rem;
+        padding-top: 1.35rem;
+    }
+
+    .menu-showcase-title {
+        font-size: clamp(1.25rem, 4vw, 1.7rem);
+    }
+
+    .menu-showcase-label {
+        font-size: 0.7rem;
+    }
+
+    .menu-showcase-divider {
+        width: min(100%, 5rem);
+        margin-top: 0.7rem;
+    }
+
+    .menu-showcase-stat-copy {
+        font-size: 0.88rem;
+    }
+
+    .menu-showcase-action {
+        width: calc(50% - 1.45rem);
+        left: auto;
+        right: 1.1rem;
+        bottom: 1.05rem;
+        min-height: 3.3rem;
+        padding: 0.7rem 0.95rem;
+    }
+
+    .menu-showcase-card--full .menu-showcase-action {
+        left: 1.1rem;
+        right: auto;
+        width: min(calc(44% - 1.1rem), 12rem);
+    }
+
+    .menu-showcase-mask--full {
+        right: 0.15rem;
+        width: 54%;
+        top: 1.1rem;
+        bottom: 1.1rem;
+        height: auto;
+    }
+
+    .menu-showcase-mask--half {
+        right: 0.8rem;
+        width: 40%;
+        height: 66%;
+        top: 40%;
+    }
+
+    .menu-showcase-mask--icon {
+        top: 2.45rem;
+        right: 1.05rem;
+        width: min(36%, 7.8rem);
+    }
+
     body {
         overflow: auto;
         padding: 8rem 0 9rem;
@@ -215,6 +464,34 @@
     .contact-card,
     .devlog-terminal {
         padding: 1rem;
+    }
+
+    .sub-socials {
+        gap: 0.35rem;
+    }
+
+    .sub-socials-row {
+        gap: 0.35rem;
+    }
+
+    .sub-social-link {
+        width: 2.3rem;
+        height: 2.3rem;
+    }
+
+    .sub-social-link svg {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .sub-social-logo {
+        width: 1.15rem;
+        height: 1.15rem;
+    }
+
+    .sub-social-logo--clibo {
+        width: 1.28rem;
+        height: 1.28rem;
     }
 
     .favorite-type-title-card {

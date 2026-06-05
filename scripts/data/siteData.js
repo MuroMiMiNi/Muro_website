@@ -1,3 +1,36 @@
+export const socialLinks = [
+    {
+        id: "twitter",
+        label: { zh: "Twitter/X", en: "Twitter/X" },
+        url: "https://x.com/muro_mimini"
+    },
+    {
+        id: "bluesky",
+        label: { zh: "BlueSky", en: "BlueSky" },
+        url: "https://bsky.app/profile/muromini.bsky.social"
+    },
+    {
+        id: "vgen",
+        label: { zh: "VGen", en: "VGen" },
+        url: "https://vgen.co/muro_mimini/characters"
+    },
+    {
+        id: "clibo",
+        label: { zh: "Clibo", en: "Clibo" },
+        url: "https://clibo.tw/users/6SQOPD"
+    },
+    {
+        id: "facebook",
+        label: { zh: "Facebook", en: "Facebook" },
+        url: "https://www.facebook.com/yang.mo.338901"
+    },
+    {
+        id: "email",
+        label: { zh: "Email", en: "Email" },
+        url: "mailto:mu.roro.mimini@gmail.com"
+    }
+];
+
 export const siteData = [
     {
         nav: { zh: "關於", en: "ABOUT" },
@@ -14,8 +47,8 @@ export const siteData = [
             },
             {
                 type: "p",
-                label: { zh: "Favorite game type", en: "Favorite game type" },
-                title: { zh: "Favorite game type", en: "Favorite game type" },
+                label: { zh: "喜歡的遊戲類型", en: "Favorite game type" },
+                title: { zh: "喜歡的遊戲類型", en: "Favorite game type" },
                 copy: { 
                     zh: "⚀ 牧場經營類型\n⚁ 競技類（含DOTA、射擊、賽車等）\n⚂ 刺客教條（還沒變成無雙以前的潛行玩法）\n⚃ 解謎類（鏽湖、我們在此系列等）\n⚄ 恐R&恐遊類（會怕但愛玩愛看）\n⚅ 氛圍向遊戲（Coffee Talk、VA-11 Hall-A之類的）", 
                     en: "⚀ Farm and ranch management games\n⚁ Competitive games (including DOTA, shooters, racing games, and more)\n⚂ Assassin's Creed (the stealth-focused gameplay from before it turned musou-like)\n⚃ Puzzle games (Rusty Lake, the We Were Here series, and similar titles)\n⚄ Horror RPGs and horror games (I get scared, but I still love playing and watching them)\n⚅ Atmosphere-driven games (things like Coffee Talk and VA-11 Hall-A)" 
@@ -23,8 +56,8 @@ export const siteData = [
             },
             {
                 type: "p",
-                label: { zh: "Online Game", en: "Online Game" },
-                title: { zh: "Online Game", en: "Online Game" },
+                label: { zh: "線上遊戲", en: "Online Game" },
+                title: { zh: "線上遊戲", en: "Online Game" },
                 copy: { 
                     zh: "♣ Final Fantasy XIV\n♦ Wuthering Waves\n♥ League of Legends\n♠", 
                     en: "♣ Final Fantasy XIV\n♦ Wuthering Waves\n♥ League of Legends"  
@@ -32,8 +65,8 @@ export const siteData = [
             },
             {
                 type: "p",
-                label: { zh: "Mobile Game", en: "Mobile Game" },
-                title: { zh: "Mobile Game", en: "Mobile Game" },
+                label: { zh: "手機遊戲", en: "Mobile Game" },
+                title: { zh: "手機遊戲", en: "Mobile Game" },
                 copy: { 
                     zh: "❤︎ A3! - Best Love - 推し Shitoron、Arisugawa Homare❤︎\nღ ES!! - 推し Nagisa、wataru、kaoru、Arashi\nღ Degrees of Lewdity - Sydney\nღ Welcome to Dreamland - Frank", 
                     en: "❤︎ A3! - Best Love - oshis Shitoron and Arisugawa Homare ❤︎\nღ ES!! - oshis Nagisa, Wataru, Kaoru, and Arashi\nღ Degrees of Lewdity - Sydney\nღ Welcome to Dreamland - Frank" 
@@ -41,8 +74,8 @@ export const siteData = [
             },
             {
                 type: "p",
-                label: { zh: "ACG Likes", en: "ACG Likes" },
-                title: { zh: "ACG Likes", en: "ACG Likes" },
+                label: { zh: "二次元坑", en: "ACG Likes" },
+                title: { zh: "二次元坑", en: "ACG Likes" },
                 copy: { 
                     zh: "Snow White with the Red Hair - My favorite Obi\n/\nHolostars - 主推★Aragami Oga、Noir Vesper、Josuiji Shinri\n副☆箱推し\n/\nWuthering Waves - Male ALL（目前缺Xiangli Yao）\n/\nHonkai: Star Rail - Anaxagoras、Sunday、Aventurine\n/\nMystic Messenger - 箱推し", 
                     en: "Snow White with the Red Hair - My favorite is Obi\n/\nHolostars - Main oshis: Aragami Oga, Noir Vesper, and Josuiji Shinri\nSecondary: I like the whole group\n/\nWuthering Waves - All of the male characters (currently missing Xiangli Yao)\n/\nHonkai: Star Rail - Anaxagoras, Sunday, and Aventurine\n/\nMystic Messenger - I like the whole cast" 
@@ -50,8 +83,8 @@ export const siteData = [
             },
             {
                 type: "p",
-                label: { zh: "Other Likes", en: "Other Likes" },
-                title: { zh: "Other Likes", en: "Other Likes" },
+                label: { zh: "其他", en: "Other Likes" },
+                title: { zh: "其他", en: "Other Likes" },
                 copy: { 
                     zh: "ღ プロセカ - Kamishiro Rui\nღ Love and Deepspace - Caleb", 
                     en: "ღ Project Sekai - Kamishiro Rui\nღ Love and Deepspace - Caleb" 
@@ -61,7 +94,7 @@ export const siteData = [
     },
     {
         nav: { zh: "作品", en: "WORK" },
-        name: { zh: "作品", en: "Work" },
+        name: { zh: "作品", en: "Works" },
         subs: [
             {
                 type: "p",
@@ -123,45 +156,6 @@ export const siteData = [
                 label: { zh: "開發日誌", en: "Devlog" },
                 title: { zh: "開發日誌", en: "Devlog" },
                 copy: { zh: "建置中", en: "Coming Soon" }
-            }
-        ]
-    },
-    {
-        nav: { zh: "聯繫我", en: "LINK" },
-        name: { zh: "聯繫我", en: "Link" },
-        subs: [
-            {
-                type: "p",
-                label: { zh: "聯繫我", en: "Links" },
-                title: { zh: "聯繫我", en: "Links" },
-                copy: { zh: "可以在這些地方找到我", en: "You can find me here" }
-            },
-            {
-                type: "l",
-                label: { zh: "Twitter/X", en: "Twitter/X" },
-                title: { zh: "重新導向", en: "Redirecting" },
-                copy: { zh: "將在新分頁開啟 Twitter/X。", en: "Opening Twitter/X in a new tab." },
-                url: "https://x.com/muro_mimini"
-            },
-            {
-                type: "l",
-                label: { zh: "Facebook", en: "Facebook" },
-                title: { zh: "重新導向", en: "Redirecting" },
-                copy: { zh: "將在新分頁開啟 Facebook。", en: "Opening Facebook in a new tab." },
-                url: "https://www.facebook.com/yang.mo.338901"
-            },
-            {
-                type: "l",
-                label: { zh: "BlueSky", en: "BlueSky" },
-                title: { zh: "重新導向", en: "Redirecting" },
-                copy: { zh: "將在新分頁開啟 BlueSky。", en: "Opening BlueSky in a new tab." },
-                url: "https://bsky.app/profile/muromini.bsky.social"
-            },
-            {
-                type: "p",
-                label: { zh: "電子郵件", en: "Email" },
-                title: { zh: "電子郵件", en: "Email" },
-                copy: { zh: "mu.roro.mimini@gmail.com", en: "mu.roro.mimini@gmail.com" }
             }
         ]
     }

@@ -21,6 +21,10 @@ const refs = {
     langEn: document.getElementById("langEn")
 };
 
+function isImageTarget(target) {
+    return target instanceof Element && target.closest("img");
+}
+
 function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
 }
@@ -28,6 +32,8 @@ function clamp(value, min, max) {
 function bindFloatingGifFallback() {
     const gifImage = refs.floatingGif.querySelector("img");
     const fallbackSrc = gifImage.dataset.fallbackSrc;
+
+    gifImage.draggable = false;
 
     gifImage.addEventListener("error", () => {
         if (gifImage.src === fallbackSrc) {
@@ -69,7 +75,6 @@ function renderChrome() {
         titleEl: refs.catLabel,
         listEl: refs.subList,
         siteData,
-        uiText,
         currentLang: state.currentLang,
         currentCat: state.currentCat,
         currentSub: state.currentSub,
@@ -188,9 +193,23 @@ function bindFloatingGif() {
     window.addEventListener("resize", keepFloatingGifInViewport);
 }
 
+function bindImageProtection() {
+    const suppressImageAction = event => {
+        if (!isImageTarget(event.target)) {
+            return;
+        }
+
+        event.preventDefault();
+    };
+
+    document.addEventListener("contextmenu", suppressImageAction);
+    document.addEventListener("dragstart", suppressImageAction);
+}
+
 function bindEvents() {
     bindFloatingGifFallback();
     bindFloatingGif();
+    bindImageProtection();
     refs.langToggle.addEventListener("click", () => {
         setLanguageMenuOpen(refs.langMenu.hidden);
     });

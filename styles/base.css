@@ -1,5 +1,8 @@
 :root {
-    --bg-gradient: linear-gradient(135deg, #7acdff 0%, #a29bfe 100%);
+    --bg-gradient:
+        radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.68) 0 2px, transparent 3px),
+        radial-gradient(circle at 82% 22%, rgba(255, 255, 255, 0.46) 0 1.6px, transparent 2.6px),
+        linear-gradient(145deg, #d9ecf5 0%, #e9f1f4 28%, #f5ebe5 62%, #f9f3ef 100%);
     --text-color: #2d3436;
     --accent-color: #0984e3;
     --glass-bg: rgba(255, 255, 255, 0.2);
@@ -25,44 +28,41 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    position: relative;
+    isolation: isolate;
 }
 
 body::before,
 body::after {
     content: "";
     position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
+    inset: auto;
     z-index: -1;
-    opacity: 0.5;
+    border-radius: 50%;
+    pointer-events: none;
+    mix-blend-mode: normal;
 }
 
 body::before {
-    width: 400px;
-    height: 400px;
-    background: #fff;
-    top: -100px;
-    left: -100px;
-    animation: float 15s infinite alternate;
+    inset: -8% auto auto -10%;
+    width: 52vw;
+    height: 52vw;
+    background:
+        radial-gradient(circle, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.12) 38%, transparent 66%),
+        radial-gradient(circle at 64% 56%, rgba(251, 221, 210, 0.42) 0%, rgba(251, 221, 210, 0.08) 30%, transparent 58%);
+    filter: blur(12px);
+    opacity: 0.9;
 }
 
 body::after {
-    width: 300px;
-    height: 300px;
-    background: #ff7675;
-    bottom: -50px;
-    right: -50px;
-    animation: float 20s infinite alternate-reverse;
-}
-
-@keyframes float {
-    from {
-        transform: translate(0, 0);
-    }
-
-    to {
-        transform: translate(100px, 50px);
-    }
+    inset: auto -8% -12% auto;
+    width: 48vw;
+    height: 48vw;
+    background:
+        radial-gradient(circle, rgba(189, 224, 234, 0.48) 0%, rgba(189, 224, 234, 0.1) 34%, transparent 64%),
+        radial-gradient(circle at 38% 34%, rgba(255, 255, 255, 0.66) 0%, rgba(255, 255, 255, 0.12) 28%, transparent 52%);
+    filter: blur(18px);
+    opacity: 0.92;
 }
 
 @keyframes light-move {

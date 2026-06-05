@@ -25,6 +25,45 @@ const GALLERY_SCATTER = {
 const BUBBLE_SIZE_PATTERN = [1.18, 0.9, 1.08, 0.84, 1.12, 0.96, 1.22, 0.88];
 const FALLBACK_PHASES = ["Now", "Next", "Later"];
 const FALLBACK_PILLARS = ["Core Loop", "World", "Feel", "Progression"];
+const MENU_BADGE_ICONS = {
+    crown: `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M5 18h14l-1.1-8.1-3.55 2.84L12 6.5 9.65 12.74 6.1 9.9 5 18Zm0-10.5A1.5 1.5 0 1 0 5 4.5a1.5 1.5 0 0 0 0 3Zm7 0A1.5 1.5 0 1 0 12 4.5a1.5 1.5 0 0 0 0 3Zm7 0A1.5 1.5 0 1 0 19 4.5a1.5 1.5 0 0 0 0 3ZM5 20h14v-1.2H5V20Z"></path>
+        </svg>
+    `,
+    bear: `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M8.15 7.1 5.6 4.55a.9.9 0 0 0-1.53.64v4.19A7.9 7.9 0 0 0 3.4 12.6c0 4.36 3.7 7.9 8.6 7.9s8.6-3.54 8.6-7.9a7.9 7.9 0 0 0-.67-3.22V5.19a.9.9 0 0 0-1.53-.64L15.85 7.1A9.2 9.2 0 0 0 12 6.3a9.2 9.2 0 0 0-3.85.8Zm.62 1.78A7.2 7.2 0 0 1 12 8.1c1.13 0 2.18.26 3.23.78l.22.1 2.68-2.68v3.57l.08.16a6.07 6.07 0 0 1 .59 2.57c0 3.35-2.93 6.08-6.8 6.08s-6.8-2.73-6.8-6.08c0-.9.2-1.79.59-2.57l.08-.16V6.3l2.68 2.68.22-.1Zm-.37 3.13a1.1 1.1 0 1 0 1.1 1.1 1.1 1.1 0 0 0-1.1-1.1Zm5.2 0a1.1 1.1 0 1 0 1.1 1.1 1.1 1.1 0 0 0-1.1-1.1Zm-3.77 3.58a.9.9 0 0 0 0 1.8h4.34a.9.9 0 1 0 0-1.8Z"></path>
+        </svg>
+    `
+};
+const MENU_STAT_ICONS = {
+    tag: `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M10.2 4H5a1 1 0 0 0-1 1v5.2a1 1 0 0 0 .29.7l8.81 8.81a1 1 0 0 0 1.41 0l5.3-5.3a1 1 0 0 0 0-1.41L11 4.3A1 1 0 0 0 10.2 4ZM7.5 9A1.5 1.5 0 1 1 9 7.5 1.5 1.5 0 0 1 7.5 9Z"></path>
+        </svg>
+    `,
+    user: `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 12.2a4.1 4.1 0 1 0-4.1-4.1 4.1 4.1 0 0 0 4.1 4.1Zm0 2c-4.26 0-7.7 2.17-7.7 4.85V20h15.4v-.95c0-2.68-3.44-4.85-7.7-4.85Z"></path>
+        </svg>
+    `,
+    image: `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M5 5h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm0 11.5 3.6-4.1a1 1 0 0 1 1.48-.02l2.4 2.63 2.1-2.35a1 1 0 0 1 1.48.01L19 16V7H5v9.5ZM8.5 10.1A1.35 1.35 0 1 0 7.15 8.75 1.35 1.35 0 0 0 8.5 10.1Z"></path>
+        </svg>
+    `,
+    clock: `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 3.8A8.2 8.2 0 1 0 20.2 12 8.2 8.2 0 0 0 12 3.8Zm0 14.7A6.5 6.5 0 1 1 18.5 12 6.5 6.5 0 0 1 12 18.5Zm.85-10.1h-1.7V12c0 .3.12.59.33.8l2.6 2.6 1.2-1.2-2.43-2.43V8.4Z"></path>
+        </svg>
+    `,
+    file: `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M7 3.8h7.2L19 8.6V19a1.2 1.2 0 0 1-1.2 1.2H7A1.2 1.2 0 0 1 5.8 19V5A1.2 1.2 0 0 1 7 3.8Zm6.4 1.9V9h3.3ZM8.4 12.1h7.2v1.5H8.4Zm0 3.1h5.1v1.5H8.4Z"></path>
+        </svg>
+    `
+};
 const GALLERY_PROMPT = {
     zh: "請點選外圍縮圖查看作品。",
     en: "Select a thumbnail around the frame to preview the artwork."
@@ -96,6 +135,73 @@ function createActionLink(href, label, className = "page-action") {
     link.rel = "noopener noreferrer";
     link.textContent = label;
     return link;
+}
+
+function createMenuBadge(kind) {
+    const badge = createDiv("menu-showcase-badge");
+    badge.innerHTML = MENU_BADGE_ICONS[kind] ?? "";
+    return badge;
+}
+
+function createMenuStatList(items) {
+    const list = createDiv("menu-showcase-stats");
+
+    items.forEach(item => {
+        const row = createDiv("menu-showcase-stat");
+        const icon = createDiv("menu-showcase-stat-icon");
+        const copy = createTextElement("p", "menu-showcase-stat-copy", item.text);
+
+        icon.innerHTML = MENU_STAT_ICONS[item.icon] ?? "";
+        row.appendChild(icon);
+        row.appendChild(copy);
+        list.appendChild(row);
+    });
+
+    return list;
+}
+
+function createMenuAction(label) {
+    const action = createDiv("menu-showcase-action");
+    const copy = createTextElement("span", "menu-showcase-action-copy", label);
+    const arrow = createTextElement("span", "menu-showcase-action-arrow", ">");
+
+    action.appendChild(copy);
+    action.appendChild(arrow);
+
+    return action;
+}
+
+function createMenuShowcaseCard(card, variant) {
+    const article = createDiv(`menu-showcase-card menu-showcase-card--${variant} page-card`);
+    const media = createDiv(`menu-showcase-media menu-showcase-media--${variant}`);
+    const frame = createDiv(`menu-showcase-mask menu-showcase-mask--${card.image.kind}`);
+    const image = document.createElement("img");
+    const fade = createDiv(`menu-showcase-fade menu-showcase-fade--${variant}`);
+    const body = createDiv("menu-showcase-body");
+    const header = createDiv("menu-showcase-heading");
+
+    image.className = `menu-showcase-art menu-showcase-art--${card.image.kind}`;
+    image.src = card.image.src;
+    image.alt = card.image.alt;
+    image.draggable = false;
+
+    header.appendChild(createTextElement("p", "menu-showcase-label", card.label));
+    header.appendChild(createTextElement("h3", "menu-showcase-title", card.title));
+    header.appendChild(createDiv("menu-showcase-divider"));
+
+    body.appendChild(header);
+    body.appendChild(createMenuStatList(card.stats));
+
+    frame.appendChild(image);
+    media.appendChild(frame);
+    media.appendChild(fade);
+
+    article.appendChild(createMenuBadge(card.badge));
+    article.appendChild(media);
+    article.appendChild(body);
+    article.appendChild(createMenuAction(card.action));
+
+    return article;
 }
 
 function createHeaderBlock(context, eyebrowText = context.category.name[context.currentLang]) {
@@ -247,6 +353,7 @@ function createAboutPhotoImage(currentLang) {
     image.src = ABOUT_PROFILE_IMAGE.src;
     image.alt = ABOUT_PROFILE_IMAGE.alt[currentLang];
     image.loading = "lazy";
+    image.draggable = false;
 
     image.addEventListener("error", () => {
         image.hidden = true;
@@ -621,6 +728,7 @@ function createGallerySection(context) {
     previewFrame.dataset.galleryPreviewFrame = "true";
     previewImage.className = "gallery-preview-image";
     previewImage.dataset.galleryPreviewImage = "true";
+    previewImage.draggable = false;
     previewFrame.appendChild(previewImage);
     preview.appendChild(previewFrame);
     counter.dataset.galleryCounter = "true";
@@ -657,6 +765,7 @@ function createGallerySection(context) {
         thumbnail.className = "gallery-bubble-image";
         thumbnail.src = artwork.src;
         thumbnail.alt = artwork.alt[context.currentLang];
+        thumbnail.draggable = false;
 
         bubble.appendChild(thumbnail);
         bubble.addEventListener("click", () => {
@@ -736,25 +845,132 @@ function getMenuContent(currentLang) {
     };
 }
 
+function getMenuShowcaseContent(currentLang) {
+    const commissionImageVersion = "20260606-1";
+    const fullExample = `./assets/commission/ful-body/full-body-example.png?v=${commissionImageVersion}`;
+    const halfExample = `./assets/commission/half-body/half-body-example.png?v=${commissionImageVersion}`;
+    const iconExample = artworksData[1]?.src ?? artworksData[0]?.src ?? fullExample;
+
+    if (currentLang === "zh") {
+        return {
+            offer: {
+                badge: "crown",
+                label: "FULL BODY",
+                title: "全身委託",
+                stats: [
+                    { icon: "tag", text: "NT$ 2,800 起" },
+                    { icon: "user", text: "單一角色" },
+                    { icon: "image", text: "無背景 / 簡易背景（+NT$ 20）" },
+                    { icon: "clock", text: "工期 14 天，不含周日" },
+                    { icon: "file", text: "像素難呈現的要素會簡化" }
+                ],
+                action: "查看詳情",
+                image: {
+                    src: fullExample,
+                    alt: "全身委託展示圖",
+                    kind: "full"
+                }
+            },
+            details: {
+                badge: "bear",
+                label: "AVATAR",
+                title: "頭像委託",
+                stats: [
+                    { icon: "tag", text: "驚喜包 NT$ 400" },
+                    { icon: "tag", text: "頭像 NT$ 500" },
+                    { icon: "clock", text: "工期 7 天，不含周日" }
+                ],
+                action: "查看詳情",
+                image: {
+                    src: iconExample,
+                    alt: "頭像委託展示圖",
+                    kind: "icon"
+                }
+            },
+            notes: {
+                badge: "bear",
+                label: "HALF BODY",
+                title: "半身委託",
+                stats: [
+                    { icon: "tag", text: "NT$ 1,100 起" },
+                    { icon: "clock", text: "工期 7-14 天，不含周日" },
+                    { icon: "user", text: "範圍腰部以上" }
+                ],
+                action: "查看詳情",
+                image: {
+                    src: halfExample,
+                    alt: "半身委託展示圖",
+                    kind: "half"
+                }
+            }
+        };
+    }
+
+    return {
+        offer: {
+            badge: "crown",
+            label: "FULL BODY",
+            title: "Full Body",
+            stats: [
+                { icon: "tag", text: "From NT$ 2,800" },
+                { icon: "user", text: "Single character" },
+                { icon: "image", text: "No background / simple background (+NT$ 20)" },
+                { icon: "clock", text: "14 days, Sundays excluded" },
+                { icon: "file", text: "Complex pixel-unfriendly details may be simplified" }
+            ],
+            action: "View details",
+            image: {
+                src: fullExample,
+                alt: "Full body commission preview",
+                kind: "full"
+            }
+        },
+        details: {
+            badge: "bear",
+            label: "AVATAR",
+            title: "Icon",
+            stats: [
+                { icon: "tag", text: "Surprise pack NT$ 400" },
+                { icon: "tag", text: "Avatar NT$ 500" },
+                { icon: "clock", text: "7 days, Sundays excluded" }
+            ],
+            action: "View details",
+            image: {
+                src: iconExample,
+                alt: "Icon commission preview",
+                kind: "icon"
+            }
+        },
+        notes: {
+            badge: "bear",
+            label: "HALF BODY",
+            title: "Half Body",
+            stats: [
+                { icon: "tag", text: "From NT$ 1,100" },
+                { icon: "clock", text: "7-14 days, Sundays excluded" },
+                { icon: "user", text: "Waist-up framing" }
+            ],
+            action: "View details",
+            image: {
+                src: halfExample,
+                alt: "Half body commission preview",
+                kind: "half"
+            }
+        }
+    };
+}
+
 function createMenuSection(context) {
     const section = createSectionBase("page-menu");
     const shell = createDiv("page-shell menu-shell");
-    const menuContent = getMenuContent(context.currentLang);
-    const offerCard = createDiv("menu-offer page-card");
+    const menuContent = getMenuShowcaseContent(context.currentLang);
     const sideStack = createDiv("menu-side-stack");
 
     shell.appendChild(createHeaderBlock(context, "Commission menu"));
 
-    offerCard.appendChild(createTextElement("p", "page-card-label", "Main offer"));
-    offerCard.appendChild(createRichTextElement("div", "menu-offer-copy", menuContent.offer));
-    shell.appendChild(offerCard);
-
-    menuContent.details.forEach((line, index) => {
-        const card = createDiv(`menu-side-card page-card menu-side-card-${(index % 2) + 1}`);
-        card.appendChild(createTextElement("p", "page-card-label", index === 0 ? "Details" : "Notes"));
-        card.appendChild(createRichTextElement("p", "page-note-copy", line));
-        sideStack.appendChild(card);
-    });
+    shell.appendChild(createMenuShowcaseCard(menuContent.offer, "full"));
+    sideStack.appendChild(createMenuShowcaseCard(menuContent.details, "icon"));
+    sideStack.appendChild(createMenuShowcaseCard(menuContent.notes, "half"));
 
     shell.appendChild(sideStack);
     section.appendChild(shell);
