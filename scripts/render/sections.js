@@ -789,7 +789,7 @@ function createCommissionGuideSection(context) {
             title: "委託須知",
             paragraphs: [
                 "確認委託即默認買家成年&詳閱下列注意事項",
-                "不接受一切難以理解之理由取消委託，付款後除我方問題外恕不退款\n週日不進行繪製作業，因此工期不包含週日的天數",
+                "不接受一切難以理解之理由取消委託，付款後除我方問題外恕不退款\n<span style=\"color: #d92d20; font-weight: 800;\">週日不進行繪製作業，因此工期不包含週日的天數</span>",
                 "✎請務必以你覺得最醜的那張圖來當作參考\n✎因要素呈現不易，成圖會有適當簡化\n✎硬性要求與色票相同者請繞道\n✎一律只有灰色背景，如需簡易背景請加購（+NT$10）\n✎繪製完成後會上水印展示\n✎驚喜包除設定畫錯之外，完稿限修改一次，第二次及以上需加價",
                 "♠︎非商價格 - 如價目表定價所示\n♥︎商用價格 - 定價X2\n♦︎非商用買斷價格 - 定價X3\n♣︎商用買斷價格 - 定價X5\nꕤ繪師著作人格權以外買斷價格 - 定價X10"
             ]
@@ -798,9 +798,9 @@ function createCommissionGuideSection(context) {
             title: "Commission Guide",
             paragraphs: [
                 "Confirming a commission means the buyer is an adult and has read the notes below.",
-                "Cancellation is not accepted for vague reasons. After payment, refunds are only available for issues on my side.",
-                "Use the least flattering reference image as your main reference.\nComplex design elements may be simplified in the final piece.\nIf you require exact color-picking matches, this service is not a fit.\nThe default background is gray. A simple background add-on is +NT$10.\nFinished artwork may be shown with a watermark.",
-                "♠ Non-commercial price - listed menu price\n♥ Commercial price - base price x2\n♦ Non-commercial buyout - base price x3\n♣ Commercial buyout - base price x5\nꕤ Buyout excluding moral rights - base price x10"
+                "Cancellation is not accepted for vague or unreasonable reasons. After payment, refunds are only available for issues on my side.\n<span style=\"color: #d92d20; font-weight: 800;\">No drawing work is done on Sundays, so turnaround time does not include Sundays.</span>",
+                "Please use the ugliest reference image you have as your main reference.\nSome design elements may be simplified if they are difficult to render clearly.\nIf you require exact color matching to a swatch, this service is not a good fit.\nThe default background is gray. A simple background can be added for +NT$10.\nFinished artwork may be displayed with a watermark.\nFor surprise packs, revisions are limited to one after final delivery unless the setting was drawn incorrectly. A second revision or more will incur an extra charge.",
+                "♠ Non-commercial price - listed menu price\n♥ Commercial price - base price x2\n♦ Non-commercial buyout - base price x3\n♣ Commercial buyout - base price x5\nꕤ Buyout excluding the artist's moral rights - base price x10"
             ]
         };
     const section = createSectionBase("page-notice");
@@ -884,7 +884,7 @@ function getMenuShowcaseContent(currentLang) {
                 image: {
                     src: iconExample,
                     alt: "頭像委託展示圖",
-                    kind: "Avatar"
+                    kind: "icon"
                 }
             },
             notes: {
@@ -914,9 +914,9 @@ function getMenuShowcaseContent(currentLang) {
             stats: [
                 { icon: "tag", text: "From NT$ 2,800" },
                 { icon: "user", text: "Single character" },
-                { icon: "image", text: "No background / simple background (+NT$ 20)" },
-                { icon: "clock", text: "14 days, Sundays excluded" },
-                { icon: "file", text: "Complex pixel-unfriendly details may be simplified" }
+                    { icon: "image", text: "No background / simple background (+NT$ 20)" },
+                    { icon: "clock", text: "Turnaround: 14 days" },
+                    { icon: "file", text: "Elements that are hard to express in pixel style may be simplified" }
             ],
             action: "View details",
             image: {
@@ -928,16 +928,16 @@ function getMenuShowcaseContent(currentLang) {
         details: {
             badge: "bear",
             label: "AVATAR",
-            title: "Avatar",
+                title: "Avatar Commission",
             stats: [
                 { icon: "tag", text: "Surprise pack NT$ 400" },
                 { icon: "tag", text: "Avatar NT$ 500" },
-                { icon: "clock", text: "7 days, Sundays excluded" }
+                    { icon: "clock", text: "Turnaround: 7 days" }
             ],
             action: "View details",
             image: {
                 src: iconExample,
-                alt: "Icon commission preview",
+                    alt: "Avatar commission preview",
                 kind: "icon"
             }
         },
@@ -947,8 +947,8 @@ function getMenuShowcaseContent(currentLang) {
             title: "Half Body",
             stats: [
                 { icon: "tag", text: "From NT$ 1,100" },
-                { icon: "clock", text: "7-14 days, Sundays excluded" },
-                { icon: "user", text: "Waist-up framing" }
+                    { icon: "clock", text: "Turnaround: 7-14 days" },
+                    { icon: "user", text: "Waist-up composition" }
             ],
             action: "View details",
             image: {
