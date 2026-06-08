@@ -55,6 +55,17 @@ function updateLanguageButtons() {
     refs.langEn.classList.toggle("active-lang", state.currentLang === "en");
 }
 
+function syncCompactLayout() {
+    const compactLayoutQuery = window.matchMedia("(max-width: 1180px), (max-height: 820px)");
+    const touchDeviceQuery = window.matchMedia("(hover: none), (pointer: coarse)");
+    const shouldUseCompactLayout =
+        compactLayoutQuery.matches ||
+        (touchDeviceQuery.matches && window.innerWidth <= 1366);
+
+    document.body.classList.toggle("compact-layout", shouldUseCompactLayout);
+    document.body.classList.toggle("touch-device", touchDeviceQuery.matches);
+}
+
 function setLanguageMenuOpen(isOpen) {
     refs.langMenu.hidden = !isOpen;
     refs.langToggle.setAttribute("aria-expanded", String(isOpen));
@@ -149,6 +160,11 @@ function keepFloatingGifInViewport() {
     moveFloatingGif(rect.left, rect.top);
 }
 
+function handleViewportResize() {
+    syncCompactLayout();
+    keepFloatingGifInViewport();
+}
+
 function bindFloatingGif() {
     let dragOffsetX = 0;
     let dragOffsetY = 0;
@@ -190,7 +206,8 @@ function bindFloatingGif() {
 
     refs.floatingGif.addEventListener("pointerup", stopDragging);
     refs.floatingGif.addEventListener("pointercancel", stopDragging);
-    window.addEventListener("resize", keepFloatingGifInViewport);
+    window.addEventListener("resize", handleViewportResize);
+    window.visualViewport?.addEventListener("resize", handleViewportResize);
 }
 
 function bindImageProtection() {
@@ -224,6 +241,7 @@ function bindEvents() {
 
 function init() {
     bindEvents();
+    syncCompactLayout();
     updateDocumentLanguage();
     updateLanguageButtons();
     setLanguageMenuOpen(false);

@@ -8,7 +8,9 @@
     --glass-bg: rgba(255, 255, 255, 0.2);
     --card-bg: rgba(251, 219, 180, 0.7);
     --transition-fluid: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-    --circle-size: 80vmin;
+    --page-gutter: clamp(1rem, 2.6vw, 2rem);
+    --content-max-width: 68rem;
+    --circle-size: clamp(22rem, min(calc(100vw - 20rem), calc(100vh - 4rem)), 60rem);
     --main-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -24,10 +26,12 @@ body {
     background-attachment: fixed;
     color: var(--text-color);
     overflow: hidden;
+    overflow-x: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    padding: var(--page-gutter);
     position: relative;
     isolation: isolate;
 }

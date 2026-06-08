@@ -1,0 +1,3 @@
+version: v0.1-stable
+commit: f9d572be57a06f9cecddf7be8256923a3f771079
+description: 穩定版本

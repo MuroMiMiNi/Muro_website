@@ -789,7 +789,7 @@ function createCommissionGuideSection(context) {
             title: "委託須知",
             paragraphs: [
                 "確認委託即默認買家成年&詳閱下列注意事項",
-                "不接受一切難以理解之理由取消委託，付款後除我方問題外恕不退款",
+                "不接受一切難以理解之理由取消委託，付款後除我方問題外恕不退款\n週日不進行繪製作業，因此工期不包含週日的天數",
                 "✎請務必以你覺得最醜的那張圖來當作參考\n✎因要素呈現不易，成圖會有適當簡化\n✎硬性要求與色票相同者請繞道\n✎一律只有灰色背景，如需簡易背景請加購（+NT$10）\n✎繪製完成後會上水印展示\n✎驚喜包除設定畫錯之外，完稿限修改一次，第二次及以上需加價",
                 "♠︎非商價格 - 如價目表定價所示\n♥︎商用價格 - 定價X2\n♦︎非商用買斷價格 - 定價X3\n♣︎商用買斷價格 - 定價X5\nꕤ繪師著作人格權以外買斷價格 - 定價X10"
             ]
@@ -861,7 +861,7 @@ function getMenuShowcaseContent(currentLang) {
                     { icon: "tag", text: "NT$ 2,800 起" },
                     { icon: "user", text: "單一角色" },
                     { icon: "image", text: "無背景 / 簡易背景（+NT$ 20）" },
-                    { icon: "clock", text: "工期 14 天，不含周日" },
+                    { icon: "clock", text: "工期 14 天" },
                     { icon: "file", text: "像素難呈現的要素會簡化" }
                 ],
                 action: "查看詳情",
@@ -878,13 +878,13 @@ function getMenuShowcaseContent(currentLang) {
                 stats: [
                     { icon: "tag", text: "驚喜包 NT$ 400" },
                     { icon: "tag", text: "頭像 NT$ 500" },
-                    { icon: "clock", text: "工期 7 天，不含周日" }
+                    { icon: "clock", text: "工期 7 天" }
                 ],
                 action: "查看詳情",
                 image: {
                     src: iconExample,
                     alt: "頭像委託展示圖",
-                    kind: "icon"
+                    kind: "Avatar"
                 }
             },
             notes: {
@@ -893,7 +893,7 @@ function getMenuShowcaseContent(currentLang) {
                 title: "半身委託",
                 stats: [
                     { icon: "tag", text: "NT$ 1,100 起" },
-                    { icon: "clock", text: "工期 7-14 天，不含周日" },
+                    { icon: "clock", text: "工期 7-14 天" },
                     { icon: "user", text: "範圍腰部以上" }
                 ],
                 action: "查看詳情",
@@ -928,7 +928,7 @@ function getMenuShowcaseContent(currentLang) {
         details: {
             badge: "bear",
             label: "AVATAR",
-            title: "Icon",
+            title: "Avatar",
             stats: [
                 { icon: "tag", text: "Surprise pack NT$ 400" },
                 { icon: "tag", text: "Avatar NT$ 500" },

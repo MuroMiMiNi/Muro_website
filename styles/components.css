@@ -692,7 +692,7 @@
 }
 
 .about-shell {
-    grid-template-columns: minmax(12rem, 0.88fr) minmax(0, 1fr);
+    grid-template-columns: minmax(11rem, 0.82fr) minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
     gap: 0.95rem;
     align-content: stretch;
@@ -1184,10 +1184,12 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    width: min(70%, 28.5rem);
+    width: clamp(16rem, 70%, 28.5rem);
     height: min(72%, 31rem);
-    min-width: 21rem;
-    min-height: 22rem;
+    min-width: min(100%, 21rem);
+    min-height: min(calc(100% - 1.5rem), 22rem);
+    max-width: calc(100% - 1.5rem);
+    max-height: calc(100% - 1.5rem);
     transform: translate(-50%, -50%);
     border-radius: 26px;
     background: var(--gallery-panel-card-bg);
@@ -1230,7 +1232,7 @@
     position: absolute;
     left: 50%;
     top: 40%;
-    width: min(68%, 18rem);
+    width: clamp(9rem, 68%, 18rem);
     aspect-ratio: 1;
     transform: translate(-50%, -50%);
     z-index: 1;
@@ -1376,7 +1378,7 @@
     top: 0;
     bottom: 0;
     left: 50%;
-    width: 128%;
+    width: min(calc(100% + 3.5rem), 62rem);
     right: auto;
     transform: translateX(-50%) scale(0.8);
     transform-origin: center center;
@@ -1391,7 +1393,7 @@
 }
 
 .menu-shell {
-    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    grid-template-columns: minmax(17rem, 1.08fr) minmax(15rem, 0.92fr);
     grid-template-rows: auto minmax(0, 1fr);
     align-content: stretch;
     align-items: stretch;
@@ -1461,7 +1463,7 @@
 }
 
 .menu-showcase-body {
-    width: min(54%, 23rem);
+    width: clamp(11rem, 54%, 23rem);
     min-height: 100%;
     padding-top: 1.2rem;
     padding-bottom: 6.1rem;
@@ -1472,25 +1474,25 @@
 
 .menu-showcase-card--icon .menu-showcase-body,
 .menu-showcase-card--half .menu-showcase-body {
-    width: min(58%, 15rem);
+    width: clamp(9rem, 58%, 15rem);
     padding-top: 0.85rem;
     padding-bottom: 5.9rem;
 }
 
 .menu-showcase-card--icon .menu-showcase-body {
-    width: min(42%, 11.6rem);
+    width: clamp(7.5rem, 42%, 11.6rem);
     padding-top: 0;
     padding-bottom: 6.1rem;
     padding-left: 0;
     margin-top: -2.1rem;
-    margin-left: clamp(5rem, 15%, 6.4rem);
+    margin-left: clamp(2.4rem, 12%, 5rem);
     gap: 1rem;
     align-content: start;
     justify-items: start;
 }
 
 .menu-showcase-card--half .menu-showcase-body {
-    width: min(49%, 13.2rem);
+    width: clamp(9.5rem, 49%, 13.2rem);
     padding-top: 1.65rem;
     padding-bottom: 6.2rem;
 }
@@ -1578,6 +1580,7 @@
 .menu-showcase-action {
     position: absolute;
     width: calc(50% - 2rem);
+    max-width: calc(100% - 2.9rem);
     left: auto;
     right: 1.45rem;
     bottom: 1.2rem;
@@ -1587,6 +1590,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.65rem;
     background:
         linear-gradient(180deg, rgba(227, 243, 229, 0.98), rgba(204, 229, 208, 0.92)),
         rgba(219, 238, 223, 0.82);
@@ -1729,7 +1733,7 @@
 
 .timeline-rail {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
     gap: 0.85rem;
     align-items: end;
 }
@@ -1772,7 +1776,7 @@
 
 .blueprint-panel {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
     gap: 0.85rem;
 }
 
@@ -1789,7 +1793,7 @@
 }
 
 .story-shell {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
     align-items: stretch;
 }
 
@@ -1816,7 +1820,7 @@
 
 .gameplay-stack {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
     gap: 0.85rem;
 }
 
@@ -1892,7 +1896,7 @@
 
 .links-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
     gap: 0.9rem;
 }
 

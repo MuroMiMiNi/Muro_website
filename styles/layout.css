@@ -54,7 +54,10 @@
 }
 
 .display-area {
-    width: var(--circle-size);
-    height: var(--circle-size);
+    width: min(100%, var(--circle-size));
+    height: min(var(--circle-size), calc(100vh - (var(--page-gutter) * 2)));
+    max-width: var(--content-max-width);
+    max-height: calc(100vh - (var(--page-gutter) * 2));
+    aspect-ratio: 1;
     position: relative;
 }
