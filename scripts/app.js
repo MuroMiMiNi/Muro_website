@@ -66,6 +66,18 @@ function syncCompactLayout() {
     document.body.classList.toggle("touch-device", touchDeviceQuery.matches);
 }
 
+function getGalleryViewportMode() {
+    if (window.matchMedia("(max-width: 768px), (max-height: 700px)").matches) {
+        return "mobile";
+    }
+
+    if (window.matchMedia("(max-width: 960px), (max-height: 820px)").matches) {
+        return "compact";
+    }
+
+    return "desktop";
+}
+
 function setLanguageMenuOpen(isOpen) {
     refs.langMenu.hidden = !isOpen;
     refs.langToggle.setAttribute("aria-expanded", String(isOpen));
@@ -163,6 +175,28 @@ function keepFloatingGifInViewport() {
 function handleViewportResize() {
     syncCompactLayout();
     keepFloatingGifInViewport();
+
+    const activeSection = refs.displayArea.querySelector(".section.active[data-gallery-viewport-mode]");
+
+    if (!activeSection) {
+        return;
+    }
+
+    const nextGalleryMode = getGalleryViewportMode();
+
+    if (activeSection.dataset.galleryViewportMode === nextGalleryMode) {
+        return;
+    }
+
+    renderSections({
+        root: refs.displayArea,
+        siteData,
+        currentLang: state.currentLang
+    });
+    applyActiveSection({
+        root: refs.displayArea,
+        currentIndex: state.currentIndex
+    });
 }
 
 function bindFloatingGif() {

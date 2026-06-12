@@ -22,6 +22,44 @@ const GALLERY_SCATTER = {
         bottom: 30
     }
 };
+const GALLERY_SCATTER_COMPACT = {
+    minRadius: 26.5,
+    radiusStep: 5.2,
+    yScale: 1.02,
+    collisionPadding: 2.5,
+    maxPlacementAttempts: 320,
+    bounds: {
+        left: -48,
+        right: 48,
+        top: -48,
+        bottom: 48
+    },
+    focusPanel: {
+        left: -27,
+        right: 27,
+        top: -28,
+        bottom: 28
+    }
+};
+const GALLERY_SCATTER_MOBILE = {
+    minRadius: 29.5,
+    radiusStep: 4.8,
+    yScale: 1.1,
+    collisionPadding: 2.2,
+    maxPlacementAttempts: 360,
+    bounds: {
+        left: -47,
+        right: 47,
+        top: -47,
+        bottom: 47
+    },
+    focusPanel: {
+        left: -22,
+        right: 22,
+        top: -24,
+        bottom: 24
+    }
+};
 const BUBBLE_SIZE_PATTERN = [1.18, 0.9, 1.08, 0.84, 1.12, 0.96, 1.22, 0.88];
 const FALLBACK_PHASES = ["Now", "Next", "Later"];
 const FALLBACK_PILLARS = ["Core Loop", "World", "Feel", "Progression"];
@@ -557,8 +595,38 @@ function getBubbleRadius(scale) {
     return 4.4 * scale;
 }
 
-function isInsideScatterBounds(x, y, radius) {
-    const { left, right, top, bottom } = GALLERY_SCATTER.bounds;
+function getGalleryScatterMode() {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+        return "desktop";
+    }
+
+    if (window.matchMedia("(max-width: 768px), (max-height: 700px)").matches) {
+        return "mobile";
+    }
+
+    if (window.matchMedia("(max-width: 960px), (max-height: 820px)").matches) {
+        return "compact";
+    }
+
+    return "desktop";
+}
+
+function getGalleryScatterConfig() {
+    const scatterMode = getGalleryScatterMode();
+
+    if (scatterMode === "mobile") {
+        return GALLERY_SCATTER_MOBILE;
+    }
+
+    if (scatterMode === "compact") {
+        return GALLERY_SCATTER_COMPACT;
+    }
+
+    return GALLERY_SCATTER;
+}
+
+function isInsideScatterBounds(x, y, radius, scatterConfig) {
+    const { left, right, top, bottom } = scatterConfig.bounds;
 
     return (
         x >= left + radius &&
@@ -568,8 +636,8 @@ function isInsideScatterBounds(x, y, radius) {
     );
 }
 
-function overlapsFocusPanel(x, y, radius) {
-    const { left, right, top, bottom } = GALLERY_SCATTER.focusPanel;
+function overlapsFocusPanel(x, y, radius, scatterConfig) {
+    const { left, right, top, bottom } = scatterConfig.focusPanel;
 
     return !(
         x + radius < left ||
@@ -579,34 +647,34 @@ function overlapsFocusPanel(x, y, radius) {
     );
 }
 
-function overlapsOtherBubbles(x, y, radius, placements) {
+function overlapsOtherBubbles(x, y, radius, placements, scatterConfig) {
     return placements.some(placement => {
-        const gap = radius + placement.radius + GALLERY_SCATTER.collisionPadding;
+        const gap = radius + placement.radius + scatterConfig.collisionPadding;
         return Math.hypot(x - placement.x, y - placement.y) < gap;
     });
 }
 
-function createBubblePlacement(index, radius, placements) {
-    for (let attempt = 0; attempt < GALLERY_SCATTER.maxPlacementAttempts; attempt += 1) {
+function createBubblePlacement(index, radius, placements, scatterConfig) {
+    for (let attempt = 0; attempt < scatterConfig.maxPlacementAttempts; attempt += 1) {
         const ringIndex = Math.floor(attempt / 8);
         const angleDeg = ((index * 29) + (attempt * GOLDEN_ANGLE)) % 360;
         const angleRad = (angleDeg - 90) * (Math.PI / 180);
         const radialOffset = ((index + attempt) % 3) - 1;
-        const distance = GALLERY_SCATTER.minRadius
-            + (ringIndex * GALLERY_SCATTER.radiusStep)
+        const distance = scatterConfig.minRadius
+            + (ringIndex * scatterConfig.radiusStep)
             + (radialOffset * 1.35);
         const x = Math.cos(angleRad) * distance;
-        const y = Math.sin(angleRad) * distance * GALLERY_SCATTER.yScale;
+        const y = Math.sin(angleRad) * distance * scatterConfig.yScale;
 
-        if (!isInsideScatterBounds(x, y, radius)) {
+        if (!isInsideScatterBounds(x, y, radius, scatterConfig)) {
             continue;
         }
 
-        if (overlapsFocusPanel(x, y, radius)) {
+        if (overlapsFocusPanel(x, y, radius, scatterConfig)) {
             continue;
         }
 
-        if (overlapsOtherBubbles(x, y, radius, placements)) {
+        if (overlapsOtherBubbles(x, y, radius, placements, scatterConfig)) {
             continue;
         }
 
@@ -614,16 +682,16 @@ function createBubblePlacement(index, radius, placements) {
     }
 
     const fallbackAngle = ((index * GOLDEN_ANGLE) - 90) * (Math.PI / 180);
-    const fallbackDistance = GALLERY_SCATTER.minRadius + (Math.ceil(index / 3) * GALLERY_SCATTER.radiusStep);
+    const fallbackDistance = scatterConfig.minRadius + (Math.ceil(index / 3) * scatterConfig.radiusStep);
 
     return {
         x: Math.cos(fallbackAngle) * fallbackDistance,
-        y: Math.sin(fallbackAngle) * fallbackDistance * GALLERY_SCATTER.yScale,
+        y: Math.sin(fallbackAngle) * fallbackDistance * scatterConfig.yScale,
         radius
     };
 }
 
-function createBubbleLayouts(artworks) {
+function createBubbleLayouts(artworks, scatterConfig = GALLERY_SCATTER) {
     const placements = [];
     const layoutByArtworkId = new Map();
     const sizedArtworks = artworks
@@ -641,7 +709,7 @@ function createBubbleLayouts(artworks) {
         .sort((left, right) => right.radius - left.radius || left.index - right.index);
 
     sizedArtworks.forEach((entry, orderIndex) => {
-        const placement = createBubblePlacement(entry.index + orderIndex, entry.radius, placements);
+        const placement = createBubblePlacement(entry.index + orderIndex, entry.radius, placements, scatterConfig);
 
         placements.push({
             artworkId: entry.artwork.id,
@@ -713,6 +781,7 @@ function createGallerySection(context) {
     }
 
     const activeArtwork = getActiveArtwork();
+    const scatterMode = getGalleryScatterMode();
     const shell = createDiv("gallery-shell");
     const orbit = createDiv("gallery-orbit");
     const focusPanel = createDiv("gallery-focus-panel");
@@ -723,7 +792,9 @@ function createGallerySection(context) {
     const previewImage = document.createElement("img");
     const infoBox = createDiv("gallery-info-box");
     const infoHeader = createTextElement("p", "gallery-info-label", context.title);
-    const bubbleLayouts = createBubbleLayouts(artworksData);
+    const bubbleLayouts = createBubbleLayouts(artworksData, getGalleryScatterConfig());
+
+    section.dataset.galleryViewportMode = scatterMode;
 
     previewFrame.dataset.galleryPreviewFrame = "true";
     previewImage.className = "gallery-preview-image";

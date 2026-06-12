@@ -593,33 +593,40 @@ body.compact-layout {
     }
 
     .gallery-shell {
-        min-height: clamp(24rem, 68svh, 32rem);
-        padding: 0.6rem;
+        min-height: clamp(31rem, 82svh, 40rem);
+        padding: 0.75rem;
+        overflow: hidden;
     }
 
     .gallery-focus-panel {
-        width: min(100%, 20rem);
-        height: min(70%, 24rem);
+        width: min(100%, 18.75rem);
+        height: min(63%, 21.75rem);
         min-width: 0;
-        min-height: min(calc(100% - 1rem), 18rem);
+        min-height: min(calc(100% - 1.2rem), 15.75rem);
+        border-radius: 22px;
     }
 
     .gallery-guide {
-        max-width: 6.6rem;
-        font-size: 0.62rem;
+        left: 0.8rem;
+        top: 0.8rem;
+        max-width: 5.35rem;
+        font-size: 0.58rem;
+        line-height: 1.35;
     }
 
     .gallery-preview {
-        width: min(67%, 12rem);
-        top: 39%;
+        width: min(58%, 10.5rem);
+        top: 37%;
     }
 
     .gallery-bubble {
-        --bubble-base-size: clamp(2.55rem, 10vw, 3.6rem);
+        --bubble-base-size: clamp(2.15rem, 9vw, 3.05rem);
+        padding: 0.2rem;
     }
 
     .gallery-description {
-        font-size: 0.78rem;
+        font-size: 0.74rem;
+        line-height: 1.4;
     }
 
     .section-title {
@@ -627,7 +634,8 @@ body.compact-layout {
     }
 
     .gallery-art-title {
-        font-size: 1rem;
+        font-size: 0.95rem;
+        line-height: 1.12;
     }
 
     .manifest-card-2,
@@ -732,5 +740,52 @@ body.compact-layout {
         height: clamp(68px, 15vw, 88px);
         left: 50%;
         top: 10%;
+    }
+}
+
+@media (max-width: 560px) {
+    .gallery-shell {
+        min-height: clamp(33rem, 88svh, 42rem);
+    }
+
+    .gallery-focus-panel {
+        width: min(100%, 17.35rem);
+        height: min(60%, 20.25rem);
+        min-height: min(calc(100% - 1rem), 14.8rem);
+    }
+
+    .gallery-counter {
+        top: 0.7rem;
+        right: 0.7rem;
+        min-width: 4.1rem;
+        min-height: 1.65rem;
+        font-size: 0.82rem;
+    }
+
+    .gallery-guide {
+        max-width: 4.75rem;
+        font-size: 0.54rem;
+    }
+
+    .gallery-preview {
+        width: min(56%, 9.6rem);
+        top: 35.5%;
+    }
+
+    .gallery-info-box {
+        left: 0.75rem;
+        right: 0.75rem;
+        bottom: 0.75rem;
+        min-height: 4.45rem;
+        padding: 0.68rem 0.82rem;
+        border-radius: 18px;
+    }
+
+    .gallery-art-title {
+        font-size: 0.9rem;
+    }
+
+    .gallery-description {
+        font-size: 0.7rem;
     }
 }
