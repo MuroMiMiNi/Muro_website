@@ -123,8 +123,8 @@ export const siteData = [
             },
             {
                 type: "p",
-                label: { zh: "排單進度", en: "Roadmap" },
-                title: { zh: "排單進度", en: "Roadmap" },
+                label: { zh: "排單進度", en: "Queue" },
+                title: { zh: "排單進度", en: "Queue Status" },
                 copy: { zh: "建置中", en: "Coming Soon" }
             }
         ]

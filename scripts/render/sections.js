@@ -1,4 +1,5 @@
 import { artworksData, getArtworkById } from "../data/artworksData.js";
+import { queueBoardData } from "../data/queueBoardData.js";
 import { state, updateState } from "../state.js";
 
 const GALLERY_LAYOUT = "artwork-gallery";
@@ -123,7 +124,7 @@ const PAGE_BUILDERS = {
     "1-0": createGallerySection,
     "1-1": createCommissionGuideSection,
     "1-2": createMenuSection,
-    "1-3": createTimelineSection,
+    "1-3": createQueueBoardSection,
     "2-0": createBlueprintSection,
     "2-1": createStorySection,
     "2-2": createGameplaySection,
@@ -1044,6 +1045,154 @@ function createMenuSection(context) {
     sideStack.appendChild(createMenuShowcaseCard(menuContent.notes, "half"));
 
     shell.appendChild(sideStack);
+    section.appendChild(shell);
+
+    return section;
+}
+
+function createQueueBoardSummaryCard(item) {
+    const article = createDiv(`queue-board-summary-card queue-board-summary-card--${item.tone}`);
+
+    article.appendChild(createTextElement("p", "queue-board-summary-label", item.label));
+    article.appendChild(createTextElement("p", "queue-board-summary-value", item.value));
+    article.appendChild(createTextElement("p", "queue-board-summary-note", item.note));
+
+    return article;
+}
+
+function createQueueBoardItem(item) {
+    const article = createDiv("queue-board-item");
+    const top = createDiv("queue-board-item-top");
+    const codeBlock = createDiv("queue-board-item-code-block");
+    const meta = createDiv("queue-board-item-meta");
+
+    codeBlock.appendChild(createTextElement("p", "queue-board-item-code", item.code));
+    codeBlock.appendChild(createTextElement("span", "queue-board-item-badge", item.badge));
+
+    meta.appendChild(createTextElement("h4", "queue-board-item-type", item.type));
+    meta.appendChild(createTextElement("p", "queue-board-item-owner", item.owner));
+
+    top.appendChild(codeBlock);
+    top.appendChild(meta);
+
+    article.appendChild(top);
+    article.appendChild(createTextElement("p", "queue-board-item-due", item.due));
+    article.appendChild(createTextElement("p", "queue-board-item-note", item.note));
+
+    return article;
+}
+
+function getQueueBoardCompletedWorks(column) {
+    return [...(column.completedWorks ?? [])]
+        .sort((left, right) => new Date(right.completedAt) - new Date(left.completedAt))
+        .slice(0, 5);
+}
+
+function createQueueBoardCompletedCard(work) {
+    const article = createDiv("queue-board-completed-card");
+    const badge = createTextElement("span", "queue-board-completed-code", work.code);
+    const frame = createDiv("queue-board-completed-frame");
+    const image = document.createElement("img");
+
+    image.className = "queue-board-completed-image";
+    image.src = work.src;
+    image.alt = work.alt;
+    image.loading = "lazy";
+    image.draggable = false;
+    image.style.objectPosition = work.focus ?? "center center";
+
+    frame.appendChild(image);
+    article.appendChild(badge);
+    article.appendChild(frame);
+
+    return article;
+}
+
+function createQueueBoardColumn(column) {
+    const itemCount = column.completedWorks ? getQueueBoardCompletedWorks(column).length : column.items.length;
+    const scrollableClass = column.scrollable ? " queue-board-column--scrollable" : "";
+    const section = createDiv(`queue-board-column queue-board-column--${column.id}${scrollableClass}`);
+    const header = createDiv("queue-board-column-header");
+    const count = createTextElement("span", "queue-board-column-count", String(itemCount).padStart(2, "0"));
+
+    header.appendChild(createTextElement("p", "queue-board-column-label", column.label));
+    header.appendChild(count);
+
+    section.appendChild(header);
+    section.appendChild(createTextElement("p", "queue-board-column-hint", column.hint));
+
+    if (column.completedWorks) {
+        const gallery = createDiv("queue-board-completed-list");
+
+        getQueueBoardCompletedWorks(column).forEach(work => {
+            gallery.appendChild(createQueueBoardCompletedCard(work));
+        });
+
+        section.appendChild(gallery);
+        return section;
+    }
+
+    const list = createDiv("queue-board-item-list");
+
+    column.items.forEach(item => {
+        list.appendChild(createQueueBoardItem(item));
+    });
+
+    section.appendChild(list);
+
+    return section;
+}
+
+function createQueueBoardFooter(footer) {
+    const section = createDiv("queue-board-footer");
+    const list = document.createElement("ul");
+
+    list.className = "queue-board-footer-list";
+
+    section.appendChild(createTextElement("h3", "queue-board-footer-title", footer.title));
+
+    footer.points.forEach(point => {
+        const item = createTextElement("li", "queue-board-footer-point", point);
+        list.appendChild(item);
+    });
+
+    section.appendChild(list);
+
+    return section;
+}
+
+function createQueueBoardSection(context) {
+    const queueContent = queueBoardData[context.currentLang];
+    const section = createSectionBase("page-queue-status");
+    const shell = createDiv("page-shell queue-board-shell");
+    const hero = createDiv("queue-board-hero");
+    const heroCopy = createDiv("queue-board-hero-copy");
+    const notice = createDiv("queue-board-notice");
+    const summary = createDiv("queue-board-summary");
+    const grid = createDiv("queue-board-grid");
+    const headerContext = { ...context, title: queueContent.pageTitle };
+
+    heroCopy.appendChild(createHeaderBlock(headerContext, queueContent.eyebrow));
+    heroCopy.appendChild(createTextElement("p", "queue-board-description", queueContent.description));
+
+    notice.appendChild(createTextElement("p", "queue-board-notice-tag", queueContent.announcementTitle));
+    notice.appendChild(createTextElement("p", "queue-board-notice-body", queueContent.announcementBody));
+
+    hero.appendChild(heroCopy);
+    hero.appendChild(notice);
+
+    queueContent.summary.forEach(item => {
+        summary.appendChild(createQueueBoardSummaryCard(item));
+    });
+
+    queueContent.columns.forEach(column => {
+        grid.appendChild(createQueueBoardColumn(column));
+    });
+
+    shell.appendChild(hero);
+    shell.appendChild(summary);
+    shell.appendChild(grid);
+    shell.appendChild(createQueueBoardFooter(queueContent.footer));
     section.appendChild(shell);
 
     return section;
