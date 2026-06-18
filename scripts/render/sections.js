@@ -786,6 +786,7 @@ function createGallerySection(context) {
     const shell = createDiv("gallery-shell");
     const orbit = createDiv("gallery-orbit");
     const focusPanel = createDiv("gallery-focus-panel");
+    const bubbleStrip = createDiv("gallery-bubble-strip");
     const counter = createTextElement("p", "gallery-counter", "");
     const guide = createTextElement("p", "gallery-guide", GALLERY_PROMPT[context.currentLang] ?? GALLERY_PROMPT.en);
     const preview = createDiv("gallery-preview");
@@ -820,6 +821,7 @@ function createGallerySection(context) {
     focusPanel.appendChild(guide);
     focusPanel.appendChild(infoBox);
     orbit.appendChild(focusPanel);
+    orbit.appendChild(bubbleStrip);
 
     artworksData.forEach((artwork, index) => {
         const bubble = document.createElement("button");
@@ -845,7 +847,7 @@ function createGallerySection(context) {
             updateGallerySection(section, artwork, context.currentLang);
         });
 
-        orbit.appendChild(bubble);
+        bubbleStrip.appendChild(bubble);
     });
     shell.appendChild(orbit);
     section.appendChild(shell);

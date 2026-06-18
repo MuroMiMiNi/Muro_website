@@ -1,7 +1,7 @@
 import { uiText } from "./config/uiText.js";
 import { siteData } from "./data/siteData.js";
 import { renderMainNav } from "./render/mainNav.js";
-import { renderSections, applyActiveSection } from "./render/sections.js";
+import { renderSections, applyActiveSection } from "./render/sections.js?v=20260618-mobile-rwd";
 import { renderSubNav } from "./render/subNav.js";
 import { state, updateState } from "./state.js";
 import { getFirstPageSubIndex, getFlatIndex, getSafePageSubIndex } from "./utils/indexMap.js";

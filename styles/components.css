@@ -1180,6 +1180,10 @@
     height: 100%;
 }
 
+.gallery-bubble-strip {
+    display: contents;
+}
+
 .gallery-focus-panel {
     position: absolute;
     left: 50%;
