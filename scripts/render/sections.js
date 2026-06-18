@@ -1083,26 +1083,50 @@ function createQueueBoardItem(item) {
 }
 
 function getQueueBoardCompletedWorks(column) {
-    return [...(column.completedWorks ?? [])]
-        .sort((left, right) => new Date(right.completedAt) - new Date(left.completedAt))
-        .slice(0, 5);
+    const works = [...(column.completedWorks ?? [])]
+        .sort((left, right) => new Date(right.completedAt) - new Date(left.completedAt));
+    const completedSlots = Math.max(column.completedSlots ?? 0, works.length);
+
+    return Array.from({ length: completedSlots }, (_, index) => works[index] ?? { isPlaceholder: true });
 }
 
-function createQueueBoardCompletedCard(work) {
+function resolveQueueBoardCompletedSrc(work, column) {
+    if (work.src) {
+        return work.src;
+    }
+
+    if (work.fileName && column.assetBasePath) {
+        return `${column.assetBasePath}${work.fileName}`;
+    }
+
+    return null;
+}
+
+function createQueueBoardCompletedCard(work, column) {
     const article = createDiv("queue-board-completed-card");
-    const badge = createTextElement("span", "queue-board-completed-code", work.code);
     const frame = createDiv("queue-board-completed-frame");
-    const image = document.createElement("img");
+    const src = resolveQueueBoardCompletedSrc(work, column);
 
-    image.className = "queue-board-completed-image";
-    image.src = work.src;
-    image.alt = work.alt;
-    image.loading = "lazy";
-    image.draggable = false;
-    image.style.objectPosition = work.focus ?? "center center";
+    if (src) {
+        const image = document.createElement("img");
 
-    frame.appendChild(image);
-    article.appendChild(badge);
+        image.className = "queue-board-completed-image";
+        image.src = src;
+        image.alt = work.alt;
+        image.loading = "lazy";
+        image.draggable = false;
+        image.style.objectPosition = work.focus ?? "center center";
+
+        frame.appendChild(image);
+    } else {
+        article.classList.add("queue-board-completed-card--empty");
+        frame.classList.add("queue-board-completed-frame--empty");
+    }
+
+    if (work.code && src) {
+        article.appendChild(createTextElement("span", "queue-board-completed-code", work.code));
+    }
+
     article.appendChild(frame);
 
     return article;
@@ -1125,7 +1149,7 @@ function createQueueBoardColumn(column) {
         const gallery = createDiv("queue-board-completed-list");
 
         getQueueBoardCompletedWorks(column).forEach(work => {
-            gallery.appendChild(createQueueBoardCompletedCard(work));
+            gallery.appendChild(createQueueBoardCompletedCard(work, column));
         });
 
         section.appendChild(gallery);

@@ -1,3 +1,6 @@
+const queueBoardCompletedAssetBasePath = "./assets/queue-completed/";
+const queueBoardCompletedSlotCount = 5;
+
 export const queueBoardData = {
     zh: {
         pageTitle: "排單進度",
@@ -99,50 +102,9 @@ export const queueBoardData = {
                 id: "completed",
                 label: "已完成",
                 hint: "近期完成或已交件的委託紀錄",
-                completedWorks: [
-                    {
-                        code: "A-03",
-                        completedAt: "2026-06-11",
-                        src: "./assets/commission/half-body/half-body-example.png",
-                        alt: "A-03 已完成委託圖",
-                        focus: "center 24%"
-                    },
-                    {
-                        code: "A-02",
-                        completedAt: "2026-06-10",
-                        src: "./assets/artworks/Antia 安緹婭.png",
-                        alt: "A-02 已完成委託圖",
-                        focus: "center 22%"
-                    },
-                    {
-                        code: "A-01",
-                        completedAt: "2026-06-08",
-                        src: "./assets/artworks/Cael 凱爾.png",
-                        alt: "A-01 已完成委託圖",
-                        focus: "center 26%"
-                    },
-                    {
-                        code: "Z-12",
-                        completedAt: "2026-06-05",
-                        src: "./assets/artworks/Clinika 克莉妮卡.png",
-                        alt: "Z-12 已完成委託圖",
-                        focus: "center 20%"
-                    },
-                    {
-                        code: "Z-11",
-                        completedAt: "2026-06-03",
-                        src: "./assets/artworks/Dellian 黛莉安.png",
-                        alt: "Z-11 已完成委託圖",
-                        focus: "center 18%"
-                    },
-                    {
-                        code: "Z-10",
-                        completedAt: "2026-05-28",
-                        src: "./assets/artworks/Enbui 恩布依.png",
-                        alt: "Z-10 已完成委託圖",
-                        focus: "center 24%"
-                    }
-                ]
+                assetBasePath: queueBoardCompletedAssetBasePath,
+                completedSlots: queueBoardCompletedSlotCount,
+                completedWorks: []
             }
         ],
         footer: {
@@ -254,50 +216,9 @@ export const queueBoardData = {
                 id: "completed",
                 label: "Completed",
                 hint: "Recently finished or already delivered commissions",
-                completedWorks: [
-                    {
-                        code: "A-03",
-                        completedAt: "2026-06-11",
-                        src: "./assets/commission/half-body/half-body-example.png",
-                        alt: "A-03 completed commission preview",
-                        focus: "center 24%"
-                    },
-                    {
-                        code: "A-02",
-                        completedAt: "2026-06-10",
-                        src: "./assets/artworks/Antia 安緹婭.png",
-                        alt: "A-02 completed commission preview",
-                        focus: "center 22%"
-                    },
-                    {
-                        code: "A-01",
-                        completedAt: "2026-06-08",
-                        src: "./assets/artworks/Cael 凱爾.png",
-                        alt: "A-01 completed commission preview",
-                        focus: "center 26%"
-                    },
-                    {
-                        code: "Z-12",
-                        completedAt: "2026-06-05",
-                        src: "./assets/artworks/Clinika 克莉妮卡.png",
-                        alt: "Z-12 completed commission preview",
-                        focus: "center 20%"
-                    },
-                    {
-                        code: "Z-11",
-                        completedAt: "2026-06-03",
-                        src: "./assets/artworks/Dellian 黛莉安.png",
-                        alt: "Z-11 completed commission preview",
-                        focus: "center 18%"
-                    },
-                    {
-                        code: "Z-10",
-                        completedAt: "2026-05-28",
-                        src: "./assets/artworks/Enbui 恩布依.png",
-                        alt: "Z-10 completed commission preview",
-                        focus: "center 24%"
-                    }
-                ]
+                assetBasePath: queueBoardCompletedAssetBasePath,
+                completedSlots: queueBoardCompletedSlotCount,
+                completedWorks: []
             }
         ],
         footer: {

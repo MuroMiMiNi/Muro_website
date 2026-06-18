@@ -301,8 +301,8 @@
 .queue-board-completed-card {
     position: relative;
     min-height: 0;
-    padding: 0.7rem;
-    border-radius: 24px;
+    padding: 0.55rem;
+    border-radius: 28px;
     border: 1px solid rgba(133, 116, 162, 0.18);
     background:
         linear-gradient(165deg, rgba(255, 255, 255, 0.92), rgba(246, 240, 255, 0.84)),
@@ -310,10 +310,16 @@
     box-shadow: 0 12px 24px rgba(126, 106, 156, 0.12);
 }
 
+.queue-board-completed-card--empty {
+    background:
+        linear-gradient(165deg, rgba(255, 255, 255, 0.9), rgba(244, 238, 250, 0.82)),
+        var(--queue-board-card);
+}
+
 .queue-board-completed-code {
     position: absolute;
-    top: 1rem;
-    left: 1rem;
+    top: 1.05rem;
+    left: 1.05rem;
     z-index: 2;
     padding: 0.32rem 0.68rem;
     border-radius: 999px;
@@ -327,15 +333,21 @@
 
 .queue-board-completed-frame {
     width: 100%;
-    aspect-ratio: 1;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
-    border-radius: 50%;
+    border-radius: 24px;
     box-shadow:
-        0 12px 28px rgba(121, 102, 140, 0.14),
-        inset 0 0 0 8px rgba(255, 255, 255, 0.86);
+        0 14px 28px rgba(121, 102, 140, 0.14),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.72);
     background:
-        radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.96), rgba(246, 239, 255, 0.58)),
+        linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(238, 231, 247, 0.8)),
         rgba(255, 255, 255, 0.72);
+}
+
+.queue-board-completed-frame--empty {
+    background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(240, 233, 248, 0.88)),
+        rgba(255, 255, 255, 0.8);
 }
 
 .queue-board-completed-image {
