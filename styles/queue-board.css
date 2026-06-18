@@ -490,9 +490,61 @@
 }
 
 @media (max-width: 760px) {
+    .page-queue-status,
+    .page-queue-status.active,
+    .page-queue-status.exit {
+        transform: none;
+    }
+
+    .queue-board-shell {
+        gap: 0.8rem;
+    }
+
     .queue-board-summary,
     .queue-board-grid {
         grid-template-columns: 1fr;
+    }
+
+    .queue-board-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+    }
+
+    .queue-board-summary-card {
+        min-height: 0;
+        padding: 0.9rem;
+    }
+
+    .queue-board-summary-value {
+        font-size: clamp(1.2rem, 5vw, 1.6rem);
+    }
+
+    .queue-board-column,
+    .queue-board-hero-copy,
+    .queue-board-notice,
+    .queue-board-footer {
+        border-radius: 22px;
+    }
+
+    .queue-board-column {
+        padding: 0.9rem;
+        gap: 0.75rem;
+    }
+
+    .queue-board-column--completed {
+        overflow: visible;
+    }
+
+    .queue-board-column-header {
+        align-items: flex-start;
+    }
+
+    .queue-board-column-hint,
+    .queue-board-item-owner,
+    .queue-board-item-due,
+    .queue-board-item-note,
+    .queue-board-footer-point {
+        line-height: 1.55;
     }
 
     .queue-board-column--scrollable {
@@ -504,8 +556,60 @@
         padding-right: 0;
     }
 
+    .queue-board-item {
+        padding: 0.82rem;
+        gap: 0.55rem;
+    }
+
+    .queue-board-item-code-block {
+        flex-wrap: wrap;
+    }
+
+    .queue-board-completed-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.7rem;
+    }
+
     .queue-board-completed-list {
         overflow: visible;
         padding-right: 0;
+    }
+
+    .queue-board-completed-card {
+        padding: 0.45rem;
+        border-radius: 22px;
+    }
+
+    .queue-board-completed-frame {
+        border-radius: 18px;
+    }
+
+    .queue-board-footer {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .queue-board-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .queue-board-hero-copy,
+    .queue-board-notice {
+        padding: 1rem;
+    }
+
+    .queue-board-description,
+    .queue-board-notice-body {
+        font-size: 0.92rem;
+        line-height: 1.62;
+    }
+
+    .queue-board-column-label {
+        font-size: 1.02rem;
+    }
+
+    .queue-board-completed-list {
+        grid-template-columns: 1fr;
     }
 }
