@@ -476,8 +476,7 @@ body.compact-layout {
         gap: 0;
     }
 
-    .sub-title,
-    .sub-socials {
+    .sub-title {
         display: none;
     }
 
@@ -510,6 +509,34 @@ body.compact-layout {
 
     .sub-list li:hover {
         transform: none;
+    }
+
+    .sub-socials {
+        display: block;
+        align-self: stretch;
+        margin-top: 0.55rem;
+        padding-top: 0.55rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .sub-socials-row {
+        display: flex;
+        justify-content: center;
+        gap: 0.45rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        overscroll-behavior-x: contain;
+        contain: paint;
+        padding: 0.12rem 0.05rem 0.2rem;
+        scrollbar-width: none;
+    }
+
+    .sub-socials-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .sub-social-note {
+        display: none;
     }
 
     .display-area {
@@ -1093,8 +1120,7 @@ body.compact-layout {
         animation: none;
     }
 
-    .sub-title,
-    .sub-socials {
+    .sub-title {
         display: none;
     }
 
@@ -1127,6 +1153,34 @@ body.compact-layout {
 
     .sub-list li:hover {
         transform: none;
+    }
+
+    .sub-socials {
+        display: block;
+        align-self: stretch;
+        margin-top: 0.55rem;
+        padding-top: 0.55rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .sub-socials-row {
+        display: flex;
+        justify-content: center;
+        gap: 0.45rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        overscroll-behavior-x: contain;
+        contain: paint;
+        padding: 0.12rem 0.05rem 0.2rem;
+        scrollbar-width: none;
+    }
+
+    .sub-socials-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .sub-social-note {
+        display: none;
     }
 
     .display-area {
