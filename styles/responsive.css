@@ -667,18 +667,21 @@ body.compact-layout {
     }
 
     .gallery-bubble {
-        --bubble-base-size: clamp(3.2rem, 15vw, 4.45rem);
+        --bubble-scale: 1;
+        --gallery-mobile-thumb-size: clamp(4rem, 18vw, 5rem);
         position: relative;
         left: auto;
         top: auto;
+        width: var(--gallery-mobile-thumb-size);
+        height: var(--gallery-mobile-thumb-size);
         padding: 0.22rem;
-        flex: 0 0 auto;
+        flex: 0 0 var(--gallery-mobile-thumb-size);
         scroll-snap-align: center;
         transform: none;
     }
 
     .gallery-bubble.is-active {
-        transform: translateY(-0.18rem) scale(0.92);
+        transform: translateY(-0.18rem);
     }
 
     .gallery-description {
@@ -935,7 +938,7 @@ body.compact-layout {
     }
 
     .gallery-bubble {
-        --bubble-base-size: clamp(3rem, 17vw, 4rem);
+        --gallery-mobile-thumb-size: clamp(3.9rem, 18vw, 4.65rem);
     }
 
     .top-controls {
@@ -1397,18 +1400,21 @@ body.compact-layout {
     }
 
     .gallery-bubble {
-        --bubble-base-size: clamp(3.2rem, 15vw, 4.45rem);
+        --bubble-scale: 1;
+        --gallery-mobile-thumb-size: clamp(4rem, 18vw, 5rem);
         position: relative;
         top: auto;
         left: auto;
-        flex: 0 0 auto;
+        width: var(--gallery-mobile-thumb-size);
+        height: var(--gallery-mobile-thumb-size);
+        flex: 0 0 var(--gallery-mobile-thumb-size);
         padding: 0.22rem;
         scroll-snap-align: center;
         transform: none;
     }
 
     .gallery-bubble.is-active {
-        transform: translateY(-0.18rem) scale(0.92);
+        transform: translateY(-0.18rem);
     }
 
     .page-queue-status,
@@ -1461,5 +1467,11 @@ body.compact-layout {
     .queue-board-completed-list {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 0.7rem;
+    }
+}
+
+@media (hover: none) and (max-width: 560px), (pointer: coarse) and (max-width: 560px) {
+    .gallery-bubble {
+        --gallery-mobile-thumb-size: clamp(3.9rem, 18vw, 4.65rem);
     }
 }
