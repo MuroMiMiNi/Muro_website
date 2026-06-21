@@ -3,230 +3,126 @@ const queueBoardCompletedSlotCount = 5;
 
 export const queueBoardData = {
     zh: {
-        pageTitle: "排單進度",
+        pageTitle: "2026排單表",
         eyebrow: "Commission Queue",
-        description: "把排單資訊拆成摘要、說明和狀態欄位，讓委託人先看懂目前是否開放，再看自己大概排在哪裡。",
+        description: "委託項目、價格、範例等皆可至價目表閱覽",
         announcementTitle: "目前說明",
         announcementBody: "週日不進行繪製作業，因此工期與等待時間皆不含週日。預估時間會依照複雜度、溝通速度與修改次數微調。",
         summary: [
             {
                 label: "委託狀態",
                 value: "開放中",
-                note: "目前可收 2 個名額",
+                note: "開放項目與開放單數可見價目表",
                 tone: "open"
             },
             {
                 label: "目前排到",
-                value: "A-04",
-                note: "A-01 至 A-03 已完成",
+                value: "--",
+                note: "--",
                 tone: "focus"
             },
             {
                 label: "預估等待",
-                value: "約 7-18 天",
+                value: "約 -- ",
                 note: "依項目與修改次數調整",
                 tone: "warm"
             },
             {
                 label: "最後更新",
-                value: "2026.06.12",
-                note: "今天下午 4:30 更新",
+                value: "2026.06.22",
+                note: "今天上午 01:00 更新",
                 tone: "neutral"
             }
         ],
+        table: {
+            ariaLabel: "委託排單表格",
+            rowSlots: 12,
+            headers: [
+                { key: "owner", label: "單主名稱" },
+                { key: "item", label: "委託項目" },
+                { key: "progress", label: "當前進度" },
+                { key: "turnaround", label: "預計工期" }
+            ],
+            rows: []
+        },
         columns: [
-            {
-                id: "pending",
-                label: "待確認",
-                hint: "已收到詢問，等待資料或報價確認",
-                scrollable: true,
-                items: [
-                    {
-                        code: "A-07",
-                        type: "半身指定",
-                        owner: "委託人 C",
-                        due: "等待設定補件",
-                        note: "資料齊全後再正式入列",
-                        badge: "資料中"
-                    },
-                    {
-                        code: "A-08",
-                        type: "全身委託",
-                        owner: "委託人 D",
-                        due: "等待報價確認",
-                        note: "大配件較多，已先告知工期",
-                        badge: "估價中"
-                    }
-                ]
-            },
-            {
-                id: "queued",
-                label: "排隊中",
-                hint: "已確認委託，等待進入正式繪製",
-                scrollable: true,
-                items: [
-                    {
-                        code: "A-05",
-                        type: "頭像驚喜包",
-                        owner: "委託人 A",
-                        due: "預計 6/16 開工",
-                        note: "已付款，等待前單收尾",
-                        badge: "已付款"
-                    },
-                    {
-                        code: "A-06",
-                        type: "半身驚喜包",
-                        owner: "委託人 B",
-                        due: "預計 6/20 開工",
-                        note: "已確認風格方向",
-                        badge: "已排入"
-                    }
-                ]
-            },
-            {
-                id: "drawing",
-                label: "繪製中",
-                hint: "目前正在處理的委託",
-                items: [
-                    {
-                        code: "A-04",
-                        type: "全身委託",
-                        owner: "委託人 S",
-                        due: "預計 6/18 完成",
-                        note: "目前進度：上色與細節收尾",
-                        badge: "進行中"
-                    }
-                ]
-            },
             {
                 id: "completed",
                 label: "已完成",
-                hint: "近期完成或已交件的委託紀錄",
+                hint: "近五張委託完成展示",
                 assetBasePath: queueBoardCompletedAssetBasePath,
                 completedSlots: queueBoardCompletedSlotCount,
                 completedWorks: []
             }
         ],
         footer: {
-            title: "這版排單刻意保留的方向",
+            title: "注意事項",
             points: [
-                "排單用代號而不直接顯示真名，方便公開展示。",
-                "摘要資訊固定放最上方，委託人不用先看完整列表。",
-                "每個欄位都有自己的 class 與樣式，後續可單獨調整而不碰其他子頁。"
+                "項目代號：頭像為 A 、半身為 H 、全身為 F。加急會在工期使用 W 代稱",
+                "驚喜包一鍵出圖，除設定畫錯以外只可「小改一次」",
+                "價格隨複雜度、要求、調整次數、加急、背景等要素浮動"
             ]
         }
     },
     en: {
-        pageTitle: "Queue Status",
+        pageTitle: "2026 Commission Queue",
         eyebrow: "Commission Queue",
-        description: "This board breaks the queue into a summary, a notice block, and status columns so visitors can understand availability before reading the full list.",
+        description: "Commission items, pricing, examples, and other details are available on the commission menu.",
         announcementTitle: "Current Notice",
         announcementBody: "No drawing work is done on Sundays, so turnaround and waiting estimates both exclude Sundays. Timing may still shift based on complexity, communication speed, and revision rounds.",
         summary: [
             {
                 label: "Commission status",
                 value: "Open",
-                note: "2 slots currently available",
+                note: "See the commission menu for available items and slots",
                 tone: "open"
             },
             {
                 label: "Currently handling",
-                value: "A-04",
-                note: "A-01 to A-03 are complete",
+                value: "--",
+                note: "--",
                 tone: "focus"
             },
             {
                 label: "Estimated wait",
-                value: "About 7-18 days",
+                value: "About --",
                 note: "Depends on scope and revisions",
                 tone: "warm"
             },
             {
                 label: "Last updated",
-                value: "2026.06.12",
-                note: "Updated today at 4:30 PM",
+                value: "2026.06.22",
+                note: "Updated today at 1:00 AM",
                 tone: "neutral"
             }
         ],
+        table: {
+            ariaLabel: "Commission queue table",
+            rowSlots: 12,
+            headers: [
+                { key: "owner", label: "Client Name" },
+                { key: "item", label: "Commission Item" },
+                { key: "progress", label: "Current Progress" },
+                { key: "turnaround", label: "Estimated Turnaround" }
+            ],
+            rows: []
+        },
         columns: [
-            {
-                id: "pending",
-                label: "Pending",
-                hint: "Inquiry received, waiting for references or quote approval",
-                scrollable: true,
-                items: [
-                    {
-                        code: "A-07",
-                        type: "Specified half body",
-                        owner: "Client C",
-                        due: "Waiting for extra references",
-                        note: "Will join the queue once materials are complete",
-                        badge: "Materials"
-                    },
-                    {
-                        code: "A-08",
-                        type: "Full body",
-                        owner: "Client D",
-                        due: "Waiting for quote approval",
-                        note: "Longer timeline already explained",
-                        badge: "Quoting"
-                    }
-                ]
-            },
-            {
-                id: "queued",
-                label: "Queued",
-                hint: "Confirmed commissions waiting to enter production",
-                scrollable: true,
-                items: [
-                    {
-                        code: "A-05",
-                        type: "Surprise icon pack",
-                        owner: "Client A",
-                        due: "Planned start: 6/16",
-                        note: "Paid and waiting for the current order to wrap up",
-                        badge: "Paid"
-                    },
-                    {
-                        code: "A-06",
-                        type: "Surprise half body",
-                        owner: "Client B",
-                        due: "Planned start: 6/20",
-                        note: "Direction and tone already confirmed",
-                        badge: "Queued"
-                    }
-                ]
-            },
-            {
-                id: "drawing",
-                label: "Drawing",
-                hint: "Commission currently in production",
-                items: [
-                    {
-                        code: "A-04",
-                        type: "Full body",
-                        owner: "Client S",
-                        due: "Estimated finish: 6/18",
-                        note: "Current stage: coloring and polish",
-                        badge: "In progress"
-                    }
-                ]
-            },
             {
                 id: "completed",
                 label: "Completed",
-                hint: "Recently finished or already delivered commissions",
+                hint: "Showcase of the five most recently completed commissions",
                 assetBasePath: queueBoardCompletedAssetBasePath,
                 completedSlots: queueBoardCompletedSlotCount,
                 completedWorks: []
             }
         ],
         footer: {
-            title: "What this board is intentionally testing",
+            title: "Notes",
             points: [
-                "Queue codes are public-facing, so real client names stay private.",
-                "Key status information stays at the top instead of being buried in the list.",
-                "Every queue style is scoped to this page only, so later edits will not affect other subpages."
+                "Item codes: A for avatar, H for half body, and F for full body. Rush orders are marked with W in the turnaround column.",
+                "Surprise packs are delivered in one go. Only one minor revision is allowed unless the character details were drawn incorrectly.",
+                "Prices vary based on complexity, requirements, revision count, rush service, backgrounds, and other factors."
             ]
         }
     }

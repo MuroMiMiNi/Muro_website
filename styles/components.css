@@ -1449,14 +1449,45 @@
 .menu-showcase-badge {
     width: 3.1rem;
     height: 3.1rem;
+    padding: 0;
+    border: 0;
     display: grid;
     place-items: center;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.7);
+    background: linear-gradient(145deg, #69b982, #3f8d5b);
     box-shadow:
-        0 10px 22px rgba(104, 138, 117, 0.14),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.85);
-    color: rgba(104, 142, 117, 0.9);
+        0 12px 24px rgba(48, 112, 70, 0.3),
+        inset 0 0 0 2px rgba(255, 255, 255, 0.42);
+    color: #ffffff;
+    font: inherit;
+    cursor: pointer;
+    appearance: none;
+    transition: transform 0.22s ease, color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+}
+
+.menu-showcase-badge:hover {
+    transform: translateY(-3px) scale(1.08);
+    background: linear-gradient(145deg, #7dcb95, #459b62);
+    color: #ffffff;
+    box-shadow:
+        0 16px 32px rgba(48, 112, 70, 0.38),
+        0 0 0 4px rgba(98, 178, 123, 0.2),
+        inset 0 0 0 2px rgba(255, 255, 255, 0.58);
+}
+
+.menu-showcase-badge:focus-visible {
+    outline: 3px solid rgba(68, 141, 91, 0.42);
+    outline-offset: 3px;
+}
+
+.menu-showcase-badge:active {
+    transform: translateY(0) scale(0.97);
+}
+
+.menu-showcase-card--icon > .menu-showcase-badge {
+    position: absolute;
+    left: 1.45rem;
+    bottom: 1.55rem;
 }
 
 .menu-showcase-badge svg,
@@ -1488,7 +1519,7 @@
     padding-top: 0;
     padding-bottom: 6.1rem;
     padding-left: 0;
-    margin-top: -2.1rem;
+    margin-top: -0.75rem;
     margin-left: clamp(2.4rem, 12%, 5rem);
     gap: 1rem;
     align-content: start;
@@ -1604,6 +1635,19 @@
     color: #2d4a3b;
 }
 
+.menu-showcase-action--unavailable {
+    justify-content: center;
+    background:
+        linear-gradient(180deg, rgba(226, 228, 227, 0.98), rgba(199, 203, 201, 0.94)),
+        rgba(211, 214, 212, 0.9);
+    box-shadow:
+        0 10px 22px rgba(82, 87, 84, 0.14),
+        inset 0 0 0 1px rgba(247, 248, 247, 0.62);
+    color: #666c68;
+    cursor: default;
+    user-select: none;
+}
+
 .menu-showcase-card--full .menu-showcase-action {
     left: 1.45rem;
     right: auto;
@@ -1618,6 +1662,231 @@
 
 .menu-showcase-action-arrow {
     font-size: 1.2rem;
+}
+
+.menu-shell[hidden],
+.menu-detail-host[hidden],
+.menu-detail-page[hidden] {
+    display: none;
+}
+
+.menu-detail-host {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+}
+
+.menu-detail-page {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: minmax(15rem, 1.05fr) minmax(15rem, 0.95fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 1rem;
+    padding: 0.2rem 0.35rem 0.2rem 0.2rem;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(65, 105, 78, 0.28) transparent;
+}
+
+.menu-detail-header {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.menu-detail-heading {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.menu-detail-back {
+    min-height: 2.9rem;
+    padding: 0.7rem 1.1rem;
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.68);
+    box-shadow: 0 10px 22px rgba(84, 119, 94, 0.13);
+    color: #315641;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+}
+
+.menu-detail-back:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 14px 26px rgba(84, 119, 94, 0.18);
+}
+
+.menu-detail-back:focus-visible {
+    outline: 3px solid rgba(68, 141, 91, 0.42);
+    outline-offset: 3px;
+}
+
+.menu-detail-media,
+.menu-detail-content {
+    min-height: 0;
+    overflow: hidden;
+}
+
+.menu-detail-media {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: 1.2rem;
+    background:
+        radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.92), rgba(232, 248, 231, 0.62)),
+        rgba(255, 255, 255, 0.58);
+}
+
+.menu-detail-carousel-viewport {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+}
+
+.menu-detail-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 28px rgba(64, 87, 75, 0.14));
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.menu-detail-image--avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    object-fit: contain;
+}
+
+.menu-detail-carousel-button {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.82);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    transform: translateY(-50%);
+    background: rgba(238, 247, 255, 0.86);
+    box-shadow: 0 10px 24px rgba(55, 104, 145, 0.2);
+    color: #386b91;
+    font: inherit;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.menu-detail-carousel-button[hidden] {
+    display: none;
+}
+
+.menu-detail-carousel-button--previous {
+    left: 1rem;
+}
+
+.menu-detail-carousel-button--next {
+    right: 1rem;
+}
+
+.menu-detail-carousel-button:hover {
+    transform: translateY(-50%) scale(1.08);
+    background: rgba(247, 252, 255, 0.98);
+    box-shadow: 0 14px 28px rgba(55, 104, 145, 0.28);
+}
+
+.menu-detail-carousel-button:focus-visible {
+    outline: 3px solid rgba(79, 139, 183, 0.42);
+    outline-offset: 3px;
+}
+
+.menu-detail-carousel-counter {
+    position: absolute;
+    left: 50%;
+    bottom: 0.8rem;
+    z-index: 2;
+    min-width: 3.8rem;
+    padding: 0.38rem 0.7rem;
+    border-radius: 999px;
+    transform: translateX(-50%);
+    background: rgba(235, 246, 255, 0.88);
+    box-shadow: 0 8px 18px rgba(55, 104, 145, 0.16);
+    color: #3e6e91;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: 0.06em;
+}
+
+.menu-detail-content {
+    padding: clamp(1.15rem, 2.5vw, 2rem);
+    display: grid;
+    align-content: start;
+    gap: 0.9rem;
+}
+
+.menu-detail-label {
+    color: rgba(67, 104, 79, 0.76);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.menu-detail-status-label {
+    color: #4d7898;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.menu-detail-placeholder-title {
+    color: #294739;
+    font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+    line-height: 1.12;
+}
+
+.menu-detail-placeholder-copy {
+    color: rgba(52, 74, 63, 0.78);
+    line-height: 1.65;
+}
+
+.menu-detail-content .menu-showcase-stats {
+    margin: 0.3rem 0;
+    padding: 0.9rem 0;
+    border-top: 1px solid rgba(116, 145, 124, 0.18);
+    border-bottom: 1px solid rgba(116, 145, 124, 0.18);
+}
+
+.menu-detail-status {
+    width: fit-content;
+    padding: 0.65rem 1rem;
+    border: 1px solid rgba(128, 177, 211, 0.4);
+    border-radius: 999px;
+    background: linear-gradient(145deg, rgba(226, 242, 253, 0.94), rgba(195, 222, 241, 0.82));
+    box-shadow:
+        0 10px 22px rgba(66, 118, 157, 0.14),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.56);
+    color: #365f7d;
+    font-weight: 800;
 }
 
 .menu-showcase-media {

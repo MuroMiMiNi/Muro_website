@@ -1,5 +1,5 @@
 import { artworksData, getArtworkById } from "../data/artworksData.js";
-import { queueBoardData } from "../data/queueBoardData.js";
+import { queueBoardData } from "../data/queueBoardData.js?v=20260622-queue-copy";
 import { state, updateState } from "../state.js";
 
 const GALLERY_LAYOUT = "artwork-gallery";
@@ -114,6 +114,50 @@ const ABOUT_PROFILE_IMAGE = {
         en: "About me profile image"
     }
 };
+const MENU_DETAIL_COPY = {
+    zh: {
+        eyebrow: "委託項目詳情",
+        statusLabel: "目前接單狀態",
+        fullBody: {
+            title: "試營運，範例較少",
+            copy: "價格根據需求、複雜度、是否加購背景、加急等要素浮動"
+        },
+        avatar: {
+            title: "左右可切換展示範例、雙擊雞蛋動畫可回到首頁",
+            copy: "可能根據構圖而裁切，若用於跑團、遊戲對話請於委託時提出"
+        },
+        halfBody: {
+            title: "左右可切換展示範例、雙擊雞蛋動畫可回到首頁",
+            copy: "範圍為頭至臀部之上"
+        },
+        back: "返回價目表",
+        previousExample: "上一張範例",
+        nextExample: "下一張範例",
+        exampleAlt: (title, index, total) => `${title}範例 ${index}／${total}`,
+        open: title => `開啟${title}詳細頁面`
+    },
+    en: {
+        eyebrow: "Commission details",
+        statusLabel: "Current availability",
+        fullBody: {
+            title: "Full body commission details coming soon",
+            copy: "Add full body pricing, the commission process, and additional notes here."
+        },
+        avatar: {
+            title: "Avatar commission details coming soon",
+            copy: "Add avatar pricing, the commission process, and additional notes here."
+        },
+        halfBody: {
+            title: "Half body commission details coming soon",
+            copy: "Add half body pricing, the commission process, and additional notes here."
+        },
+        back: "Back to menu",
+        previousExample: "Previous example",
+        nextExample: "Next example",
+        exampleAlt: (title, index, total) => `${title} example ${index} of ${total}`,
+        open: title => `Open ${title} details`
+    }
+};
 const PAGE_BUILDERS = {
     "0-0": createAboutPosterSection,
     "0-1": createFavoriteGameTypeSection,
@@ -176,10 +220,40 @@ function createActionLink(href, label, className = "page-action") {
     return link;
 }
 
-function createMenuBadge(kind) {
-    const badge = createDiv("menu-showcase-badge");
-    badge.innerHTML = MENU_BADGE_ICONS[kind] ?? "";
-    return badge;
+function createFullBodyMenuButton(card, currentLang, onOpen) {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "menu-showcase-badge menu-showcase-badge--full-body";
+    button.innerHTML = MENU_BADGE_ICONS[card.badge] ?? "";
+    button.setAttribute("aria-label", MENU_DETAIL_COPY[currentLang].open(card.title));
+    button.addEventListener("click", () => onOpen(button));
+
+    return button;
+}
+
+function createAvatarMenuButton(card, currentLang, onOpen) {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "menu-showcase-badge menu-showcase-badge--avatar";
+    button.innerHTML = MENU_BADGE_ICONS[card.badge] ?? "";
+    button.setAttribute("aria-label", MENU_DETAIL_COPY[currentLang].open(card.title));
+    button.addEventListener("click", () => onOpen(button));
+
+    return button;
+}
+
+function createHalfBodyMenuButton(card, currentLang, onOpen) {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "menu-showcase-badge menu-showcase-badge--half-body";
+    button.innerHTML = MENU_BADGE_ICONS[card.badge] ?? "";
+    button.setAttribute("aria-label", MENU_DETAIL_COPY[currentLang].open(card.title));
+    button.addEventListener("click", () => onOpen(button));
+
+    return button;
 }
 
 function createMenuStatList(items) {
@@ -199,18 +273,25 @@ function createMenuStatList(items) {
     return list;
 }
 
-function createMenuAction(label) {
-    const action = createDiv("menu-showcase-action");
-    const copy = createTextElement("span", "menu-showcase-action-copy", label);
-    const arrow = createTextElement("span", "menu-showcase-action-arrow", ">");
-
-    action.appendChild(copy);
-    action.appendChild(arrow);
-
-    return action;
+function createFullBodyMenuStatus(label) {
+    const status = createDiv("menu-showcase-action menu-showcase-action--available menu-showcase-action--full-body");
+    status.appendChild(createTextElement("span", "menu-showcase-action-copy", label));
+    return status;
 }
 
-function createMenuShowcaseCard(card, variant) {
+function createAvatarMenuStatus(label) {
+    const status = createDiv("menu-showcase-action menu-showcase-action--available menu-showcase-action--avatar");
+    status.appendChild(createTextElement("span", "menu-showcase-action-copy", label));
+    return status;
+}
+
+function createHalfBodyMenuStatus(label) {
+    const status = createDiv("menu-showcase-action menu-showcase-action--available menu-showcase-action--half-body");
+    status.appendChild(createTextElement("span", "menu-showcase-action-copy", label));
+    return status;
+}
+
+function createMenuShowcaseCard(card, variant, createStatus, createBadgeButton) {
     const article = createDiv(`menu-showcase-card menu-showcase-card--${variant} page-card`);
     const media = createDiv(`menu-showcase-media menu-showcase-media--${variant}`);
     const frame = createDiv(`menu-showcase-mask menu-showcase-mask--${card.image.kind}`);
@@ -235,12 +316,161 @@ function createMenuShowcaseCard(card, variant) {
     media.appendChild(frame);
     media.appendChild(fade);
 
-    article.appendChild(createMenuBadge(card.badge));
+    article.appendChild(createBadgeButton(card));
     article.appendChild(media);
     article.appendChild(body);
-    article.appendChild(createMenuAction(card.action));
+    article.appendChild(createStatus(card.action));
 
     return article;
+}
+
+function createMenuDetailBackButton(label, onBack) {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "menu-detail-back";
+    button.textContent = label;
+    button.addEventListener("click", onBack);
+
+    return button;
+}
+
+function createMenuDetailCarousel(imageSources, title, currentLang, variant) {
+    const copy = MENU_DETAIL_COPY[currentLang];
+    const sources = Array.isArray(imageSources) && imageSources.length > 0 ? imageSources : [""];
+    const media = createDiv(`menu-detail-media menu-detail-media--${variant} page-card`);
+    const viewport = createDiv("menu-detail-carousel-viewport");
+    const image = document.createElement("img");
+    const previousButton = document.createElement("button");
+    const nextButton = document.createElement("button");
+    const counter = createTextElement("span", "menu-detail-carousel-counter", "");
+    let activeIndex = 0;
+
+    image.className = `menu-detail-image menu-detail-image--${variant}`;
+    image.draggable = false;
+
+    previousButton.type = "button";
+    previousButton.className = "menu-detail-carousel-button menu-detail-carousel-button--previous";
+    previousButton.setAttribute("aria-label", copy.previousExample);
+    previousButton.textContent = "‹";
+
+    nextButton.type = "button";
+    nextButton.className = "menu-detail-carousel-button menu-detail-carousel-button--next";
+    nextButton.setAttribute("aria-label", copy.nextExample);
+    nextButton.textContent = "›";
+
+    const renderActiveImage = () => {
+        image.src = sources[activeIndex];
+        image.alt = copy.exampleAlt(title, activeIndex + 1, sources.length);
+        counter.textContent = `${activeIndex + 1} / ${sources.length}`;
+    };
+
+    previousButton.addEventListener("click", () => {
+        activeIndex = (activeIndex - 1 + sources.length) % sources.length;
+        renderActiveImage();
+    });
+
+    nextButton.addEventListener("click", () => {
+        activeIndex = (activeIndex + 1) % sources.length;
+        renderActiveImage();
+    });
+
+    if (sources.length < 2) {
+        previousButton.hidden = true;
+        nextButton.hidden = true;
+    }
+
+    renderActiveImage();
+    viewport.appendChild(image);
+    media.appendChild(viewport);
+    media.appendChild(previousButton);
+    media.appendChild(nextButton);
+    media.appendChild(counter);
+    return media;
+}
+
+function createFullBodyMenuDetailPage(card, currentLang, onBack) {
+    const copy = MENU_DETAIL_COPY[currentLang];
+    const page = createDiv("menu-detail-page menu-detail-page--full-body");
+    const header = createDiv("menu-detail-header");
+    const heading = createDiv("menu-detail-heading");
+    const media = createMenuDetailCarousel(card.detailImages, card.title, currentLang, "full-body");
+    const content = createDiv("menu-detail-content page-card");
+
+    page.hidden = true;
+    page.dataset.menuDetail = "full-body";
+    heading.appendChild(createTextElement("p", "page-eyebrow", copy.eyebrow));
+    heading.appendChild(createTextElement("h2", "section-title page-title", card.title));
+    header.appendChild(heading);
+    header.appendChild(createMenuDetailBackButton(copy.back, onBack));
+
+    content.appendChild(createTextElement("p", "menu-detail-label", card.label));
+    content.appendChild(createTextElement("h3", "menu-detail-placeholder-title", copy.fullBody.title));
+    content.appendChild(createTextElement("p", "menu-detail-placeholder-copy", copy.fullBody.copy));
+    content.appendChild(createMenuStatList(card.stats));
+    content.appendChild(createTextElement("p", "menu-detail-status-label", copy.statusLabel));
+    content.appendChild(createTextElement("p", "menu-detail-status", card.action));
+
+    page.appendChild(header);
+    page.appendChild(media);
+    page.appendChild(content);
+    return page;
+}
+
+function createAvatarMenuDetailPage(card, currentLang, onBack) {
+    const copy = MENU_DETAIL_COPY[currentLang];
+    const page = createDiv("menu-detail-page menu-detail-page--avatar");
+    const header = createDiv("menu-detail-header");
+    const heading = createDiv("menu-detail-heading");
+    const media = createMenuDetailCarousel(card.detailImages, card.title, currentLang, "avatar");
+    const content = createDiv("menu-detail-content page-card");
+
+    page.hidden = true;
+    page.dataset.menuDetail = "avatar";
+    heading.appendChild(createTextElement("p", "page-eyebrow", copy.eyebrow));
+    heading.appendChild(createTextElement("h2", "section-title page-title", card.title));
+    header.appendChild(heading);
+    header.appendChild(createMenuDetailBackButton(copy.back, onBack));
+
+    content.appendChild(createTextElement("p", "menu-detail-label", card.label));
+    content.appendChild(createTextElement("h3", "menu-detail-placeholder-title", copy.avatar.title));
+    content.appendChild(createTextElement("p", "menu-detail-placeholder-copy", copy.avatar.copy));
+    content.appendChild(createMenuStatList(card.stats));
+    content.appendChild(createTextElement("p", "menu-detail-status-label", copy.statusLabel));
+    content.appendChild(createTextElement("p", "menu-detail-status", card.action));
+
+    page.appendChild(header);
+    page.appendChild(media);
+    page.appendChild(content);
+    return page;
+}
+
+function createHalfBodyMenuDetailPage(card, currentLang, onBack) {
+    const copy = MENU_DETAIL_COPY[currentLang];
+    const page = createDiv("menu-detail-page menu-detail-page--half-body");
+    const header = createDiv("menu-detail-header");
+    const heading = createDiv("menu-detail-heading");
+    const media = createMenuDetailCarousel(card.detailImages, card.title, currentLang, "half-body");
+    const content = createDiv("menu-detail-content page-card");
+
+    page.hidden = true;
+    page.dataset.menuDetail = "half-body";
+    heading.appendChild(createTextElement("p", "page-eyebrow", copy.eyebrow));
+    heading.appendChild(createTextElement("h2", "section-title page-title", card.title));
+    header.appendChild(heading);
+    header.appendChild(createMenuDetailBackButton(copy.back, onBack));
+
+    content.appendChild(createTextElement("p", "menu-detail-label", card.label));
+    content.appendChild(createTextElement("h3", "menu-detail-placeholder-title", copy.halfBody.title));
+    content.appendChild(createTextElement("p", "menu-detail-placeholder-copy", copy.halfBody.copy));
+    content.appendChild(createMenuStatList(card.stats));
+    content.appendChild(createTextElement("p", "menu-detail-status-label", copy.statusLabel));
+    content.appendChild(createTextElement("p", "menu-detail-status", card.action));
+
+    page.appendChild(header);
+    page.appendChild(media);
+    page.appendChild(content);
+    return page;
 }
 
 function createHeaderBlock(context, eyebrowText = context.category.name[context.currentLang]) {
@@ -862,7 +1092,7 @@ function createCommissionGuideSection(context) {
         ? {
             title: "委託須知",
             paragraphs: [
-                "確認委託即默認買家成年&詳閱下列注意事項",
+                "確認委託即默認買家成年&詳閱下列注意事項\n討論>付款&amp;排單>線稿確認>完稿確認>提供電子信箱完成委託",
                 "不接受一切難以理解之理由取消委託，付款後除我方問題外恕不退款\n<span style=\"color: #d92d20; font-weight: 800;\">週日不進行繪製作業，因此工期不包含週日的天數</span>",
                 "✎請務必以你覺得最醜的那張圖來當作參考\n✎因要素呈現不易，成圖會有適當簡化\n✎硬性要求與色票相同者請繞道\n✎一律只有灰色背景，如需簡易背景請加購（+NT$10）\n✎繪製完成後會上水印展示\n✎驚喜包除設定畫錯之外，完稿限修改一次，第二次及以上需加價",
                 "♠︎非商價格 - 如價目表定價所示\n♥︎商用價格 - 定價X2\n♦︎非商用買斷價格 - 定價X3\n♣︎商用買斷價格 - 定價X5\nꕤ繪師著作人格權以外買斷價格 - 定價X10"
@@ -871,7 +1101,7 @@ function createCommissionGuideSection(context) {
         : {
             title: "Commission Guide",
             paragraphs: [
-                "Confirming a commission means the buyer is an adult and has read the notes below.",
+                "Confirming a commission means the buyer is an adult and has read the notes below.\nDiscussion > Payment &amp; queue placement > Line art approval > Final artwork approval > Provide an email address to complete the commission",
                 "Cancellation is not accepted for vague or unreasonable reasons. After payment, refunds are only available for issues on my side.\n<span style=\"color: #d92d20; font-weight: 800;\">No drawing work is done on Sundays, so turnaround time does not include Sundays.</span>",
                 "Please use the ugliest reference image you have as your main reference.\nSome design elements may be simplified if they are difficult to render clearly.\nIf you require exact color matching to a swatch, this service is not a good fit.\nThe default background is gray. A simple background can be added for +NT$10.\nFinished artwork may be displayed with a watermark.\nFor surprise packs, revisions are limited to one after final delivery unless the setting was drawn incorrectly. A second revision or more will incur an extra charge.",
                 "♠ Non-commercial price - listed menu price\n♥ Commercial price - base price x2\n♦ Non-commercial buyout - base price x3\n♣ Commercial buyout - base price x5\nꕤ Buyout excluding the artist's moral rights - base price x10"
@@ -920,9 +1150,23 @@ function getMenuContent(currentLang) {
 }
 
 function getMenuShowcaseContent(currentLang) {
-    const commissionImageVersion = "20260606-1";
-    const fullExample = `./assets/commission/ful-body/full-body-example.png?v=${commissionImageVersion}`;
-    const halfExample = `./assets/commission/half-body/half-body-example.png?v=${commissionImageVersion}`;
+    const commissionImageVersion = "20260622-1";
+    const fullBodyDetailImages = [
+        `./assets/commission/ful-body/full-body-commission-example-01.png?v=${commissionImageVersion}`
+    ];
+    const avatarDetailImages = [
+        `./assets/commission/Avatar%20Commission/avatar-commission-example-01.png?v=${commissionImageVersion}`,
+        `./assets/commission/Avatar%20Commission/avatar-commission-example-02.png?v=${commissionImageVersion}`,
+        `./assets/commission/Avatar%20Commission/avatar-commission-example-03.png?v=${commissionImageVersion}`,
+        `./assets/commission/Avatar%20Commission/avatar-commission-example-04.png?v=${commissionImageVersion}`
+    ];
+    const halfBodyDetailImages = [
+        `./assets/commission/half-body/half-body-commission-example-01.png?v=${commissionImageVersion}`,
+        `./assets/commission/half-body/half-body-commission-example-02.png?v=${commissionImageVersion}`,
+        `./assets/commission/half-body/half-body-commission-example-03.png?v=${commissionImageVersion}`
+    ];
+    const fullExample = fullBodyDetailImages[0];
+    const halfExample = halfBodyDetailImages[0];
     const iconExample = artworksData[1]?.src ?? artworksData[0]?.src ?? fullExample;
 
     if (currentLang === "zh") {
@@ -938,7 +1182,8 @@ function getMenuShowcaseContent(currentLang) {
                     { icon: "clock", text: "工期 14 天" },
                     { icon: "file", text: "像素難呈現的要素會簡化" }
                 ],
-                action: "查看詳情",
+                action: "尚可接取：2單",
+                detailImages: fullBodyDetailImages,
                 image: {
                     src: fullExample,
                     alt: "全身委託展示圖",
@@ -954,7 +1199,8 @@ function getMenuShowcaseContent(currentLang) {
                     { icon: "tag", text: "頭像 NT$ 500" },
                     { icon: "clock", text: "工期 7 天" }
                 ],
-                action: "查看詳情",
+                action: "長期開放",
+                detailImages: avatarDetailImages,
                 image: {
                     src: iconExample,
                     alt: "頭像委託展示圖",
@@ -970,7 +1216,8 @@ function getMenuShowcaseContent(currentLang) {
                     { icon: "clock", text: "工期 7-14 天" },
                     { icon: "user", text: "範圍腰部以上" }
                 ],
-                action: "查看詳情",
+                action: "尚可接取：2單",
+                detailImages: halfBodyDetailImages,
                 image: {
                     src: halfExample,
                     alt: "半身委託展示圖",
@@ -992,7 +1239,8 @@ function getMenuShowcaseContent(currentLang) {
                     { icon: "clock", text: "Turnaround: 14 days" },
                     { icon: "file", text: "Elements that are hard to express in pixel style may be simplified" }
             ],
-            action: "View details",
+            action: "2 slots available",
+            detailImages: fullBodyDetailImages,
             image: {
                 src: fullExample,
                 alt: "Full body commission preview",
@@ -1008,7 +1256,8 @@ function getMenuShowcaseContent(currentLang) {
                 { icon: "tag", text: "Avatar NT$ 500" },
                     { icon: "clock", text: "Turnaround: 7 days" }
             ],
-            action: "View details",
+            action: "Always open",
+            detailImages: avatarDetailImages,
             image: {
                 src: iconExample,
                     alt: "Avatar commission preview",
@@ -1024,7 +1273,8 @@ function getMenuShowcaseContent(currentLang) {
                     { icon: "clock", text: "Turnaround: 7-14 days" },
                     { icon: "user", text: "Waist-up composition" }
             ],
-            action: "View details",
+            action: "2 slots available",
+            detailImages: halfBodyDetailImages,
             image: {
                 src: halfExample,
                 alt: "Half body commission preview",
@@ -1039,15 +1289,72 @@ function createMenuSection(context) {
     const shell = createDiv("page-shell menu-shell");
     const menuContent = getMenuShowcaseContent(context.currentLang);
     const sideStack = createDiv("menu-side-stack");
+    const detailHost = createDiv("menu-detail-host");
+    const detailPages = new Map();
+    let lastTrigger = null;
+
+    detailHost.hidden = true;
+
+    const closeDetail = () => {
+        detailPages.forEach(page => {
+            page.hidden = true;
+        });
+        detailHost.hidden = true;
+        shell.hidden = false;
+        lastTrigger?.focus();
+    };
+
+    const openDetail = (detailId, trigger) => {
+        const targetPage = detailPages.get(detailId);
+
+        if (!targetPage) {
+            return;
+        }
+
+        lastTrigger = trigger;
+        shell.hidden = true;
+        detailHost.hidden = false;
+        detailPages.forEach(page => {
+            page.hidden = page !== targetPage;
+        });
+        targetPage.querySelector(".menu-detail-back")?.focus();
+    };
+
+    const fullBodyPage = createFullBodyMenuDetailPage(menuContent.offer, context.currentLang, closeDetail);
+    const avatarPage = createAvatarMenuDetailPage(menuContent.details, context.currentLang, closeDetail);
+    const halfBodyPage = createHalfBodyMenuDetailPage(menuContent.notes, context.currentLang, closeDetail);
+
+    detailPages.set("full-body", fullBodyPage);
+    detailPages.set("avatar", avatarPage);
+    detailPages.set("half-body", halfBodyPage);
+    detailHost.appendChild(fullBodyPage);
+    detailHost.appendChild(avatarPage);
+    detailHost.appendChild(halfBodyPage);
 
     shell.appendChild(createHeaderBlock(context, "Commission menu"));
 
-    shell.appendChild(createMenuShowcaseCard(menuContent.offer, "full"));
-    sideStack.appendChild(createMenuShowcaseCard(menuContent.details, "icon"));
-    sideStack.appendChild(createMenuShowcaseCard(menuContent.notes, "half"));
+    shell.appendChild(createMenuShowcaseCard(
+        menuContent.offer,
+        "full",
+        createFullBodyMenuStatus,
+        card => createFullBodyMenuButton(card, context.currentLang, trigger => openDetail("full-body", trigger))
+    ));
+    sideStack.appendChild(createMenuShowcaseCard(
+        menuContent.details,
+        "icon",
+        createAvatarMenuStatus,
+        card => createAvatarMenuButton(card, context.currentLang, trigger => openDetail("avatar", trigger))
+    ));
+    sideStack.appendChild(createMenuShowcaseCard(
+        menuContent.notes,
+        "half",
+        createHalfBodyMenuStatus,
+        card => createHalfBodyMenuButton(card, context.currentLang, trigger => openDetail("half-body", trigger))
+    ));
 
     shell.appendChild(sideStack);
     section.appendChild(shell);
+    section.appendChild(detailHost);
 
     return section;
 }
@@ -1134,6 +1441,44 @@ function createQueueBoardCompletedCard(work, column) {
     return article;
 }
 
+function createQueueBoardTable(tableData) {
+    const panel = createDiv("queue-board-table-panel");
+    const table = document.createElement("table");
+    const head = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    const body = document.createElement("tbody");
+    const rows = tableData.rows ?? [];
+    const rowCount = Math.max(tableData.rowSlots ?? 0, rows.length);
+
+    table.className = "queue-board-table";
+    table.setAttribute("aria-label", tableData.ariaLabel);
+
+    tableData.headers.forEach(header => {
+        const cell = document.createElement("th");
+        cell.scope = "col";
+        cell.textContent = header.label;
+        headRow.appendChild(cell);
+    });
+
+    Array.from({ length: rowCount }, (_, index) => rows[index] ?? {}).forEach(row => {
+        const tableRow = document.createElement("tr");
+
+        tableData.headers.forEach(header => {
+            const cell = document.createElement("td");
+            cell.textContent = row[header.key] ?? "";
+            tableRow.appendChild(cell);
+        });
+
+        body.appendChild(tableRow);
+    });
+
+    head.appendChild(headRow);
+    table.appendChild(head);
+    table.appendChild(body);
+    panel.appendChild(table);
+    return panel;
+}
+
 function createQueueBoardColumn(column) {
     const itemCount = column.completedWorks ? getQueueBoardCompletedWorks(column).length : column.items.length;
     const scrollableClass = column.scrollable ? " queue-board-column--scrollable" : "";
@@ -1211,9 +1556,13 @@ function createQueueBoardSection(context) {
         summary.appendChild(createQueueBoardSummaryCard(item));
     });
 
-    queueContent.columns.forEach(column => {
-        grid.appendChild(createQueueBoardColumn(column));
-    });
+    const completedColumn = queueContent.columns.find(column => column.id === "completed");
+
+    grid.appendChild(createQueueBoardTable(queueContent.table));
+
+    if (completedColumn) {
+        grid.appendChild(createQueueBoardColumn(completedColumn));
+    }
 
     shell.appendChild(hero);
     shell.appendChild(summary);

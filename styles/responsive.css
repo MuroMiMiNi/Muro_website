@@ -1497,6 +1497,7 @@ body.compact-layout {
     }
 
     .queue-board-column,
+    .queue-board-table-panel,
     .queue-board-hero-copy,
     .queue-board-notice,
     .queue-board-footer {
@@ -1527,5 +1528,58 @@ body.compact-layout {
 @media (hover: none) and (max-width: 560px), (pointer: coarse) and (max-width: 560px) {
     .gallery-bubble {
         --gallery-mobile-thumb-size: clamp(3.9rem, 18vw, 4.65rem);
+    }
+}
+
+@media (max-width: 768px),
+    (hover: none) and (max-width: 1180px),
+    (pointer: coarse) and (max-width: 1180px) {
+    .menu-showcase-card--icon > .menu-showcase-badge {
+        left: 1rem;
+        bottom: 1.1rem;
+    }
+
+    .menu-showcase-card--icon .menu-showcase-action {
+        width: calc(100% - 3.75rem);
+        margin-left: auto;
+    }
+
+    .menu-detail-page {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto minmax(12rem, 42vh) auto;
+        padding: 0.1rem 0.25rem 0.1rem 0.1rem;
+    }
+
+    .menu-detail-header {
+        grid-column: 1;
+        align-items: center;
+    }
+
+    .menu-detail-header .page-title {
+        font-size: clamp(1.65rem, 7vw, 2.2rem);
+    }
+
+    .menu-detail-back {
+        min-height: 2.65rem;
+        padding: 0.6rem 0.85rem;
+        flex: 0 0 auto;
+    }
+
+    .menu-detail-content {
+        overflow: visible;
+    }
+
+    .menu-detail-carousel-button {
+        width: 2.65rem;
+        height: 2.65rem;
+        font-size: 1.75rem;
+    }
+
+    .menu-detail-carousel-button--previous {
+        left: 0.65rem;
+    }
+
+    .menu-detail-carousel-button--next {
+        right: 0.65rem;
     }
 }
