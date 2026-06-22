@@ -14,20 +14,20 @@
       },
       {
         "label": "目前排到",
-        "value": "--",
+        "value": "A-01",
         "note": "--",
         "tone": "focus"
       },
       {
         "label": "預估等待",
-        "value": "約 --",
+        "value": "約 28 天",
         "note": "依項目與修改次數調整",
         "tone": "warm"
       },
       {
         "label": "最後更新",
         "value": "2026.06.22",
-        "note": "今天上午 01:00 更新",
+        "note": "今天下午 16:00 更新",
         "tone": "neutral"
       }
     ],
@@ -54,22 +54,28 @@
       ],
       "rows": [
         {
-          "owner": "123",
-          "item": "456",
-          "progress": "466",
-          "turnaround": "464"
+          "owner": "黃**",
+          "item": "A-01",
+          "progress": "進行中",
+          "turnaround": "7天"
         },
         {
-          "owner": "243",
-          "item": "43",
-          "progress": "53453",
-          "turnaround": "453"
+          "owner": "Xi* ***",
+          "item": "A-02",
+          "progress": "未開始",
+          "turnaround": "7天"
         },
         {
-          "owner": "45345",
-          "item": "343",
-          "progress": "343545",
-          "turnaround": "435"
+          "owner": "蘋**",
+          "item": "A-03",
+          "progress": "未開始",
+          "turnaround": "7天"
+        },
+        {
+          "owner": "虹**",
+          "item": "A-04",
+          "progress": "未開始",
+          "turnaround": "7天"
         }
       ]
     },
