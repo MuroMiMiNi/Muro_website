@@ -20,14 +20,14 @@
       },
       {
         "label": "預估等待",
-        "value": "約 28 天",
-        "note": "依項目與修改次數調整",
+        "value": "約 112 天",
+        "note": "依項目與修改次數調整\n提前完成則天數遞進",
         "tone": "warm"
       },
       {
         "label": "最後更新",
         "value": "2026.06.22",
-        "note": "今天下午 16:00 更新",
+        "note": "今天下午 20:00 更新",
         "tone": "neutral"
       }
     ],
@@ -55,19 +55,19 @@
       "rows": [
         {
           "owner": "黃**",
-          "item": "A-01",
+          "item": "S-01",
           "progress": "進行中",
           "turnaround": "7天"
         },
         {
           "owner": "Xi* ***",
-          "item": "A-02",
+          "item": "S-02",
           "progress": "未開始",
           "turnaround": "7天"
         },
         {
           "owner": "蘋**",
-          "item": "A-03",
+          "item": "S-03",
           "progress": "未開始",
           "turnaround": "7天"
         },
@@ -76,6 +76,36 @@
           "item": "A-04",
           "progress": "未開始",
           "turnaround": "7天"
+        },
+        {
+          "owner": "嗣**",
+          "item": "A-05",
+          "progress": "未付款",
+          "turnaround": "14天"
+        },
+        {
+          "owner": "緋**",
+          "item": "S-06",
+          "progress": "未付款",
+          "turnaround": "7天"
+        },
+        {
+          "owner": "犬** *** ***",
+          "item": "S-07",
+          "progress": "未付款",
+          "turnaround": "7天"
+        },
+        {
+          "owner": "淺**",
+          "item": "A-08",
+          "progress": "未付款",
+          "turnaround": "21天"
+        },
+        {
+          "owner": "**凜",
+          "item": "S-09",
+          "progress": "未付款",
+          "turnaround": "21天"
         }
       ]
     },
@@ -92,7 +122,7 @@
     "footer": {
       "title": "注意事項",
       "points": [
-        "項目代號：頭像為 A 、半身為 H 、全身為 F。加急會在工期使用 W 代稱",
+        "項目代號：頭像為 A 、頭像驚喜包為 S、半身為 H 、全身為 F。加急會在工期使用 W 代稱",
         "驚喜包一鍵出圖，除設定畫錯以外只可「小改一次」",
         "價格隨複雜度、要求、調整次數、加急、背景等要素浮動"
       ]
