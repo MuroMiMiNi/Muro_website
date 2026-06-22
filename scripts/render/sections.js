@@ -1,5 +1,8 @@
 import { artworksData, getArtworkById } from "../data/artworksData.js";
-import { queueBoardData } from "../data/queueBoardData.js?v=20260622-queue-copy";
+import {
+    queueBoardData,
+    validateQueueBoardData
+} from "../data/queueBoardData.js?v=20260622-local-json-editor";
 import { state, updateState } from "../state.js";
 
 const GALLERY_LAYOUT = "artwork-gallery";
@@ -156,6 +159,77 @@ const MENU_DETAIL_COPY = {
         nextExample: "Next example",
         exampleAlt: (title, index, total) => `${title} example ${index} of ${total}`,
         open: title => `Open ${title} details`
+    }
+};
+const QUEUE_BOARD_EDITOR_PASSWORD = "0214";
+const QUEUE_BOARD_EDITOR_COPY = {
+    zh: {
+        open: "編輯排單資料",
+        title: "排單資料編輯器",
+        description: "直接填寫欄位，系統會自動產生 JSON。編輯英文內容時，請先將網站切換為 EN。",
+        pageInfo: "頁面資訊",
+        summary: "摘要卡片",
+        tableHeaders: "表格欄名",
+        queueRows: "委託資料",
+        completed: "已完成區塊",
+        notes: "注意事項",
+        pageTitle: "頁面標題",
+        eyebrow: "英文眉標",
+        pageDescription: "頁面說明",
+        announcementTitle: "公告標題",
+        announcementBody: "公告內容",
+        label: "標籤",
+        value: "主要數值",
+        note: "補充文字",
+        completedLabel: "區塊標題",
+        completedHint: "區塊說明",
+        footerTitle: "注意事項標題",
+        addRow: "新增委託",
+        removeRow: "刪除",
+        noRows: "目前沒有委託資料，可按「新增委託」開始填寫。",
+        passwordLabel: "存檔密碼",
+        passwordPlaceholder: "請輸入密碼",
+        save: "驗證並存檔",
+        cancel: "取消",
+        invalidPassword: "密碼錯誤，無法存檔。",
+        invalidJson: "JSON 格式或資料結構不正確。",
+        saved: "JSON 已覆寫，頁面即將重新載入。",
+        downloaded: "JSON 已下載，請用它替換專案內的 queueBoardData.json。",
+        cancelled: "已取消存檔。"
+    },
+    en: {
+        open: "Edit queue data",
+        title: "Queue Data Editor",
+        description: "Fill in the fields and the site will generate the JSON automatically. Switch the site to ZH to edit Chinese content.",
+        pageInfo: "Page information",
+        summary: "Summary cards",
+        tableHeaders: "Table headers",
+        queueRows: "Commission entries",
+        completed: "Completed section",
+        notes: "Notes",
+        pageTitle: "Page title",
+        eyebrow: "Eyebrow",
+        pageDescription: "Page description",
+        announcementTitle: "Notice title",
+        announcementBody: "Notice content",
+        label: "Label",
+        value: "Main value",
+        note: "Supporting text",
+        completedLabel: "Section title",
+        completedHint: "Section description",
+        footerTitle: "Notes title",
+        addRow: "Add commission",
+        removeRow: "Remove",
+        noRows: "No commission entries yet. Select “Add commission” to begin.",
+        passwordLabel: "Save password",
+        passwordPlaceholder: "Enter password",
+        save: "Verify and save",
+        cancel: "Cancel",
+        invalidPassword: "Incorrect password. The file was not saved.",
+        invalidJson: "The JSON format or data structure is invalid.",
+        saved: "The JSON file was overwritten. The page will reload shortly.",
+        downloaded: "The JSON file was downloaded. Replace the project's queueBoardData.json with it.",
+        cancelled: "Save cancelled."
     }
 };
 const PAGE_BUILDERS = {
@@ -1441,6 +1515,381 @@ function createQueueBoardCompletedCard(work, column) {
     return article;
 }
 
+function downloadQueueBoardJson(data) {
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "queueBoardData.json";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+}
+
+async function persistQueueBoardJson(data) {
+    if (typeof window.showSaveFilePicker !== "function") {
+        downloadQueueBoardJson(data);
+        return "downloaded";
+    }
+
+    const handle = await window.showSaveFilePicker({
+        suggestedName: "queueBoardData.json",
+        types: [
+            {
+                description: "JSON file",
+                accept: { "application/json": [".json"] }
+            }
+        ]
+    });
+    const writable = await handle.createWritable();
+
+    await writable.write(JSON.stringify(data, null, 2));
+    await writable.close();
+    return "written";
+}
+
+function isLocalQueueBoardEditorEnvironment() {
+    return window.location.protocol === "file:" ||
+        ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+}
+
+function createQueueBoardEditor(currentLang) {
+    const copy = QUEUE_BOARD_EDITOR_COPY[currentLang];
+    const openButton = document.createElement("button");
+    const dialog = document.createElement("dialog");
+    const panel = createDiv("queue-board-editor-panel");
+    const heading = createDiv("queue-board-editor-heading");
+    const form = createDiv("queue-board-editor-form");
+    const passwordLabel = document.createElement("label");
+    const passwordInput = document.createElement("input");
+    const actions = createDiv("queue-board-editor-actions");
+    const cancelButton = document.createElement("button");
+    const saveButton = document.createElement("button");
+    const status = createTextElement("p", "queue-board-editor-status", "");
+    let fieldRefs = null;
+
+    const createField = (labelText, value, { multiline = false } = {}) => {
+        const label = document.createElement("label");
+        const input = multiline ? document.createElement("textarea") : document.createElement("input");
+
+        label.className = "queue-board-editor-label";
+        label.appendChild(createTextElement("span", "queue-board-editor-label-copy", labelText));
+        input.className = multiline
+            ? "queue-board-editor-input queue-board-editor-input--multiline"
+            : "queue-board-editor-input";
+        input.value = value ?? "";
+        label.appendChild(input);
+
+        return { element: label, input };
+    };
+
+    const createEditorSection = title => {
+        const section = createDiv("queue-board-editor-section");
+        section.appendChild(createTextElement("h3", "queue-board-editor-section-title", title));
+        return section;
+    };
+
+    const renderVisualForm = () => {
+        const content = queueBoardData[currentLang];
+        const completedColumn = content.columns.find(column => column.id === "completed");
+        const refs = {
+            page: {},
+            summary: [],
+            headers: [],
+            rows: [],
+            completed: {},
+            footer: {}
+        };
+
+        form.innerHTML = "";
+
+        const pageSection = createEditorSection(copy.pageInfo);
+        const pageGrid = createDiv("queue-board-editor-fields queue-board-editor-fields--page");
+        const pageFields = [
+            ["pageTitle", copy.pageTitle, content.pageTitle, false],
+            ["eyebrow", copy.eyebrow, content.eyebrow, false],
+            ["description", copy.pageDescription, content.description, true],
+            ["announcementTitle", copy.announcementTitle, content.announcementTitle, false],
+            ["announcementBody", copy.announcementBody, content.announcementBody, true]
+        ];
+
+        pageFields.forEach(([key, label, value, multiline]) => {
+            const field = createField(label, value, { multiline });
+            refs.page[key] = field.input;
+            pageGrid.appendChild(field.element);
+        });
+        pageSection.appendChild(pageGrid);
+        form.appendChild(pageSection);
+
+        const summarySection = createEditorSection(copy.summary);
+        const summaryGrid = createDiv("queue-board-editor-summary-grid");
+
+        content.summary.forEach((item, index) => {
+            const card = createDiv("queue-board-editor-summary-card");
+            const labelField = createField(copy.label, item.label);
+            const valueField = createField(copy.value, item.value);
+            const noteField = createField(copy.note, item.note, { multiline: true });
+
+            card.appendChild(createTextElement("p", "queue-board-editor-card-index", String(index + 1).padStart(2, "0")));
+            card.appendChild(labelField.element);
+            card.appendChild(valueField.element);
+            card.appendChild(noteField.element);
+            refs.summary.push({
+                label: labelField.input,
+                value: valueField.input,
+                note: noteField.input
+            });
+            summaryGrid.appendChild(card);
+        });
+        summarySection.appendChild(summaryGrid);
+        form.appendChild(summarySection);
+
+        const headerSection = createEditorSection(copy.tableHeaders);
+        const headerGrid = createDiv("queue-board-editor-fields queue-board-editor-fields--headers");
+
+        content.table.headers.forEach((header, index) => {
+            const field = createField(`${index + 1}`, header.label);
+            refs.headers.push(field.input);
+            headerGrid.appendChild(field.element);
+        });
+        headerSection.appendChild(headerGrid);
+        form.appendChild(headerSection);
+
+        const rowsSection = createEditorSection(copy.queueRows);
+        const rowsToolbar = createDiv("queue-board-editor-rows-toolbar");
+        const rowsList = createDiv("queue-board-editor-rows");
+        const emptyMessage = createTextElement("p", "queue-board-editor-empty", copy.noRows);
+        const addRowButton = document.createElement("button");
+
+        addRowButton.type = "button";
+        addRowButton.className = "queue-board-editor-add-row";
+        addRowButton.textContent = copy.addRow;
+        rowsToolbar.appendChild(addRowButton);
+        rowsSection.appendChild(rowsToolbar);
+        rowsSection.appendChild(emptyMessage);
+        rowsSection.appendChild(rowsList);
+
+        const refreshRows = () => {
+            emptyMessage.hidden = refs.rows.length > 0;
+            refs.rows.forEach((entry, index) => {
+                entry.index.textContent = String(index + 1).padStart(2, "0");
+            });
+        };
+
+        const addRow = (row = {}) => {
+            const rowCard = createDiv("queue-board-editor-row-card");
+            const rowHeading = createDiv("queue-board-editor-row-heading");
+            const rowIndex = createTextElement("span", "queue-board-editor-row-index", "");
+            const removeButton = document.createElement("button");
+            const rowGrid = createDiv("queue-board-editor-fields queue-board-editor-fields--row");
+            const inputs = {};
+            const entry = { element: rowCard, index: rowIndex, inputs };
+
+            removeButton.type = "button";
+            removeButton.className = "queue-board-editor-remove-row";
+            removeButton.textContent = copy.removeRow;
+            rowHeading.appendChild(rowIndex);
+            rowHeading.appendChild(removeButton);
+            rowCard.appendChild(rowHeading);
+
+            content.table.headers.forEach(header => {
+                const field = createField(header.label, row[header.key] ?? "");
+                inputs[header.key] = field.input;
+                rowGrid.appendChild(field.element);
+            });
+
+            removeButton.addEventListener("click", () => {
+                const entryIndex = refs.rows.indexOf(entry);
+
+                if (entryIndex >= 0) {
+                    refs.rows.splice(entryIndex, 1);
+                }
+                rowCard.remove();
+                refreshRows();
+            });
+
+            rowCard.appendChild(rowGrid);
+            refs.rows.push(entry);
+            rowsList.appendChild(rowCard);
+            refreshRows();
+        };
+
+        content.table.rows.forEach(addRow);
+        addRowButton.addEventListener("click", () => addRow());
+        refreshRows();
+        form.appendChild(rowsSection);
+
+        const completedSection = createEditorSection(copy.completed);
+        const completedGrid = createDiv("queue-board-editor-fields");
+        const completedLabel = createField(copy.completedLabel, completedColumn?.label);
+        const completedHint = createField(copy.completedHint, completedColumn?.hint, { multiline: true });
+
+        refs.completed.label = completedLabel.input;
+        refs.completed.hint = completedHint.input;
+        completedGrid.appendChild(completedLabel.element);
+        completedGrid.appendChild(completedHint.element);
+        completedSection.appendChild(completedGrid);
+        form.appendChild(completedSection);
+
+        const footerSection = createEditorSection(copy.notes);
+        const footerGrid = createDiv("queue-board-editor-fields");
+        const footerTitle = createField(copy.footerTitle, content.footer.title);
+        const footerPointInputs = [];
+
+        footerGrid.appendChild(footerTitle.element);
+        content.footer.points.forEach((point, index) => {
+            const field = createField(`${copy.note} ${index + 1}`, point, { multiline: true });
+            footerPointInputs.push(field.input);
+            footerGrid.appendChild(field.element);
+        });
+        refs.footer.title = footerTitle.input;
+        refs.footer.points = footerPointInputs;
+        footerSection.appendChild(footerGrid);
+        form.appendChild(footerSection);
+
+        fieldRefs = refs;
+    };
+
+    openButton.type = "button";
+    openButton.className = "queue-board-editor-open";
+    openButton.textContent = copy.open;
+
+    dialog.className = "queue-board-editor-dialog";
+    dialog.setAttribute("aria-labelledby", "queueBoardEditorTitle");
+
+    heading.appendChild(createTextElement("h2", "queue-board-editor-title", copy.title));
+    heading.firstElementChild.id = "queueBoardEditorTitle";
+    heading.appendChild(createTextElement("p", "queue-board-editor-description", copy.description));
+
+    passwordLabel.className = "queue-board-editor-label";
+    passwordLabel.appendChild(createTextElement("span", "queue-board-editor-label-copy", copy.passwordLabel));
+    passwordInput.className = "queue-board-editor-input queue-board-editor-password";
+    passwordInput.type = "password";
+    passwordInput.placeholder = copy.passwordPlaceholder;
+    passwordInput.autocomplete = "current-password";
+    passwordLabel.appendChild(passwordInput);
+
+    cancelButton.type = "button";
+    cancelButton.className = "queue-board-editor-button queue-board-editor-button--cancel";
+    cancelButton.textContent = copy.cancel;
+
+    saveButton.type = "button";
+    saveButton.className = "queue-board-editor-button queue-board-editor-button--save";
+    saveButton.textContent = copy.save;
+
+    status.setAttribute("aria-live", "polite");
+    actions.appendChild(cancelButton);
+    actions.appendChild(saveButton);
+    panel.appendChild(heading);
+    panel.appendChild(form);
+    panel.appendChild(passwordLabel);
+    panel.appendChild(status);
+    panel.appendChild(actions);
+    dialog.appendChild(panel);
+
+    const closeDialog = () => {
+        if (typeof dialog.close === "function") {
+            dialog.close();
+        } else {
+            dialog.removeAttribute("open");
+        }
+    };
+
+    openButton.addEventListener("click", () => {
+        renderVisualForm();
+        passwordInput.value = "";
+        status.textContent = "";
+        status.classList.remove("is-error", "is-success");
+
+        if (typeof dialog.showModal === "function") {
+            dialog.showModal();
+        } else {
+            dialog.setAttribute("open", "");
+        }
+    });
+
+    cancelButton.addEventListener("click", closeDialog);
+    dialog.addEventListener("cancel", event => {
+        event.preventDefault();
+        closeDialog();
+    });
+
+    saveButton.addEventListener("click", async () => {
+        status.classList.remove("is-error", "is-success");
+
+        if (passwordInput.value !== QUEUE_BOARD_EDITOR_PASSWORD) {
+            status.textContent = copy.invalidPassword;
+            status.classList.add("is-error");
+            passwordInput.focus();
+            return;
+        }
+
+        try {
+            const nextData = JSON.parse(JSON.stringify(queueBoardData));
+            const target = nextData[currentLang];
+            const completedColumn = target.columns.find(column => column.id === "completed");
+
+            target.pageTitle = fieldRefs.page.pageTitle.value.trim();
+            target.eyebrow = fieldRefs.page.eyebrow.value.trim();
+            target.description = fieldRefs.page.description.value.trim();
+            target.announcementTitle = fieldRefs.page.announcementTitle.value.trim();
+            target.announcementBody = fieldRefs.page.announcementBody.value.trim();
+
+            target.summary.forEach((item, index) => {
+                item.label = fieldRefs.summary[index].label.value.trim();
+                item.value = fieldRefs.summary[index].value.value.trim();
+                item.note = fieldRefs.summary[index].note.value.trim();
+            });
+
+            target.table.headers.forEach((header, index) => {
+                header.label = fieldRefs.headers[index].value.trim();
+            });
+            target.table.rows = fieldRefs.rows
+                .map(entry => Object.fromEntries(
+                    target.table.headers.map(header => [header.key, entry.inputs[header.key].value.trim()])
+                ))
+                .filter(row => Object.values(row).some(Boolean));
+
+            if (completedColumn) {
+                completedColumn.label = fieldRefs.completed.label.value.trim();
+                completedColumn.hint = fieldRefs.completed.hint.value.trim();
+            }
+
+            target.footer.title = fieldRefs.footer.title.value.trim();
+            target.footer.points = fieldRefs.footer.points
+                .map(input => input.value.trim())
+                .filter(Boolean);
+
+            if (!validateQueueBoardData(nextData)) {
+                throw new Error("Invalid queue board data.");
+            }
+
+            const result = await persistQueueBoardJson(nextData);
+
+            status.textContent = result === "written" ? copy.saved : copy.downloaded;
+            status.classList.add("is-success");
+
+            if (result === "written") {
+                window.setTimeout(() => window.location.reload(), 700);
+            }
+        } catch (error) {
+            if (error?.name === "AbortError") {
+                status.textContent = copy.cancelled;
+                return;
+            }
+
+            console.warn("Unable to save queue board JSON.", error);
+            status.textContent = copy.invalidJson;
+            status.classList.add("is-error");
+        }
+    });
+
+    return { openButton, dialog };
+}
+
 function createQueueBoardTable(tableData) {
     const panel = createDiv("queue-board-table-panel");
     const table = document.createElement("table");
@@ -1542,12 +1991,18 @@ function createQueueBoardSection(context) {
     const summary = createDiv("queue-board-summary");
     const grid = createDiv("queue-board-grid");
     const headerContext = { ...context, title: queueContent.pageTitle };
+    const editor = isLocalQueueBoardEditorEnvironment()
+        ? createQueueBoardEditor(context.currentLang)
+        : null;
 
     heroCopy.appendChild(createHeaderBlock(headerContext, queueContent.eyebrow));
     heroCopy.appendChild(createTextElement("p", "queue-board-description", queueContent.description));
 
     notice.appendChild(createTextElement("p", "queue-board-notice-tag", queueContent.announcementTitle));
     notice.appendChild(createTextElement("p", "queue-board-notice-body", queueContent.announcementBody));
+    if (editor) {
+        notice.appendChild(editor.openButton);
+    }
 
     hero.appendChild(heroCopy);
     hero.appendChild(notice);
@@ -1569,6 +2024,9 @@ function createQueueBoardSection(context) {
     shell.appendChild(grid);
     shell.appendChild(createQueueBoardFooter(queueContent.footer));
     section.appendChild(shell);
+    if (editor) {
+        section.appendChild(editor.dialog);
+    }
 
     return section;
 }

@@ -1,7 +1,7 @@
 import { uiText } from "./config/uiText.js";
 import { siteData } from "./data/siteData.js";
 import { renderMainNav } from "./render/mainNav.js";
-import { renderSections, applyActiveSection } from "./render/sections.js?v=20260622-independent-details";
+import { renderSections, applyActiveSection } from "./render/sections.js?v=20260622-visual-queue-editor";
 import { renderSubNav } from "./render/subNav.js";
 import { state, updateState } from "./state.js";
 import { getFirstPageSubIndex, getFlatIndex, getSafePageSubIndex } from "./utils/indexMap.js";

@@ -1,129 +1,33 @@
-const queueBoardCompletedAssetBasePath = "./assets/queue-completed/";
-const queueBoardCompletedSlotCount = 5;
+const queueBoardDataUrl = new URL("./queueBoardData.json", import.meta.url);
 
-export const queueBoardData = {
-    zh: {
-        pageTitle: "2026排單表",
-        eyebrow: "Commission Queue",
-        description: "委託項目、價格、範例等皆可至價目表閱覽",
-        announcementTitle: "目前說明",
-        announcementBody: "週日不進行繪製作業，因此工期與等待時間皆不含週日。預估時間會依照複雜度、溝通速度與修改次數微調。",
-        summary: [
-            {
-                label: "委託狀態",
-                value: "開放中",
-                note: "開放項目與開放單數可見價目表",
-                tone: "open"
-            },
-            {
-                label: "目前排到",
-                value: "--",
-                note: "--",
-                tone: "focus"
-            },
-            {
-                label: "預估等待",
-                value: "約 -- ",
-                note: "依項目與修改次數調整",
-                tone: "warm"
-            },
-            {
-                label: "最後更新",
-                value: "2026.06.22",
-                note: "今天上午 01:00 更新",
-                tone: "neutral"
-            }
-        ],
-        table: {
-            ariaLabel: "委託排單表格",
-            rowSlots: 12,
-            headers: [
-                { key: "owner", label: "單主名稱" },
-                { key: "item", label: "委託項目" },
-                { key: "progress", label: "當前進度" },
-                { key: "turnaround", label: "預計工期" }
-            ],
-            rows: []
-        },
-        columns: [
-            {
-                id: "completed",
-                label: "已完成",
-                hint: "近五張委託完成展示",
-                assetBasePath: queueBoardCompletedAssetBasePath,
-                completedSlots: queueBoardCompletedSlotCount,
-                completedWorks: []
-            }
-        ],
-        footer: {
-            title: "注意事項",
-            points: [
-                "項目代號：頭像為 A 、半身為 H 、全身為 F。加急會在工期使用 W 代稱",
-                "驚喜包一鍵出圖，除設定畫錯以外只可「小改一次」",
-                "價格隨複雜度、要求、調整次數、加急、背景等要素浮動"
-            ]
-        }
-    },
-    en: {
-        pageTitle: "2026 Commission Queue",
-        eyebrow: "Commission Queue",
-        description: "Commission items, pricing, examples, and other details are available on the commission menu.",
-        announcementTitle: "Current Notice",
-        announcementBody: "No drawing work is done on Sundays, so turnaround and waiting estimates both exclude Sundays. Timing may still shift based on complexity, communication speed, and revision rounds.",
-        summary: [
-            {
-                label: "Commission status",
-                value: "Open",
-                note: "See the commission menu for available items and slots",
-                tone: "open"
-            },
-            {
-                label: "Currently handling",
-                value: "--",
-                note: "--",
-                tone: "focus"
-            },
-            {
-                label: "Estimated wait",
-                value: "About --",
-                note: "Depends on scope and revisions",
-                tone: "warm"
-            },
-            {
-                label: "Last updated",
-                value: "2026.06.22",
-                note: "Updated today at 1:00 AM",
-                tone: "neutral"
-            }
-        ],
-        table: {
-            ariaLabel: "Commission queue table",
-            rowSlots: 12,
-            headers: [
-                { key: "owner", label: "Client Name" },
-                { key: "item", label: "Commission Item" },
-                { key: "progress", label: "Current Progress" },
-                { key: "turnaround", label: "Estimated Turnaround" }
-            ],
-            rows: []
-        },
-        columns: [
-            {
-                id: "completed",
-                label: "Completed",
-                hint: "Showcase of the five most recently completed commissions",
-                assetBasePath: queueBoardCompletedAssetBasePath,
-                completedSlots: queueBoardCompletedSlotCount,
-                completedWorks: []
-            }
-        ],
-        footer: {
-            title: "Notes",
-            points: [
-                "Item codes: A for avatar, H for half body, and F for full body. Rush orders are marked with W in the turnaround column.",
-                "Surprise packs are delivered in one go. Only one minor revision is allowed unless the character details were drawn incorrectly.",
-                "Prices vary based on complexity, requirements, revision count, rush service, backgrounds, and other factors."
-            ]
-        }
+async function loadQueueBoardData() {
+    const response = await fetch(queueBoardDataUrl, { cache: "no-store" });
+
+    if (!response.ok) {
+        throw new Error(`Unable to load queue board JSON (${response.status}).`);
     }
-};
+
+    return response.json();
+}
+
+export function validateQueueBoardData(data) {
+    if (!data || typeof data !== "object") {
+        return false;
+    }
+
+    return ["zh", "en"].every(lang => {
+        const content = data[lang];
+        return Boolean(
+            content &&
+            Array.isArray(content.summary) &&
+            content.table &&
+            Array.isArray(content.table.headers) &&
+            Array.isArray(content.table.rows) &&
+            Array.isArray(content.columns) &&
+            content.footer &&
+            Array.isArray(content.footer.points)
+        );
+    });
+}
+
+export const queueBoardData = await loadQueueBoardData();
