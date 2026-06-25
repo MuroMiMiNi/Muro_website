@@ -14,20 +14,20 @@
       },
       {
         "label": "目前排到",
-        "value": "A-01",
-        "note": "--",
+        "value": "A-02",
+        "note": "A-01已完成",
         "tone": "focus"
       },
       {
         "label": "預估等待",
-        "value": "約 140 天",
+        "value": "約 133 天",
         "note": "依項目與修改次數調整\n提前完成則天數遞進",
         "tone": "warm"
       },
       {
         "label": "最後更新",
-        "value": "2026.06.23",
-        "note": "今天下午 18:00 更新",
+        "value": "2026.06.25",
+        "note": "今天下午 17:30 更新",
         "tone": "neutral"
       }
     ],
@@ -56,13 +56,13 @@
         {
           "owner": "黃**",
           "item": "S-01",
-          "progress": "進行中",
+          "progress": "已完成",
           "turnaround": "7天"
         },
         {
           "owner": "Xi* ***",
           "item": "S-02",
-          "progress": "未開始",
+          "progress": "進行中",
           "turnaround": "7天"
         },
         {
@@ -140,7 +140,15 @@
         "hint": "近五張委託完成展示",
         "assetBasePath": "./assets/queue-completed/",
         "completedSlots": 5,
-        "completedWorks": []
+        "completedWorks": [
+          {
+            "code": "A-01",
+            "fileName": "A-01.png",
+            "alt": "已完成委託 A-01",
+            "completedAt": "2026-06-25T00:00:00.000Z",
+            "focus": "center center"
+          }
+        ]
       }
     ],
     "footer": {
@@ -214,7 +222,15 @@
         "hint": "Showcase of the five most recently completed commissions",
         "assetBasePath": "./assets/queue-completed/",
         "completedSlots": 5,
-        "completedWorks": []
+        "completedWorks": [
+          {
+            "code": "A-01",
+            "fileName": "A-01.png",
+            "alt": "Completed commission A-01",
+            "completedAt": "2026-06-25T00:00:00.000Z",
+            "focus": "center center"
+          }
+        ]
       }
     ],
     "footer": {
