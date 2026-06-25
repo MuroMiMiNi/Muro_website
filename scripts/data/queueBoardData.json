@@ -147,6 +147,34 @@
             "alt": "已完成委託 A-01",
             "completedAt": "2026-06-25T00:00:00.000Z",
             "focus": "center center"
+          },
+          {
+            "code": "",
+            "fileName": "",
+            "alt": "",
+            "completedAt": "2026-06-24T00:00:00.000Z",
+            "focus": "center center"
+          },
+          {
+            "code": "",
+            "fileName": "",
+            "alt": "",
+            "completedAt": "2026-06-23T00:00:00.000Z",
+            "focus": "center center"
+          },
+          {
+            "code": "",
+            "fileName": "",
+            "alt": "",
+            "completedAt": "2026-06-22T00:00:00.000Z",
+            "focus": "center center"
+          },
+          {
+            "code": "",
+            "fileName": "",
+            "alt": "",
+            "completedAt": "2026-06-21T00:00:00.000Z",
+            "focus": "center center"
           }
         ]
       }
@@ -228,6 +256,34 @@
             "fileName": "A-01.png",
             "alt": "Completed commission A-01",
             "completedAt": "2026-06-25T00:00:00.000Z",
+            "focus": "center center"
+          },
+          {
+            "code": "",
+            "fileName": "",
+            "alt": "",
+            "completedAt": "2026-06-24T00:00:00.000Z",
+            "focus": "center center"
+          },
+          {
+            "code": "",
+            "fileName": "",
+            "alt": "",
+            "completedAt": "2026-06-23T00:00:00.000Z",
+            "focus": "center center"
+          },
+          {
+            "code": "",
+            "fileName": "",
+            "alt": "",
+            "completedAt": "2026-06-22T00:00:00.000Z",
+            "focus": "center center"
+          },
+          {
+            "code": "",
+            "fileName": "",
+            "alt": "",
+            "completedAt": "2026-06-21T00:00:00.000Z",
             "focus": "center center"
           }
         ]
