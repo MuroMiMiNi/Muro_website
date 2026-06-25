@@ -14,8 +14,8 @@
       },
       {
         "label": "目前排到",
-        "value": "A-02",
-        "note": "A-01已完成",
+        "value": "S-02",
+        "note": "S-01已完成",
         "tone": "focus"
       },
       {
@@ -197,26 +197,26 @@
     "summary": [
       {
         "label": "Commission status",
-        "value": "Open",
+        "value": "Close",
         "note": "See the commission menu for available items and slots",
         "tone": "open"
       },
       {
         "label": "Currently handling",
-        "value": "--",
-        "note": "--",
+        "value": "S-02",
+        "note": "S-01 completed",
         "tone": "focus"
       },
       {
         "label": "Estimated wait",
-        "value": "About --",
+        "value": "About 133 Day",
         "note": "Depends on scope and revisions",
         "tone": "warm"
       },
       {
         "label": "Last updated",
-        "value": "2026.06.22",
-        "note": "Updated today at 1:00 AM",
+        "value": "2026.06.25",
+        "note": "Updated today at 17:30 PM",
         "tone": "neutral"
       }
     ],
@@ -241,7 +241,86 @@
           "label": "Estimated Turnaround"
         }
       ],
-      "rows": []
+      "rows": [
+        {
+          "owner": "黃**",
+          "item": "S-01",
+          "progress": "completed",
+          "turnaround": "7 Day"
+        },
+        {
+          "owner": "Xi* ***",
+          "item": "S-02",
+          "progress": "in progress",
+          "turnaround": "7 Day"
+        },
+        {
+          "owner": "蘋**",
+          "item": "S-03",
+          "progress": "Not started",
+          "turnaround": "7 Day"
+        },
+        {
+          "owner": "虹**",
+          "item": "A-04",
+          "progress": "Not started",
+          "turnaround": "7 Day"
+        },
+        {
+          "owner": "嗣**",
+          "item": "A-05",
+          "progress": "Unpaid",
+          "turnaround": "14 Day"
+        },
+        {
+          "owner": "緋**",
+          "item": "S-06",
+          "progress": "Unpaid",
+          "turnaround": "7 Day"
+        },
+        {
+          "owner": "犬** *** ***",
+          "item": "S-07",
+          "progress": "Unpaid",
+          "turnaround": "7 Day"
+        },
+        {
+          "owner": "淺**",
+          "item": "A-08",
+          "progress": "Unpaid",
+          "turnaround": "21 Day"
+        },
+        {
+          "owner": "**凜",
+          "item": "S-09",
+          "progress": "Unpaid",
+          "turnaround": "21 Day"
+        },
+        {
+          "owner": "陳**",
+          "item": "A-10",
+          "progress": "Unpaid",
+          "turnaround": "7 Day"
+        },
+        {
+          "owner": "陳**",
+          "item": "S-11",
+          "progress": "Unpaid",
+          "turnaround": "7 Day"
+        },
+        {
+          "owner": "花** ***",
+          "item": "S-12",
+          "progress": "Unpaid",
+          "turnaround": "7 Day"
+        },
+        {
+          "owner": "阿**",
+          "item": "S-13",
+          "progress": "Unpaid",
+          "turnaround": "7 Day"
+        }
+      ]
     },
     "columns": [
       {
@@ -292,7 +371,7 @@
     "footer": {
       "title": "Notes",
       "points": [
-        "Item codes: A for avatar, H for half body, and F for full body. Rush orders are marked with W in the turnaround column.",
+        "Item codes: A for avatar,S for surprise package, H for half body, and F for full body. Rush orders are marked with W in the turnaround column.",
         "Surprise packs are delivered in one go. Only one minor revision is allowed unless the character details were drawn incorrectly.",
         "Prices vary based on complexity, requirements, revision count, rush service, backgrounds, and other factors."
       ]
