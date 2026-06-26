@@ -1319,6 +1319,14 @@
     align-content: stretch;
 }
 
+.commission-guide-title-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
 .commission-guide-title-card {
     width: fit-content;
     max-width: min(100%, 20rem);
@@ -1337,6 +1345,43 @@
     line-height: 1.08;
     white-space: normal;
     word-break: keep-all;
+}
+
+.commission-guide-form-link {
+    min-height: 2rem;
+    padding: 0.28rem 0.72rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(255, 248, 230, 0.98), rgba(244, 223, 183, 0.96));
+    border: 1px solid rgba(108, 74, 56, 0.28);
+    color: var(--page-accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+        transform 0.18s ease,
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+    box-shadow:
+        0 10px 18px rgba(79, 58, 46, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.commission-guide-form-link:hover,
+.commission-guide-form-link:focus-visible {
+    transform: translateY(-1px) scale(1.02);
+    background: linear-gradient(180deg, rgba(255, 255, 245, 1), rgba(250, 236, 205, 1));
+    border-color: rgba(108, 74, 56, 0.48);
+    box-shadow:
+        0 16px 28px rgba(79, 58, 46, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    outline: none;
 }
 
 .commission-guide-list {

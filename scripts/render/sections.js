@@ -1183,12 +1183,20 @@ function createCommissionGuideSection(context) {
         };
     const section = createSectionBase("page-notice");
     const shell = createDiv("page-shell commission-guide-shell");
+    const titleBar = createDiv("commission-guide-title-bar");
     const titleCard = createDiv("commission-guide-title-card page-card");
+    const formLink = createActionLink(
+        "https://docs.google.com/forms/d/e/1FAIpQLScz-wA6XRU7o_87RGlznglArbdHelW0qvfYUtk-48su-KPFqw/viewform?usp=publish-editor",
+        "委託表單",
+        "commission-guide-form-link"
+    );
     const board = createDiv("commission-guide-list");
     const paragraphs = getFixedItems(guideContent.paragraphs, 4);
 
     titleCard.appendChild(createTextElement("h2", "section-title commission-guide-title", guideContent.title));
-    shell.appendChild(titleCard);
+    titleBar.appendChild(titleCard);
+    titleBar.appendChild(formLink);
+    shell.appendChild(titleBar);
 
     paragraphs.forEach((paragraph, index) => {
         const card = createDiv(`commission-guide-item page-card commission-guide-item-${index + 1}`);
