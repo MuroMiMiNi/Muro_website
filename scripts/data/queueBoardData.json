@@ -14,20 +14,20 @@
       },
       {
         "label": "目前排到",
-        "value": "S-02",
-        "note": "S-01已完成",
+        "value": "S-03",
+        "note": "S-01-S-02已完成",
         "tone": "focus"
       },
       {
         "label": "預估等待",
-        "value": "約 133 天",
+        "value": "約 112 天",
         "note": "依項目與修改次數調整\n提前完成則天數遞進",
         "tone": "warm"
       },
       {
-        "label": "最後更新",
-        "value": "2026.06.27",
-        "note": "今天下午 18:30 更新",
+        "label": "更新時間",
+        "value": "2026.07.04",
+        "note": "",
         "tone": "neutral"
       }
     ],
@@ -62,13 +62,13 @@
         {
           "owner": "Xi* ***",
           "item": "S-02",
-          "progress": "進行中",
+          "progress": "已完成",
           "turnaround": "7天"
         },
         {
           "owner": "蘋**",
           "item": "S-03",
-          "progress": "未開始",
+          "progress": "進行中",
           "turnaround": "7天"
         },
         {
@@ -203,20 +203,20 @@
       },
       {
         "label": "Currently handling",
-        "value": "S-02",
-        "note": "S-01 completed",
+        "value": "S-03",
+        "note": "S-01-S-02 completed",
         "tone": "focus"
       },
       {
         "label": "Estimated wait",
-        "value": "About 133 Day",
+        "value": "About 112 Day",
         "note": "Depends on scope and revisions",
         "tone": "warm"
       },
       {
-        "label": "Last updated",
-        "value": "2026.06.27",
-        "note": "Updated today at 18:30 PM",
+        "label": "updated time",
+        "value": "2026.07.04",
+        "note": "",
         "tone": "neutral"
       }
     ],
@@ -251,13 +251,13 @@
         {
           "owner": "Xi* ***",
           "item": "S-02",
-          "progress": "in progress",
+          "progress": "completed",
           "turnaround": "7 Day"
         },
         {
           "owner": "蘋**",
           "item": "S-03",
-          "progress": "Not started",
+          "progress": "in progress",
           "turnaround": "7 Day"
         },
         {
