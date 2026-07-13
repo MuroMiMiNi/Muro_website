@@ -14,19 +14,19 @@
       },
       {
         "label": "目前排到",
-        "value": "S-03",
-        "note": "S-01-S-02已完成",
+        "value": "A-04",
+        "note": "S-01-S-03已完成",
         "tone": "focus"
       },
       {
         "label": "預估等待",
-        "value": "約 112 天",
+        "value": "約 105 天",
         "note": "依項目與修改次數調整\n提前完成則天數遞進",
         "tone": "warm"
       },
       {
         "label": "更新時間",
-        "value": "2026.07.10",
+        "value": "2026.07.13",
         "note": "",
         "tone": "neutral"
       }
@@ -68,13 +68,13 @@
         {
           "owner": "蘋**",
           "item": "S-03",
-          "progress": "進行中",
+          "progress": "已完成",
           "turnaround": "7天"
         },
         {
           "owner": "虹**",
           "item": "A-04",
-          "progress": "未開始",
+          "progress": "進行中",
           "turnaround": "7天"
         },
         {
@@ -203,19 +203,19 @@
       },
       {
         "label": "Currently handling",
-        "value": "S-03",
-        "note": "S-01-S-02 completed",
+        "value": "A-04",
+        "note": "S-01-S-03 completed",
         "tone": "focus"
       },
       {
         "label": "Estimated wait",
-        "value": "About 112 Day",
+        "value": "About 105 Day",
         "note": "Depends on scope and revisions",
         "tone": "warm"
       },
       {
         "label": "updated time",
-        "value": "2026.07.10",
+        "value": "2026.07.13",
         "note": "",
         "tone": "neutral"
       }
@@ -257,19 +257,19 @@
         {
           "owner": "蘋**",
           "item": "S-03",
-          "progress": "in progress",
+          "progress": "completed",
           "turnaround": "7 Day"
         },
         {
           "owner": "虹**",
           "item": "A-04",
-          "progress": "Not started",
+          "progress": "in progress",
           "turnaround": "7 Day"
         },
         {
           "owner": "嗣**",
           "item": "A-05",
-          "progress": "Unpaid",
+          "progress": "Unpaid / Not started",
           "turnaround": "14 Day"
         },
         {
