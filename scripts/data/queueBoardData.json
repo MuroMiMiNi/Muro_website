@@ -14,8 +14,8 @@
       },
       {
         "label": "目前排到",
-        "value": "A-04",
-        "note": "S-01-S-03已完成",
+        "value": "A-05",
+        "note": "S-01-A-04已完成",
         "tone": "focus"
       },
       {
@@ -26,7 +26,7 @@
       },
       {
         "label": "更新時間",
-        "value": "2026.07.13",
+        "value": "2026.07.22",
         "note": "",
         "tone": "neutral"
       }
@@ -74,25 +74,25 @@
         {
           "owner": "虹**",
           "item": "A-04",
-          "progress": "進行中",
+          "progress": "已完成",
           "turnaround": "7天"
         },
         {
           "owner": "嗣**",
           "item": "A-05",
-          "progress": "未付款",
+          "progress": "進行中",
           "turnaround": "14天"
         },
         {
           "owner": "緋**",
           "item": "S-06",
-          "progress": "未付款",
+          "progress": "已付款",
           "turnaround": "7天"
         },
         {
           "owner": "犬** *** ***",
           "item": "S-07",
-          "progress": "未付款",
+          "progress": "已付款",
           "turnaround": "7天"
         },
         {
@@ -203,8 +203,8 @@
       },
       {
         "label": "Currently handling",
-        "value": "A-04",
-        "note": "S-01-S-03 completed",
+        "value": "A-05",
+        "note": "S-01-A-04 completed",
         "tone": "focus"
       },
       {
@@ -215,7 +215,7 @@
       },
       {
         "label": "updated time",
-        "value": "2026.07.13",
+        "value": "2026.07.22",
         "note": "",
         "tone": "neutral"
       }
@@ -263,31 +263,31 @@
         {
           "owner": "虹**",
           "item": "A-04",
-          "progress": "in progress",
+          "progress": "completed",
           "turnaround": "7 Day"
         },
         {
           "owner": "嗣**",
           "item": "A-05",
-          "progress": "Unpaid / Not started",
+          "progress": "in progress",
           "turnaround": "14 Day"
         },
         {
           "owner": "緋**",
           "item": "S-06",
-          "progress": "Unpaid",
+          "progress": "Paid",
           "turnaround": "7 Day"
         },
         {
           "owner": "犬** *** ***",
           "item": "S-07",
-          "progress": "Unpaid",
+          "progress": "Paid",
           "turnaround": "7 Day"
         },
         {
           "owner": "淺**",
           "item": "A-08",
-          "progress": "Unpaid",
+          "progress": "Not started",
           "turnaround": "21 Day"
         },
         {
