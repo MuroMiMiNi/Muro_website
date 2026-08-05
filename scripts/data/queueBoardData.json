@@ -26,8 +26,8 @@
       },
       {
         "label": "備註",
-        "value": "- - -",
-        "note": "",
+        "value": "突發意外",
+        "note": "手部意外受傷，因此繪圖速度降低，還請各位海涵",
         "tone": "neutral"
       }
     ],
@@ -163,10 +163,10 @@
             "focus": "center center"
           },
           {
-            "code": "",
-            "fileName": "",
-            "alt": "",
-            "completedAt": "2026-06-22T00:00:00.000Z",
+            "code": "S-04",
+            "fileName": "A-04.png",
+            "alt": "已完成委託 S-04",
+            "completedAt": "2026-07-16T00:00:00.000Z",
             "focus": "center center"
           },
           {
@@ -215,8 +215,8 @@
       },
       {
         "label": "Note",
-        "value": "- - -",
-        "note": "",
+        "value": "Accident",
+        "note": "Hand injury, drawing speed is reduced, please bear with me.",
         "tone": "neutral"
       }
     ],
@@ -338,24 +338,24 @@
             "focus": "center center"
           },
           {
-            "code": "",
-            "fileName": "",
-            "alt": "",
-            "completedAt": "2026-06-24T00:00:00.000Z",
+            "code": "A-02",
+            "fileName": "A-02.png",
+            "alt": "Completed commission A-02",
+            "completedAt": "2026-07-04T00:00:00.000Z",
             "focus": "center center"
           },
           {
-            "code": "",
-            "fileName": "",
-            "alt": "",
-            "completedAt": "2026-06-23T00:00:00.000Z",
+            "code": "A-03",
+            "fileName": "A-03.png",
+            "alt": "Completed commission A-03",
+            "completedAt": "2026-07-11T00:00:00.000Z",
             "focus": "center center"
           },
           {
-            "code": "",
-            "fileName": "",
-            "alt": "",
-            "completedAt": "2026-06-22T00:00:00.000Z",
+            "code": "S-04",
+            "fileName": "A-04.png",
+            "alt": "Completed commission S-04",
+            "completedAt": "2026-07-16T00:00:00.000Z",
             "focus": "center center"
           },
           {
