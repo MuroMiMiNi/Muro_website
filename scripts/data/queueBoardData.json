@@ -14,20 +14,20 @@
       },
       {
         "label": "目前排到",
-        "value": "A-05",
-        "note": "S-01-A-04已完成",
+        "value": "S-06",
+        "note": "S-01-A-05已完成",
         "tone": "focus"
       },
       {
         "label": "預估等待",
-        "value": "約 84 天",
+        "value": "約 77 天",
         "note": "依項目與修改次數調整\n提前完成則天數遞進",
         "tone": "warm"
       },
       {
         "label": "備註",
         "value": "突發意外",
-        "note": "手部意外受傷，因此繪圖速度降低，還請各位海涵",
+        "note": "因傷所有排單延遲交付，還請各位海涵",
         "tone": "neutral"
       }
     ],
@@ -80,13 +80,13 @@
         {
           "owner": "嗣**",
           "item": "A-05",
-          "progress": "進行中",
+          "progress": "已完成",
           "turnaround": "14天"
         },
         {
           "owner": "緋**",
           "item": "S-06",
-          "progress": "已付款",
+          "progress": "進行中",
           "turnaround": "7天"
         },
         {
@@ -203,13 +203,13 @@
       },
       {
         "label": "Currently handling",
-        "value": "A-05",
-        "note": "S-01-A-04 completed",
+        "value": "S-06",
+        "note": "S-01-A-05 completed",
         "tone": "focus"
       },
       {
         "label": "Estimated wait",
-        "value": "About 84 Day",
+        "value": "About 77 Day",
         "note": "Depends on scope and revisions",
         "tone": "warm"
       },
@@ -269,13 +269,13 @@
         {
           "owner": "嗣**",
           "item": "A-05",
-          "progress": "in progress",
+          "progress": "completed",
           "turnaround": "14 Day"
         },
         {
           "owner": "緋**",
           "item": "S-06",
-          "progress": "Paid",
+          "progress": "in progress",
           "turnaround": "7 Day"
         },
         {
