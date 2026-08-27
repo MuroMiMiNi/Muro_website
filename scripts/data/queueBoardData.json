@@ -14,8 +14,8 @@
       },
       {
         "label": "目前排到",
-        "value": "S-06",
-        "note": "S-01-A-05已完成",
+        "value": "A-08",
+        "note": "",
         "tone": "focus"
       },
       {
@@ -26,8 +26,8 @@
       },
       {
         "label": "備註",
-        "value": "突發意外",
-        "note": "因傷所有排單延遲交付，還請各位海涵",
+        "value": "",
+        "note": "",
         "tone": "neutral"
       }
     ],
@@ -53,48 +53,6 @@
         }
       ],
       "rows": [
-        {
-          "owner": "黃**",
-          "item": "S-01",
-          "progress": "已完成",
-          "turnaround": "7天"
-        },
-        {
-          "owner": "Xi* ***",
-          "item": "S-02",
-          "progress": "已完成",
-          "turnaround": "7天"
-        },
-        {
-          "owner": "蘋**",
-          "item": "S-03",
-          "progress": "已完成",
-          "turnaround": "7天"
-        },
-        {
-          "owner": "虹**",
-          "item": "A-04",
-          "progress": "已完成",
-          "turnaround": "7天"
-        },
-        {
-          "owner": "嗣**",
-          "item": "A-05",
-          "progress": "已完成",
-          "turnaround": "14天"
-        },
-        {
-          "owner": "緋**",
-          "item": "S-06",
-          "progress": "進行中",
-          "turnaround": "7天"
-        },
-        {
-          "owner": "犬** *** ***",
-          "item": "S-07",
-          "progress": "已付款",
-          "turnaround": "7天"
-        },
         {
           "owner": "淺**",
           "item": "A-08",
@@ -203,8 +161,8 @@
       },
       {
         "label": "Currently handling",
-        "value": "S-06",
-        "note": "S-01-A-05 completed",
+        "value": "A-08",
+        "note": "",
         "tone": "focus"
       },
       {
@@ -215,8 +173,8 @@
       },
       {
         "label": "Note",
-        "value": "Accident",
-        "note": "Hand injury, drawing speed is reduced, please bear with me.",
+        "value": "",
+        "note": "",
         "tone": "neutral"
       }
     ],
@@ -242,48 +200,6 @@
         }
       ],
       "rows": [
-        {
-          "owner": "黃**",
-          "item": "S-01",
-          "progress": "completed",
-          "turnaround": "7 Day"
-        },
-        {
-          "owner": "Xi* ***",
-          "item": "S-02",
-          "progress": "completed",
-          "turnaround": "7 Day"
-        },
-        {
-          "owner": "蘋**",
-          "item": "S-03",
-          "progress": "completed",
-          "turnaround": "7 Day"
-        },
-        {
-          "owner": "虹**",
-          "item": "A-04",
-          "progress": "completed",
-          "turnaround": "7 Day"
-        },
-        {
-          "owner": "嗣**",
-          "item": "A-05",
-          "progress": "completed",
-          "turnaround": "14 Day"
-        },
-        {
-          "owner": "緋**",
-          "item": "S-06",
-          "progress": "in progress",
-          "turnaround": "7 Day"
-        },
-        {
-          "owner": "犬** *** ***",
-          "item": "S-07",
-          "progress": "Paid",
-          "turnaround": "7 Day"
-        },
         {
           "owner": "淺**",
           "item": "A-08",
