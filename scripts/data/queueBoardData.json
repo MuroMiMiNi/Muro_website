@@ -14,19 +14,19 @@
       },
       {
         "label": "目前排到",
-        "value": "A-08",
+        "value": "",
         "note": "",
         "tone": "focus"
       },
       {
         "label": "預估等待",
-        "value": "約 77 天",
+        "value": "約 42 天",
         "note": "依項目與修改次數調整\n提前完成則天數遞進",
         "tone": "warm"
       },
       {
         "label": "備註",
-        "value": "",
+        "value": "準備中",
         "note": "",
         "tone": "neutral"
       }
@@ -54,38 +54,26 @@
       ],
       "rows": [
         {
-          "owner": "淺**",
-          "item": "A-08",
-          "progress": "未付款",
-          "turnaround": "21天"
-        },
-        {
           "owner": "**凜",
-          "item": "S-09",
+          "item": "S-01",
           "progress": "未付款",
           "turnaround": "21天"
         },
         {
           "owner": "陳**",
-          "item": "A-10",
-          "progress": "未付款",
-          "turnaround": "7天"
-        },
-        {
-          "owner": "陳**",
-          "item": "S-11",
+          "item": "A-02",
           "progress": "未付款",
           "turnaround": "7天"
         },
         {
           "owner": "花** ***",
-          "item": "S-12",
+          "item": "S-03",
           "progress": "未付款",
           "turnaround": "7天"
         },
         {
           "owner": "阿**",
-          "item": "S-13",
+          "item": "S-04",
           "progress": "未付款",
           "turnaround": "7天"
         }
@@ -161,19 +149,19 @@
       },
       {
         "label": "Currently handling",
-        "value": "A-08",
+        "value": "",
         "note": "",
         "tone": "focus"
       },
       {
         "label": "Estimated wait",
-        "value": "About 77 Day",
+        "value": "About 42 Day",
         "note": "Depends on scope and revisions",
         "tone": "warm"
       },
       {
         "label": "Note",
-        "value": "",
+        "value": "In preparation",
         "note": "",
         "tone": "neutral"
       }
@@ -201,38 +189,26 @@
       ],
       "rows": [
         {
-          "owner": "淺**",
-          "item": "A-08",
-          "progress": "Not started",
-          "turnaround": "21 Day"
-        },
-        {
           "owner": "**凜",
-          "item": "S-09",
+          "item": "S-01",
           "progress": "Unpaid",
           "turnaround": "21 Day"
         },
         {
           "owner": "陳**",
-          "item": "A-10",
-          "progress": "Unpaid",
-          "turnaround": "7 Day"
-        },
-        {
-          "owner": "陳**",
-          "item": "S-11",
+          "item": "A-02",
           "progress": "Unpaid",
           "turnaround": "7 Day"
         },
         {
           "owner": "花** ***",
-          "item": "S-12",
+          "item": "S-03",
           "progress": "Unpaid",
           "turnaround": "7 Day"
         },
         {
           "owner": "阿**",
-          "item": "S-13",
+          "item": "S-04",
           "progress": "Unpaid",
           "turnaround": "7 Day"
         }
