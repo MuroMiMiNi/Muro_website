@@ -14,7 +14,7 @@
       },
       {
         "label": "目前排到",
-        "value": "",
+        "value": "S-01",
         "note": "",
         "tone": "focus"
       },
@@ -26,7 +26,7 @@
       },
       {
         "label": "備註",
-        "value": "準備中",
+        "value": "- -",
         "note": "",
         "tone": "neutral"
       }
@@ -56,7 +56,7 @@
         {
           "owner": "**凜",
           "item": "S-01",
-          "progress": "未付款",
+          "progress": "進行中",
           "turnaround": "21天"
         },
         {
@@ -83,7 +83,7 @@
       {
         "id": "completed",
         "label": "已完成",
-        "hint": "近五張委託完成展示",
+        "hint": "委託完成展示",
         "assetBasePath": "./assets/queue-completed/",
         "completedSlots": 5,
         "completedWorks": [
@@ -161,7 +161,7 @@
       },
       {
         "label": "Note",
-        "value": "In preparation",
+        "value": "- -",
         "note": "",
         "tone": "neutral"
       }
@@ -225,36 +225,36 @@
           {
             "code": "A-01",
             "fileName": "A-01.png",
-            "alt": "Completed commission A-01",
+            "alt": "Completed commission",
             "completedAt": "2026-06-25T00:00:00.000Z",
             "focus": "center center"
           },
           {
             "code": "A-02",
-            "fileName": "A-02.png",
-            "alt": "Completed commission A-02",
-            "completedAt": "2026-07-04T00:00:00.000Z",
-            "focus": "center center"
-          },
-          {
-            "code": "A-03",
             "fileName": "A-03.png",
-            "alt": "Completed commission A-03",
+            "alt": "Completed commission ",
             "completedAt": "2026-07-11T00:00:00.000Z",
             "focus": "center center"
           },
           {
-            "code": "S-04",
+            "code": "A-03",
             "fileName": "A-04.png",
-            "alt": "Completed commission S-04",
+            "alt": "Completed commission",
             "completedAt": "2026-07-16T00:00:00.000Z",
             "focus": "center center"
           },
           {
-            "code": "",
-            "fileName": "",
-            "alt": "",
-            "completedAt": "2026-06-21T00:00:00.000Z",
+            "code": "A-04",
+            "fileName": "A-05.png",
+            "alt": "Completed commission",
+            "completedAt": "2026-08-12T00:00:00.000Z",
+            "focus": "center center"
+          },
+          {
+            "code": "A-05",
+            "fileName": "A-06.png",
+            "alt": "Completed commission",
+            "completedAt": "2026-08-25T00:00:00.000Z",
             "focus": "center center"
           }
         ]
