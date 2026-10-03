@@ -211,6 +211,13 @@
     fill: currentColor;
 }
 
+.sub-social-link--twitter svg,
+.sub-social-link--facebook svg,
+.sub-social-link--email svg {
+    transform: scale(1.1);
+    transform-origin: center;
+}
+
 .sub-social-link > svg,
 .sub-social-link > img,
 .sub-social-link > span {
