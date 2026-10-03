@@ -3,12 +3,12 @@ import { isHiddenSub } from "../utils/indexMap.js";
 
 const SOCIAL_ICONS = {
     twitter: `
-        <svg viewBox="0.7 0 24 24" aria-hidden="true" focusable="false">
+        <svg viewBox="5.7 5 14 14" aria-hidden="true" focusable="false">
             <path d="M6.72 5h3.44l2.66 3.73L16.06 5H18.7l-4.73 5.4L19 19h-3.44l-2.93-4.11L9.03 19H6.4l5.08-5.8L6.72 5Zm2.27 1.67 6.52 9.66h.88L9.87 6.67h-.88Z"></path>
         </svg>
     `,
     facebook: `
-        <svg viewBox="0.25 0.3 24 24" aria-hidden="true" focusable="false">
+        <svg viewBox="4.55 4.6 15.4 15.4" aria-hidden="true" focusable="false">
             <path d="M13.37 20v-7.02h2.36l.35-2.74h-2.71V8.49c0-.79.22-1.33 1.36-1.33H16.2V4.71c-.25-.03-1.1-.11-2.08-.11-2.06 0-3.47 1.26-3.47 3.57v2.07H8.3v2.74h2.35V20h2.72Z"></path>
         </svg>
     `,
@@ -24,7 +24,7 @@ const SOCIAL_ICONS = {
         <img class="sub-social-logo sub-social-logo--clibo" src="https://clibo.tw/images/clibo-logo-v2.svg" alt="" aria-hidden="true">
     `,
     email: `
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <svg viewBox="2 2 20 20" aria-hidden="true" focusable="false">
             <path d="M4 6h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Zm0 2v.24l8 5.33 8-5.33V8H4Zm16 8V10.64l-7.45 4.97a1 1 0 0 1-1.1 0L4 10.64V16h16Z"></path>
         </svg>
     `
