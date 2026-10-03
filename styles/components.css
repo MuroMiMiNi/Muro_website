@@ -218,6 +218,11 @@
     transform-origin: center;
 }
 
+.sub-social-link--bluesky svg {
+    transform: scale(0.8);
+    transform-origin: center;
+}
+
 .sub-social-link > svg,
 .sub-social-link > img,
 .sub-social-link > span {
