@@ -147,7 +147,8 @@ function setLanguage(lang) {
     renderSections({
         root: refs.displayArea,
         siteData,
-        currentLang: state.currentLang
+        currentLang: state.currentLang,
+        onPageSelect: goToPage
     });
     renderChrome();
     applyActiveSection({
@@ -191,7 +192,8 @@ function handleViewportResize() {
     renderSections({
         root: refs.displayArea,
         siteData,
-        currentLang: state.currentLang
+        currentLang: state.currentLang,
+        onPageSelect: goToPage
     });
     applyActiveSection({
         root: refs.displayArea,
@@ -282,7 +284,8 @@ function init() {
     renderSections({
         root: refs.displayArea,
         siteData,
-        currentLang: state.currentLang
+        currentLang: state.currentLang,
+        onPageSelect: goToPage
     });
     openCategory(state.currentCat);
     keepFloatingGifInViewport();

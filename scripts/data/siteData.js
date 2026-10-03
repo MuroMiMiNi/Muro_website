@@ -123,6 +123,13 @@ export const siteData = [
             },
             {
                 type: "p",
+                layout: "commission-form",
+                label: { zh: "委託表單", en: "Commission Form" },
+                title: { zh: "委託表單", en: "Commission Form" },
+                copy: { zh: "選擇委託方案，點擊圖示預覽範例。", en: "Choose a commission type and select its icon to preview examples." }
+            },
+            {
+                type: "p",
                 label: { zh: "排單進度", en: "Queue" },
                 title: { zh: "排單進度", en: "Queue Status" },
                 copy: { zh: "建置中", en: "Coming Soon" }

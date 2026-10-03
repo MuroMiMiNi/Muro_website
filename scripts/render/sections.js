@@ -133,11 +133,11 @@ const MENU_DETAIL_COPY = {
             title: "左右可切換展示範例、雙擊雞蛋動畫可回到首頁",
             copy: "範圍為頭至臀部之上"
         },
-        back: "返回價目表",
+        back: "返回委託表單",
         previousExample: "上一張範例",
         nextExample: "下一張範例",
         exampleAlt: (title, index, total) => `${title}範例 ${index}／${total}`,
-        open: title => `開啟${title}詳細頁面`
+        open: title => `預覽${title}範例`
     },
     en: {
         eyebrow: "Commission details",
@@ -154,11 +154,11 @@ const MENU_DETAIL_COPY = {
             title: "Half body commission details coming soon",
             copy: "Add half body pricing, the commission process, and additional notes here."
         },
-        back: "Back to menu",
+        back: "Back to commission form",
         previousExample: "Previous example",
         nextExample: "Next example",
         exampleAlt: (title, index, total) => `${title} example ${index} of ${total}`,
-        open: title => `Open ${title} details`
+        open: title => `Preview ${title} examples`
     }
 };
 const QUEUE_BOARD_EDITOR_PASSWORD = "0214";
@@ -242,7 +242,8 @@ const PAGE_BUILDERS = {
     "1-0": createGallerySection,
     "1-1": createCommissionGuideSection,
     "1-2": createMenuSection,
-    "1-3": createQueueBoardSection,
+    "1-3": createCommissionFormSection,
+    "1-4": createQueueBoardSection,
     "2-0": createBlueprintSection,
     "2-1": createStorySection,
     "2-2": createGameplaySection,
@@ -365,7 +366,7 @@ function createHalfBodyMenuStatus(label) {
     return status;
 }
 
-function createMenuShowcaseCard(card, variant, createStatus, createBadgeButton) {
+function createMenuShowcaseCard(card, variant, createStatus) {
     const article = createDiv(`menu-showcase-card menu-showcase-card--${variant} page-card`);
     const media = createDiv(`menu-showcase-media menu-showcase-media--${variant}`);
     const frame = createDiv(`menu-showcase-mask menu-showcase-mask--${card.image.kind}`);
@@ -390,7 +391,6 @@ function createMenuShowcaseCard(card, variant, createStatus, createBadgeButton) 
     media.appendChild(frame);
     media.appendChild(fade);
 
-    article.appendChild(createBadgeButton(card));
     article.appendChild(media);
     article.appendChild(body);
     article.appendChild(createStatus(card.action));
@@ -1185,17 +1185,11 @@ function createCommissionGuideSection(context) {
     const shell = createDiv("page-shell commission-guide-shell");
     const titleBar = createDiv("commission-guide-title-bar");
     const titleCard = createDiv("commission-guide-title-card page-card");
-    const formLink = createActionLink(
-        "https://docs.google.com/forms/d/e/1FAIpQLScz-wA6XRU7o_87RGlznglArbdHelW0qvfYUtk-48su-KPFqw/viewform?usp=publish-editor",
-        "委託表單",
-        "commission-guide-form-link"
-    );
     const board = createDiv("commission-guide-list");
     const paragraphs = getFixedItems(guideContent.paragraphs, 4);
 
     titleCard.appendChild(createTextElement("h2", "section-title commission-guide-title", guideContent.title));
     titleBar.appendChild(titleCard);
-    titleBar.appendChild(formLink);
     shell.appendChild(titleBar);
 
     paragraphs.forEach((paragraph, index) => {
@@ -1260,7 +1254,7 @@ function getMenuShowcaseContent(currentLang) {
                 stats: [
                     { icon: "tag", text: "NT$ 2,800 起" },
                     { icon: "user", text: "單一角色" },
-                    { icon: "image", text: "無背景 / 簡易背景（+NT$ 20）" },
+                    { icon: "image", text: "無背景 / 簡易背景\n（+NT$ 20）" },
                     { icon: "clock", text: "工期 14 天" },
                     { icon: "file", text: "像素難呈現的要素會簡化" }
                 ],
@@ -1317,7 +1311,7 @@ function getMenuShowcaseContent(currentLang) {
             stats: [
                 { icon: "tag", text: "From NT$ 2,800" },
                 { icon: "user", text: "Single character" },
-                    { icon: "image", text: "No background / simple background (+NT$ 20)" },
+                    { icon: "image", text: "No background / simple background\n(+NT$ 20)" },
                     { icon: "clock", text: "Turnaround: 14 days" },
                     { icon: "file", text: "Elements that are hard to express in pixel style may be simplified" }
             ],
@@ -1371,6 +1365,30 @@ function createMenuSection(context) {
     const shell = createDiv("page-shell menu-shell");
     const menuContent = getMenuShowcaseContent(context.currentLang);
     const sideStack = createDiv("menu-side-stack");
+    const formButton = document.createElement("button");
+
+    formButton.type = "button";
+    formButton.className = "commission-form-link menu-form-link";
+    formButton.textContent = context.currentLang === "zh" ? "前往委託表單" : "Go to commission form";
+    formButton.addEventListener("click", () => {
+        const formIndex = context.category.subs.findIndex(sub => sub.layout === "commission-form");
+        context.onPageSelect(context.categoryIndex, formIndex);
+    });
+
+    shell.appendChild(createHeaderBlock(context, "Commission menu"));
+    shell.appendChild(createMenuShowcaseCard(menuContent.offer, "full", createFullBodyMenuStatus));
+    sideStack.appendChild(createMenuShowcaseCard(menuContent.details, "icon", createAvatarMenuStatus));
+    sideStack.appendChild(createMenuShowcaseCard(menuContent.notes, "half", createHalfBodyMenuStatus));
+    shell.appendChild(sideStack);
+    shell.appendChild(formButton);
+    section.appendChild(shell);
+    return section;
+}
+
+function createCommissionFormSection(context) {
+    const section = createSectionBase("page-menu page-commission-form");
+    const shell = createDiv("page-shell commission-form-shell");
+    const menuContent = getMenuShowcaseContent(context.currentLang);
     const detailHost = createDiv("menu-detail-host");
     const detailPages = new Map();
     let lastTrigger = null;
@@ -1413,28 +1431,63 @@ function createMenuSection(context) {
     detailHost.appendChild(avatarPage);
     detailHost.appendChild(halfBodyPage);
 
-    shell.appendChild(createHeaderBlock(context, "Commission menu"));
+    const isChinese = context.currentLang === "zh";
+    const header = createHeaderBlock(context, "Commission form");
+    const choices = document.createElement("fieldset");
+    const footer = createDiv("commission-form-footer");
+    const selection = createTextElement("p", "commission-form-selection", "");
+    const formLink = createActionLink("", isChinese ? "填寫委託表單" : "Fill out commission form", "commission-form-link");
+    const plans = [
+        { id: "full-body", card: menuContent.offer, createButton: createFullBodyMenuButton, value: "全身委託－NT$2800" },
+        { id: "avatar", card: menuContent.details, createButton: createAvatarMenuButton, value: "頭像委託－NT$500" },
+        { id: "half-body", card: menuContent.notes, createButton: createHalfBodyMenuButton, value: "半身委託－NT$1100" }
+    ];
+    const selectPlan = plan => {
+        const url = new URL("https://docs.google.com/forms/d/e/1FAIpQLScz-wA6XRU7o_87RGlznglArbdHelW0qvfYUtk-48su-KPFqw/viewform");
+        url.searchParams.set("usp", "pp_url");
+        url.searchParams.set("entry.1679931923", plan.value);
+        formLink.href = url.href;
+        selection.textContent = isChinese ? `已選擇：${plan.card.title}` : `Selected: ${plan.card.title}`;
+    };
 
-    shell.appendChild(createMenuShowcaseCard(
-        menuContent.offer,
-        "full",
-        createFullBodyMenuStatus,
-        card => createFullBodyMenuButton(card, context.currentLang, trigger => openDetail("full-body", trigger))
-    ));
-    sideStack.appendChild(createMenuShowcaseCard(
-        menuContent.details,
-        "icon",
-        createAvatarMenuStatus,
-        card => createAvatarMenuButton(card, context.currentLang, trigger => openDetail("avatar", trigger))
-    ));
-    sideStack.appendChild(createMenuShowcaseCard(
-        menuContent.notes,
-        "half",
-        createHalfBodyMenuStatus,
-        card => createHalfBodyMenuButton(card, context.currentLang, trigger => openDetail("half-body", trigger))
-    ));
+    header.appendChild(createTextElement("p", "commission-form-intro", context.copy));
+    choices.className = "commission-plan-list";
+    choices.appendChild(createTextElement("legend", "commission-plan-legend", isChinese ? "選擇方案" : "Choose a commission type"));
+    selection.setAttribute("aria-live", "polite");
 
-    shell.appendChild(sideStack);
+    plans.forEach((plan, index) => {
+        const card = createDiv("commission-plan page-card");
+        const heading = createDiv("commission-plan-heading");
+        const label = document.createElement("label");
+        const radio = document.createElement("input");
+        const previewButton = plan.createButton(plan.card, context.currentLang, trigger => openDetail(plan.id, trigger));
+
+        label.className = "commission-plan-choice";
+        radio.type = "radio";
+        radio.name = "commission-plan";
+        radio.value = plan.id;
+        radio.checked = index === 0;
+        radio.addEventListener("change", () => selectPlan(plan));
+        label.appendChild(radio);
+        label.appendChild(createTextElement("span", "commission-plan-title", plan.card.title));
+        previewButton.title = MENU_DETAIL_COPY[context.currentLang].open(plan.card.title);
+        heading.appendChild(label);
+        heading.appendChild(previewButton);
+        card.appendChild(heading);
+        card.appendChild(createMenuStatList(plan.card.stats.filter(item => item.icon === "tag" || item.icon === "clock")));
+        card.appendChild(createTextElement("p", "commission-plan-status", plan.card.action));
+        choices.appendChild(card);
+    });
+
+    selectPlan(plans[0]);
+    footer.appendChild(selection);
+    footer.appendChild(formLink);
+    footer.appendChild(createTextElement("p", "commission-form-note", isChinese
+        ? "將在新分頁開啟 Google 表單；頭像方案可於表單內改選驚喜包。"
+        : "Opens Google Forms in a new tab. For avatars, you can switch to the surprise pack in the form."));
+    shell.appendChild(header);
+    shell.appendChild(choices);
+    shell.appendChild(footer);
     section.appendChild(shell);
     section.appendChild(detailHost);
 
@@ -2248,7 +2301,7 @@ function resolveSectionBuilder(context) {
     return PAGE_BUILDERS[context.pageId] ?? createDefaultSection;
 }
 
-export function renderSections({ root, siteData, currentLang }) {
+export function renderSections({ root, siteData, currentLang, onPageSelect }) {
     root.innerHTML = "";
 
     siteData.forEach((category, categoryIndex) => {
@@ -2260,6 +2313,7 @@ export function renderSections({ root, siteData, currentLang }) {
                 subIndex,
                 currentLang
             });
+            context.onPageSelect = onPageSelect;
             const builder = resolveSectionBuilder(context);
             const section = builder(context);
 
