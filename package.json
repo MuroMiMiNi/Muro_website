@@ -6,6 +6,6 @@
     "sync": "node scripts/sync-artworks.mjs",
     "build": "node scripts/build.mjs",
     "dev": "node scripts/serve.mjs",
-    "test": "node --test tests/catalog.test.mjs"
+    "test": "node --test tests/catalog.test.mjs tests/timeline.test.mjs"
   }
 }

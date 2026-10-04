@@ -15,7 +15,7 @@ node scripts/serve.mjs
 ```powershell
 node scripts/sync-artworks.mjs # 更新靜態網站作品清單
 node scripts/build.mjs         # 更新清單並輸出 dist/ 網站
-node --test tests/catalog.test.mjs
+node --test tests/catalog.test.mjs tests/timeline.test.mjs
 ```
 
 也可使用 `npm run dev`、`npm run sync`、`npm run build`、`npm test`。靜態主機部署 `dist/` 內容；只上傳新圖片而未同步清單不會更新作品。這次未變更正式站部署設定。
@@ -35,8 +35,9 @@ node --test tests/catalog.test.mjs
 - Google 表單使用原專案連結及方案預填欄位，在新分頁開啟；網站不會自動送出委託。
 - 價格沿用原網站目前呈現的頭像 500／半身 1,100 起／全身 2,800 起；須知保留原文。英文須知尚無原稿，因此顯示提示並保留中文條款。
 - `assets/profile/muro-night.png`、`muro-signature.png` 為提供的原圖；簽名只透過瀏覽器濾鏡轉為淺色透明底，未改寫原圖。
-- 每組最多 8 件作品，由主架、四個獨立旋轉的分支與吊線構成。三維座標經透視投影為像素金屬結構，作品依深度縮放、前後遮擋並輕微擺動；原圖保持正面與比例。作品依清單順序分組，新組位於上方。
-- 滑鼠停留／觸控預覽時暫停該組；離屏或分頁隱藏時停止動態更新。圖片延遲載入，`prefers-reduced-motion` 使用展開的靜態構圖，保留全部作品入口。
+- 整座床鈴只有一個懸掛起點。主分支由年／月決定，依日期由新到舊相接；同月作品不因件數增加而拆成另一組。沒有日期的作品集中在最後一條主分支，保持既有順序，不推測創作日期。目前 16 件皆無日期，因此共用一條主分支。
+- 同時段的作品透過逐層平衡橫桿懸掛；每條子吊線都由上游橫桿端點接出。這些支撐橫桿只負責排列同時段作品，不另創時間分組。下個月份的支架接在上個月份的支架上，不再重複獨立的整座床鈴與尾飾。
+- 三維座標投影為像素金屬結構，原圖保持正面、比例與色彩。預覽時暫停整座床鈴，以維持相接的結構；整座離屏或分頁隱藏時停止更新。圖片延遲載入，`prefers-reduced-motion` 使用展開的靜態構圖，保留全部作品入口。
 - 已取得並查看 [X 參考影片](https://x.com/duck_wtd/status/2105640227360706653) 的完整 30 秒時間序列及前六秒逐秒畫面。此次修正依據主架繞垂直軸轉動、分支不同步轉動與吊件前後交錯；影片僅作分析參考，不隨網站發布。
 
 瀏覽器驗證：本機安裝 Playwright 與 Microsoft Edge 後執行 `node tests/browser.cjs`。也可用 `PLAYWRIGHT_PATH` 指向已安裝的 Playwright。測試需先啟動預覽，截圖寫入忽略版控的 `.test-results/`；測試不提交外部表單。

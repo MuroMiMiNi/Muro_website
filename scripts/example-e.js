@@ -57,9 +57,9 @@ function renderGallery() {
   mobileMotion.clear();
   gallery.replaceChildren();
   if (!artworks.length) gallery.append(element('p', 'loading', t('作品整理中，稍後見。', 'More artworks are on their way.')));
-  for (let index = 0; index < artworks.length; index += 8) {
-    const tier = element('div', 'tier');
-    artworks.slice(index, index + 8).forEach(artwork => {
+  if (artworks.length) {
+    const rig = element('div', 'mobile-rig');
+    artworks.forEach(artwork => {
       const figure = element('figure', 'hanging-work');
       const motion = element('div', 'work-motion');
       const button = element('button', 'metal-frame work-button');
@@ -77,27 +77,27 @@ function renderGallery() {
         else openPage('artwork', artwork, button);
       });
       const caption = element('figcaption');
-      caption.append(element('span', 'work-title', title(artwork)), element('span', 'work-meta', artwork.date ?? t('作品收藏', 'From the collection')));
-      motion.append(button, caption); figure.append(motion); tier.append(figure);
+      caption.append(element('span', 'work-title', title(artwork)));
+      if (artwork.date) caption.append(element('span', 'work-meta', artwork.date));
+      motion.append(button, caption); figure.append(motion); rig.append(figure);
     });
-    gallery.append(tier); mobileMotion.add(tier, index / 8);
+    gallery.append(rig); mobileMotion.add(rig, artworks);
   }
-  $('#galleryHint').textContent = t(`${artworks.length} 件作品 · ${touch.matches ? '點按預覽，再點按看詳情' : '停留觀測，點按看詳情'}`, `${artworks.length} artworks · ${touch.matches ? 'Tap to preview; tap again to explore' : 'Hover to observe, click to explore'}`);
 }
 function queueHide() {
   if (!touch.matches) hideTimer = setTimeout(() => { if (!scope.matches(':hover') && document.activeElement !== scope) hidePreview(); }, 240);
 }
 function hidePreview() {
   clearTimeout(hideTimer); scope.hidden = true;
-  previewTrigger?.closest('.tier').classList.remove('is-inspecting');
+  previewTrigger?.closest('.mobile-rig').classList.remove('is-inspecting');
   preview = null; previewTrigger = null;
 }
 function showPreview(artwork, trigger) {
   clearTimeout(hideTimer);
   if (dialog.open) return;
-  previewTrigger?.closest('.tier').classList.remove('is-inspecting');
+  previewTrigger?.closest('.mobile-rig').classList.remove('is-inspecting');
   preview = artwork; previewTrigger = trigger;
-  trigger.closest('.tier').classList.add('is-inspecting');
+  trigger.closest('.mobile-rig').classList.add('is-inspecting');
   $('#scopeImage').src = artwork.src; $('#scopeImage').alt = title(artwork);
   $('#scopeCaption').textContent = title(artwork);
   scope.setAttribute('aria-label', t(`查看 ${title(artwork)} 詳情`, `Explore ${title(artwork)}`));
@@ -166,7 +166,8 @@ function renderDialog() {
   if (page === 'artwork' && selected) {
     const layout = element('div', 'detail-layout');
     const details = element('div');
-    details.append(element('div', 'detail-meta', selected.date ?? t('木洛的作品收藏', "Muro's art collection")), heading(title(selected)));
+    if (selected.date) details.append(element('div', 'detail-meta', selected.date));
+    details.append(heading(title(selected)));
     if (selected.category) details.append(element('p', '', selected.category));
     if (selected.description) details.append(element('p', '', text(selected.description)));
     details.append(element('p', '', t('想委託屬於你的角色？\n先看看委託須知，再挑選適合的方案。', 'A character of your own?\nRead the guidelines, then find your commission type.')), action(t('查看委託須知', 'Read commission guidelines'), () => openPage('guide')));
