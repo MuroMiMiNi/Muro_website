@@ -1,5 +1,6 @@
 import { siteData, socialLinks } from './data/siteData.js';
 import { HangingMobile } from './hanging-mobile.js';
+import { artworkOrigin, decodeArtwork, enterArtwork } from './artwork-transition.js';
 
 const $ = selector => document.querySelector(selector);
 const gallery = $('#mobileGallery');
@@ -17,6 +18,7 @@ let selected = null;
 let returnFocus = null;
 let returnY = 0;
 let selectedPlan = 'avatar';
+let artworkEntry = null;
 const t = (zh, en) => lang === 'zh' ? zh : en;
 const text = value => typeof value === 'string' ? value : value?.[lang] ?? '';
 const title = artwork => text(artwork.title);
@@ -51,6 +53,19 @@ for (let i = 0; i < 72; i++) {
   $('#stars').append(star);
 }
 $('#year').textContent = new Date().getFullYear();
+// Matching halves make every cloud layer loop without a visible reset.
+for (let layer = 0; layer < 3; layer++) {
+  const track = element('div', `cloud-track cloud-layer-${layer}`);
+  for (let copy = 0; copy < 2; copy++) {
+    const band = element('div', 'cloud-band');
+    for (let i = 0; i < 3; i++) band.append(element('i', `pixel-cloud cloud-${i}`));
+    track.append(band);
+  }
+  $('#pixelClouds').append(track);
+}
+document.addEventListener('visibilitychange', () => {
+  $('#pixelClouds').classList.toggle('is-paused', document.hidden);
+});
 const mobileMotion = new HangingMobile();
 
 function renderGallery() {
@@ -73,8 +88,9 @@ function renderGallery() {
       button.addEventListener('focus', () => { if (!touch.matches) showPreview(artwork, button); });
       button.addEventListener('blur', queueHide);
       button.addEventListener('click', event => {
+        if (artworkEntry) return;
         if ((touch.matches || event.pointerType === 'touch') && event.detail !== 0 && preview?.id !== artwork.id) showPreview(artwork, button);
-        else openPage('artwork', artwork, button);
+        else openArtwork(artwork, button);
       });
       const caption = element('figcaption');
       caption.append(element('span', 'work-title', title(artwork)));
@@ -94,7 +110,7 @@ function hidePreview() {
 }
 function showPreview(artwork, trigger) {
   clearTimeout(hideTimer);
-  if (dialog.open) return;
+  if (dialog.open || artworkEntry) return;
   previewTrigger?.closest('.mobile-rig').classList.remove('is-inspecting');
   preview = artwork; previewTrigger = trigger;
   trigger.closest('.mobile-rig').classList.add('is-inspecting');
@@ -119,11 +135,40 @@ scope.addEventListener('pointerenter', () => clearTimeout(hideTimer));
 scope.addEventListener('pointerleave', queueHide);
 scope.addEventListener('focus', () => clearTimeout(hideTimer));
 scope.addEventListener('blur', queueHide);
-scope.addEventListener('click', () => { if (preview) openPage('artwork', preview, previewTrigger); });
+scope.addEventListener('click', () => { if (preview) openArtwork(preview, previewTrigger, $('#scopeImage')); });
 document.addEventListener('pointerdown', event => { if (!event.target.closest('.work-button, #scope')) hidePreview(); });
-document.addEventListener('keydown', event => { if (event.key === 'Escape') hidePreview(); });
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') { artworkEntry?.abort(); hidePreview(); }
+});
 
-function openPage(next, artwork = selected, trigger = document.activeElement) {
+async function openArtwork(artwork, trigger, source = trigger.querySelector('img')) {
+  if (artworkEntry || dialog.open) return;
+  const controller = new AbortController(); artworkEntry = controller;
+  const origin = artworkOrigin(source);
+  trigger.setAttribute('aria-busy', 'true');
+  trigger.closest('.mobile-rig').classList.add('is-inspecting');
+  $('#artworkStatus').textContent = t('正在載入圖片…', 'Loading artwork…');
+  try {
+    const image = imageFor(artwork, 'detail-art');
+    await decodeArtwork(image, controller.signal);
+    if (controller.signal.aborted) return;
+    $('#artworkStatus').textContent = '';
+    dialog.classList.add('is-arriving');
+    openPage('artwork', artwork, trigger, image);
+    await enterArtwork(dialog, image, origin, controller.signal);
+  } catch (error) {
+    if (error.name !== 'AbortError') {
+      $('#artworkStatus').textContent = t('圖片無法載入，請再次點按重試。', 'Image could not load. Tap again to retry.');
+    }
+  } finally {
+    if ($('#artworkStatus').textContent === t('正在載入圖片…', 'Loading artwork…')) $('#artworkStatus').textContent = '';
+    trigger.removeAttribute('aria-busy');
+    trigger.closest('.mobile-rig').classList.remove('is-inspecting');
+    if (artworkEntry === controller) artworkEntry = null;
+  }
+}
+function openPage(next, artwork = selected, trigger = document.activeElement, preparedImage = null) {
+  if (artworkEntry && !preparedImage) return;
   if (!dialog.open) {
     returnY = scrollY; returnFocus = trigger; selected = artwork;
     hidePreview();
@@ -131,12 +176,13 @@ function openPage(next, artwork = selected, trigger = document.activeElement) {
     document.body.style.width = '100%';
     dialog.showModal();
   }
-  page = next; renderDialog();
+  page = next; renderDialog(preparedImage);
   dialog.scrollTop = 0;
   $('#dialogTitle').focus({ preventScroll: true });
 }
 function closeDialog() { dialog.close(); }
 dialog.addEventListener('close', () => {
+  artworkEntry?.abort();
   document.body.style.position = ''; document.body.style.top = ''; document.body.style.width = '';
   window.scrollTo({ top: returnY, behavior: 'instant' });
   previousY = returnY;
@@ -153,7 +199,7 @@ dialog.addEventListener('click', event => {
   if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) closeDialog();
 });
 function heading(value) { const h = element('h2', '', value); h.id = 'dialogTitle'; h.tabIndex = -1; return h; }
-function renderDialog() {
+function renderDialog(preparedImage = null) {
   content.replaceChildren();
   $('#stepBack').textContent = t(page === 'artwork' || page === 'about' || page === 'games' ? '← 返回作品' : '← 上一步', page === 'artwork' || page === 'about' || page === 'games' ? '← Back to works' : '← Previous step');
   if (['guide', 'prices', 'form'].includes(page)) {
@@ -171,7 +217,7 @@ function renderDialog() {
     if (selected.category) details.append(element('p', '', selected.category));
     if (selected.description) details.append(element('p', '', text(selected.description)));
     details.append(element('p', '', t('想委託屬於你的角色？\n先看看委託須知，再挑選適合的方案。', 'A character of your own?\nRead the guidelines, then find your commission type.')), action(t('查看委託須知', 'Read commission guidelines'), () => openPage('guide')));
-    layout.append(imageFor(selected, 'detail-art'), details); content.append(layout);
+    layout.append(preparedImage ?? imageFor(selected, 'detail-art'), details); content.append(layout);
   } else if (page === 'guide') {
     content.append(heading(t('委託須知', 'Commission guidelines')));
     const copy = siteData[1].subs[1].copy;
@@ -220,7 +266,7 @@ function setLanguage() {
   addSocials($('#socialLinks')); renderGallery(); hidePreview();
   if (dialog.open) renderDialog();
 }
-$('#language').addEventListener('click', () => { lang = lang === 'zh' ? 'en' : 'zh'; setLanguage(); });
+$('#language').addEventListener('click', () => { if (artworkEntry) return; lang = lang === 'zh' ? 'en' : 'zh'; setLanguage(); });
 let previousY = scrollY;
 let scrollPending = false;
 window.addEventListener('scroll', () => {

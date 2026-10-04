@@ -10,6 +10,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'playwright');
     page.on('pageerror', error => errors.push(error.message));
     page.on('response', response => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
   };
+  const entered = page => page.waitForFunction(() => { const d = document.querySelector('#detailDialog'); return d.open && !d.classList.contains('is-arriving'); });
   const inside = async (page, selector) => {
     const box = await page.locator(selector).boundingBox();
     const viewport = page.viewportSize();
@@ -51,7 +52,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'playwright');
     await page.evaluate(() => scrollTo(0, 500)); await page.waitForTimeout(100);
     assert.ok(await page.locator('#siteHeader').evaluate(node => node.classList.contains('is-hidden')));
     const position = await page.evaluate(() => scrollY);
-    await page.locator('.work-button').first().click();
+    await page.locator('.work-button').first().click(); await entered(page);
     assert.equal(await page.locator('#dialogTitle').innerText(), firstTitle);
     await page.getByRole('button', { name: '查看委託須知', exact: true }).click();
     assert.equal(await page.locator('#dialogTitle').innerText(), '委託須知');
@@ -70,7 +71,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'playwright');
     await page.waitForFunction(() => document.body.style.position === '');
     assert.ok(Math.abs(await page.evaluate(() => scrollY) - position) < 2);
     assert.equal(await page.evaluate(() => document.activeElement.dataset.artwork), catalog[0].id);
-    await page.keyboard.press('Enter'); assert.ok(await page.locator('#detailDialog').evaluate(node => node.open));
+    await page.keyboard.press('Enter'); await entered(page); assert.ok(await page.locator('#detailDialog').evaluate(node => node.open));
     await page.keyboard.press('Escape'); await page.waitForFunction(() => document.body.style.position === ''); assert.ok(!await page.locator('#detailDialog').evaluate(node => node.open));
     await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(100);
     await page.screenshot({ path: '.test-results/desktop.png' });
@@ -100,15 +101,15 @@ const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'playwright');
     assert.ok(!await mobile.locator('#detailDialog').evaluate(node => node.open));
     await mobile.locator('#scope').waitFor({ state: 'visible' }); await inside(mobile, '#scope');
     await mobile.screenshot({ path: '.test-results/mobile-preview.png' });
-    await mobile.locator('#scope').tap();
+    await mobile.locator('#scope').tap(); await entered(mobile);
     assert.equal(await mobile.locator('#dialogTitle').innerText(), firstTitle);
     await mobile.locator('#closeDialog').tap(); await mobile.waitForFunction(() => document.body.style.position === '');
     // Two taps on the same artwork also open details.
-    await mobileWork.tap(); await mobileWork.tap();
+    await mobileWork.tap(); await mobileWork.tap(); await entered(mobile);
     assert.ok(await mobile.locator('#detailDialog').evaluate(node => node.open)); await mobile.locator('#closeDialog').tap(); await mobile.waitForFunction(() => document.body.style.position === '');
     for (let i = 0; i < catalog.length; i++) {
       await mobile.locator('.work-button').nth(i).tap();
-      await mobile.locator('#scope').tap();
+      await mobile.locator('#scope').tap(); await entered(mobile);
       assert.equal(await mobile.locator('#dialogTitle').innerText(), catalog[i].title.zh);
       await mobile.locator('#closeDialog').tap(); await mobile.waitForFunction(() => document.body.style.position === '');
     }

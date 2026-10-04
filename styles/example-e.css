@@ -41,3 +41,29 @@ dialog{width:min(840px,calc(100% - 32px));max-height:calc(100dvh - 48px);padding
 .timeline-branch .hanging-work{pointer-events:auto}
 .period-label{position:absolute;top:0;left:0;color:var(--mist);font-size:11px;letter-spacing:.1em;pointer-events:none}
 @media(max-width:600px){.intro{height:350px;padding-top:126px}.portrait-hanger{width:132px}.portrait-wire{height:126px}#works{padding:0 20px}}
+/* Quiet stepped silhouettes behind the mobile, in three seamless drifting layers. */
+#pixelClouds{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.cloud-track{--span:max(100vw,720px);position:absolute;display:flex;width:calc(var(--span) * 2);height:160px;animation:cloud-drift 180s linear infinite;will-change:transform}
+.cloud-band{position:relative;flex:0 0 var(--span);height:100%}
+.pixel-cloud{position:absolute;display:block;width:280px;height:88px;background:#6383ab;clip-path:polygon(0 60%,8% 60%,8% 40%,20% 40%,20% 20%,32% 20%,32% 0,52% 0,52% 20%,64% 20%,64% 40%,84% 40%,84% 60%,100% 60%,100% 80%,92% 80%,92% 100%,12% 100%,12% 80%,0 80%)}
+.pixel-cloud:after{content:"";position:absolute;inset:60% 0 0;background:#294a75;clip-path:polygon(0 50%,24% 50%,24% 0,56% 0,56% 50%,88% 50%,88% 100%,0 100%)}
+.pixel-cloud{max-width:24%}
+.cloud-0{left:3%;top:0}.cloud-1{left:40%;top:48px;width:200px;height:64px}.cloud-2{left:76%;top:20px;width:160px;height:56px}
+.cloud-layer-0{top:15%;opacity:.09;animation-duration:240s;animation-delay:-83s}
+.cloud-layer-1{top:44%;opacity:.13;animation-duration:180s;animation-delay:-36s}
+.cloud-layer-1 .pixel-cloud{width:340px;height:104px}
+.cloud-layer-2{top:77%;opacity:.17;animation-duration:125s;animation-delay:-72s}
+.cloud-layer-2 .pixel-cloud{width:400px;height:120px}
+#pixelClouds.is-paused .cloud-track{animation-play-state:paused}
+@keyframes cloud-drift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* The original-resolution image flies above the low-resolution tunnel canvas. */
+dialog.is-arriving{--arrival:0;background:linear-gradient(135deg,rgb(23 45 75 / var(--arrival)),rgb(13 26 50 / var(--arrival)));border-color:rgb(165 186 202 / var(--arrival));box-shadow:5px 6px 0 rgb(48 71 101 / var(--arrival)),0 35px 110px rgb(0 0 0 / calc(var(--arrival) * .73));overflow:visible}
+dialog.is-arriving::backdrop{background:rgb(3 10 27 / calc(var(--arrival) * .85));backdrop-filter:blur(calc(var(--arrival) * 7px))}
+dialog.is-arriving .dialog-top,dialog.is-arriving #dialogContent{opacity:var(--arrival);pointer-events:none}
+.artwork-transit{position:fixed;inset:0;width:100vw;height:100dvh;overflow:hidden;z-index:10;pointer-events:auto;touch-action:none}
+.artwork-transit canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
+.transit-image{position:absolute;left:0;top:0;max-width:none;object-fit:contain;transform-origin:0 0;will-change:transform,opacity;pointer-events:none}
+.work-button[aria-busy="true"]{cursor:progress}
+#artworkStatus{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40;margin:0;padding:8px 16px;max-width:calc(100% - 32px);background:#10213bf2;border:1px solid #6383ab;color:var(--silver);font-size:12px;pointer-events:none}
+#artworkStatus:empty{display:none}
+@media(prefers-reduced-motion:reduce){.cloud-track{animation:none;will-change:auto;transform:translateX(-20%)}.artwork-transit canvas{display:none}dialog.is-arriving::backdrop{backdrop-filter:none}}
