@@ -1,5 +1,5 @@
 import { siteData, socialLinks } from './data/siteData.js';
-import { HangingMobile } from './hanging-mobile.js';
+import { HangingMobile, buildTimeline } from './hanging-mobile.js';
 import { artworkOrigin, decodeArtwork, enterArtwork } from './artwork-transition.js';
 import { createPixelClouds } from './pixel-clouds.js';
 
@@ -63,10 +63,11 @@ const mobileMotion = new HangingMobile();
 function renderGallery() {
   mobileMotion.clear();
   gallery.replaceChildren();
+  const visibleArtworks = buildTimeline(artworks).flatMap(period => period.works).slice(0, 20);
   if (!artworks.length) gallery.append(element('p', 'loading', t('作品整理中，稍後見。', 'More artworks are on their way.')));
   if (artworks.length) {
     const rig = element('div', 'mobile-rig');
-    artworks.forEach(artwork => {
+    visibleArtworks.forEach(artwork => {
       const figure = element('figure', 'hanging-work');
       const motion = element('div', 'work-motion');
       const button = element('button', 'metal-frame work-button');
@@ -89,7 +90,7 @@ function renderGallery() {
       if (artwork.date) caption.append(element('span', 'work-meta', artwork.date));
       motion.append(button, caption); figure.append(motion); rig.append(figure);
     });
-    gallery.append(rig); mobileMotion.add(rig, artworks);
+    gallery.append(rig); mobileMotion.add(rig, visibleArtworks);
   }
 }
 function queueHide() {

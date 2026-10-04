@@ -19,7 +19,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'playwright');
   try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } }); watch(page);
     await page.goto('http://127.0.0.1:5505'); await page.waitForLoadState('networkidle');
-    const catalog = JSON.parse(await fs.readFile('scripts/data/artwork-catalog.json', 'utf8'));
+    const catalog = JSON.parse(await fs.readFile('scripts/data/artwork-catalog.json', 'utf8')).slice(0, 20);
     const firstTitle = catalog[0].title.zh;
     assert.equal(await page.locator('.work-button').count(), catalog.length);
     assert.equal(await page.locator('.mobile-rig').count(), 1);
@@ -157,6 +157,18 @@ const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'playwright');
       return { top: Math.min(...boxes.map(box => box.top)), bottom: Math.max(...boxes.map(box => box.bottom)) };
     }));
     for (let i = 1; i < branchBounds.length; i++) assert.ok(branchBounds[i].top > branchBounds[i - 1].bottom, 'Older period appeared above newer work');
+    // Limit only the displayed mobile, after date ordering, including language rerenders.
+    const overflow = Array.from({ length: 25 }, (_, i) => ({ ...catalog[i % catalog.length], id: `dated-${i}`, date: `2026-10-${String(i + 1).padStart(2, '0')}` }));
+    await dated.unroute('**/scripts/data/artwork-catalog.json');
+    await dated.route('**/scripts/data/artwork-catalog.json', route => route.fulfill({ json: [...catalog.map(work => ({ ...work, date: null })), ...overflow] }));
+    await dated.reload(); await dated.waitForLoadState('networkidle');
+    const newest = overflow.slice(-20).reverse().map(work => work.id);
+    const displayed = () => dated.locator('.work-button').evaluateAll(nodes => nodes.map(node => node.dataset.artwork));
+    assert.deepEqual(await displayed(), newest);
+    assert.equal(await dated.locator('.timeline-branch').count(), 1);
+    await dated.locator('#language').click();
+    assert.deepEqual(await displayed(), newest);
+    console.log('PASS latest 20: sorted before limiting, undated fallback excluded when full, language preserves selection');
     await dated.close();
     console.log('PASS dated fixture: month branches, 10 works remain together, newer periods above older');
     await page.goto('http://127.0.0.1:5505/dist/index.html'); await page.waitForLoadState('networkidle');

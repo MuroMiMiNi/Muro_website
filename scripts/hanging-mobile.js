@@ -77,7 +77,10 @@ export class HangingMobile {
   measure() {
     const scene = this.scene; if (!scene) return;
     scene.width = scene.rig.clientWidth;
-    scene.portraitBottom = document.querySelector('.portrait-hanger').getBoundingClientRect().bottom - scene.rig.getBoundingClientRect().top;
+    const bounds = scene.rig.getBoundingClientRect();
+    const center = bounds.left + scene.width / 2;
+    scene.edgeSpace = Math.min(center, innerWidth - center);
+    scene.portraitBottom = document.querySelector('.portrait-hanger').getBoundingClientRect().bottom - bounds.top;
     this.draw();
   }
 
@@ -113,6 +116,7 @@ export class HangingMobile {
     const rotation = still ? 0 : scene.rotationTime;
     const size = compact ? Math.max(57, Math.min(78, w * .18)) : Math.min(112, w * .12);
     const camera = w * 3.5;
+    const leafGap = size * (compact ? .8 : .6) + 8;
     const project = point => {
       const scale = camera / (camera - point.z);
       return { x: Math.round(w / 2 + point.x * scale), y: Math.round(point.y + point.z * .24), scale };
@@ -143,7 +147,7 @@ export class HangingMobile {
         if (node.figure) {
           let target = still ? staticPoint(node.index) : {
             x: mount.x + Math.sin(t * 1.15 + node.id) * 5,
-            y: leafBase + node.index * (compact ? 27 : 23),
+            y: leafBase + node.index * leafGap,
             z: mount.z + Math.sin(t * .9 + node.id) * 6
           };
           let tilt = still ? 0 : Math.sin(t * 1.15 + node.id) * 2;
@@ -192,13 +196,17 @@ export class HangingMobile {
         });
       }
       line(period.rootWire, incoming, origin);
-      drawNode(period.tree, origin, origin, w * (compact ? .16 : .19), still ? 0 : yaw);
+      // Reserve room for the full rotating branch and its framed artwork at either edge.
+      const span = (1 - .62 ** Math.max(1, period.levels)) / (1 - .62);
+      const available = (scene.edgeSpace - size * .65 - 12 - Math.abs(origin.x)) * .98;
+      const reach = Math.min(w * (compact ? .2 : .21), available / span);
+      drawNode(period.tree, origin, origin, reach, still ? 0 : yaw);
       place(period.joint, origin);
       if (period.label) place(period.label, { ...origin, x: origin.x + 18, y: origin.y - 22 });
       period.host.dataset.firstDate = period.works[0].date ?? '';
       period.host.dataset.lastDate = period.works.at(-1).date ?? '';
       incoming = continuation;
-      bottom = leafBase + (still ? (Math.ceil(count / 4) - 1) * rowGap + 30 : (count - 1) * (compact ? 27 : 23) + w * .095) + size * 1.2 + 35;
+      bottom = leafBase + (still ? (Math.ceil(count / 4) - 1) * rowGap + 30 : (count - 1) * leafGap + w * .095) + size * 1.2 + 35;
       top = bottom + 60;
     });
     const weight = { x: 0, y: bottom + 35, z: 0 };
