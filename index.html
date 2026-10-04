@@ -1,60 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>木洛Muro | Muro_MiMiNi</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./styles/base.css?v=20260618-mobile-thumbs">
-    <link rel="stylesheet" href="./styles/layout.css?v=20260618-mobile-thumbs">
-    <link rel="stylesheet" href="./styles/components.css?v=20260622-menu-carousel">
-    <link rel="stylesheet" href="./styles/queue-board.css?v=20260622-visual-queue-editor">
-    <link rel="stylesheet" href="./styles/responsive.css?v=20260622-queue-table">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1733">
+  <meta name="description" content="木洛 Muro 的夜空作品室。沿著星光與床鈴，慢慢欣賞每一件作品。">
+  <title>木洛 Muro｜夜空作品室</title>
+  <link rel="stylesheet" href="./styles/example-e.css">
 </head>
 <body>
-    <div class="site-signature" aria-hidden="true">木洛Muro</div>
-    <div class="top-controls">
-        <div class="glass-nav" id="mainNav"></div>
-        <div class="lang-switch" id="langSwitch">
-            <button class="glass-btn lang-toggle" id="langToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu">
-                <span class="lang-toggle-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" focusable="false">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2Zm6.93 9h-3.18a15.3 15.3 0 0 0-1.38-5.01A8.03 8.03 0 0 1 18.93 11ZM12 4.04c.83 1.2 1.98 3.63 2.39 6.96H9.61C10.02 7.67 11.17 5.24 12 4.04ZM4.26 13h3.18c.16 1.77.63 3.46 1.38 5.01A8.03 8.03 0 0 1 4.26 13Zm3.18-2H4.26a8.03 8.03 0 0 1 4.56-5.01A15.3 15.3 0 0 0 7.44 11Zm4.56 8.96c-.83-1.2-1.98-3.63-2.39-6.96h4.78c-.41 3.33-1.56 5.76-2.39 6.96ZM14.8 13h3.76a13.31 13.31 0 0 1-1.73 4.9c-.84.37-1.73.63-2.65.77.34-1.11.55-2.34.62-3.67ZM14.8 11a12.3 12.3 0 0 0-.62-3.67c.92.14 1.81.4 2.65.77A13.31 13.31 0 0 1 18.56 11H14.8Zm-5.6 0H5.44a13.31 13.31 0 0 1 1.73-4.9c.84-.37 1.73-.63 2.65-.77A12.3 12.3 0 0 0 9.2 11Zm0 2c.07 1.33.28 2.56.62 3.67-.92-.14-1.81-.4-2.65-.77A13.31 13.31 0 0 1 5.44 13H9.2Z"></path>
-                    </svg>
-                </span>
-                <span class="lang-toggle-label" id="langCurrent">ZH</span>
-            </button>
-            <div class="lang-menu" id="langMenu" role="menu" aria-labelledby="langToggle" hidden>
-                <button class="lang-menu-item" id="langZh" type="button" role="menuitem">中文</button>
-                <button class="lang-menu-item" id="langEn" type="button" role="menuitem">English</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="floating-sub-nav" id="subPanel">
-        <div class="sub-title" id="catLabel">CATEGORY</div>
-        <ul class="sub-list" id="subList"></ul>
-    </div>
-
-    <button
-        class="floating-gif"
-        id="floatingGif"
-        type="button"
-        aria-label="Back to About"
-        title="Double-click to open About"
-    >
-        <img
-            src="./assets/floating-mascot.gif"
-            data-fallback-src="https://media.discordapp.net/attachments/966010256817786944/1245086326194311288/9311f6d59cb59c848453b0db10001748406949928.gif?ex=69fb8d00&is=69fa3b80&hm=cddab387934ac0c5608eaaf912d9e97d3dd75e3665d77b18c7eb395b9be5590a&=&width=158&height=128"
-            alt="Floating mascot"
-            draggable="false"
-        >
-    </button>
-
-    <div class="display-area" id="displayArea"></div>
-
-    <script type="module" src="./scripts/app.js?v=20260622-visual-queue-editor"></script>
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute"><filter id="signature-ink" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .78  0 0 0 0 .87  0 0 0 0 .94  -1 -1 -1 0 2.3"/></filter></svg>
+  <a class="skip-link" href="#works">跳至作品 / Skip to works</a>
+  <div class="night-sky" aria-hidden="true"><div id="stars"></div><div class="horizon"></div></div>
+  <header id="siteHeader">
+    <a class="signature" href="#top" aria-label="木洛 Muro"><img src="./assets/profile/muro-signature.png" alt="木洛Muro" width="460" height="161"></a>
+    <nav aria-label="主導覽 / Main navigation">
+      <button type="button" data-page="about" data-zh="關於" data-en="About">關於</button>
+      <a href="#works" data-zh="作品" data-en="Works">作品</a>
+      <button type="button" data-page="games" data-zh="遊戲" data-en="Games">遊戲</button>
+      <button type="button" id="language" aria-label="Switch to English">語系 <span>中文</span></button>
+    </nav>
+    <span class="header-note" data-zh="像素之間，收藏微光。" data-en="Little lights, pixel by pixel.">像素之間，收藏微光。</span>
+  </header>
+  <main id="top">
+    <section class="intro" aria-labelledby="introTitle">
+      <div class="intro-copy"><span class="tiny-star" aria-hidden="true">✦</span><h1 id="introTitle" data-zh="把喜歡的，掛在星空裡。" data-en="A little sky for things I love.">把喜歡的，掛在星空裡。</h1><p data-zh="我是木洛。畫角色，也收藏一些小小的夢。" data-en="I'm Muro. I draw characters and collect little dreams.">我是木洛。畫角色，也收藏一些小小的夢。</p></div>
+      <div class="portrait-hanger">
+        <span class="portrait-wire" aria-hidden="true"></span>
+        <button type="button" class="metal-frame portrait" data-page="about" aria-label="關於木洛 / About Muro"><img src="./assets/profile/muro-night.png" width="2078" height="2671" alt="木洛的白髮藍眼角色圖示" fetchpriority="high"><span class="corner-mark" aria-hidden="true">✦</span></button>
+        <span class="portrait-caption">Muro's little universe</span>
+      </div>
+      <div class="intro-side"><span class="pixel-moon" aria-hidden="true"></span><p data-zh="讓作品輕輕搖晃，&#10;讓時間慢慢流過。" data-en="Let the pictures sway.&#10;Let time drift by.">讓作品輕輕搖晃，&#10;讓時間慢慢流過。</p></div>
+      <a class="scroll-note" href="#works"><span data-zh="往下，遇見作品" data-en="Drift down to the artworks">往下，遇見作品</span><span aria-hidden="true">↓</span></a>
+    </section>
+    <section id="works" aria-label="懸掛作品集 / Hanging portfolio">
+      <div class="gallery-heading"><h2 data-zh="星空下的收藏" data-en="Collected under the stars">星空下的收藏</h2><p id="galleryHint"></p></div>
+      <div id="mobileGallery" class="mobile-gallery" aria-live="polite"><p class="loading">正在掛上作品…</p></div>
+      <div class="end-star" aria-hidden="true">✦</div>
+    </section>
+    <footer><p data-zh="謝謝你，走進我的小小宇宙。" data-en="Thank you for visiting my little universe.">謝謝你，走進我的小小宇宙。</p><div id="socialLinks"></div><small>© <span id="year"></span> 木洛 Muro</small><a href="#top" data-zh="回到星空頂端 ↑" data-en="Back to the sky ↑">回到星空頂端 ↑</a></footer>
+  </main>
+  <button type="button" id="scope" class="scope" aria-label="開啟作品詳情" hidden><span class="scope-label" data-zh="作品觀測鏡" data-en="Artwork viewer">作品觀測鏡</span><span class="scope-lens"><img alt="" id="scopeImage"></span><span class="scope-caption" id="scopeCaption"></span><span class="scope-action" data-zh="點按查看作品 ↗" data-en="Tap to explore ↗">點按查看作品 ↗</span></button>
+  <button type="button" id="floatingGif" class="floating-gif" aria-label="木洛的蛋，雙擊開啟關於" title="拖曳移動 · 雙擊關於"><img src="./assets/floating-mascot.gif" alt="" width="79" height="64" draggable="false"></button>
+  <dialog id="detailDialog" aria-labelledby="dialogTitle"><div class="dialog-top"><button type="button" id="stepBack">← 返回</button><button type="button" id="closeDialog" aria-label="返回作品 / Close">✕</button></div><div id="dialogContent"></div></dialog>
+  <noscript><p class="no-script">請啟用 JavaScript 以瀏覽作品集。Enable JavaScript to view the gallery.</p></noscript>
+  <script type="module" src="./scripts/example-e.js"></script>
 </body>
 </html>
