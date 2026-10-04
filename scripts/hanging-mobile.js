@@ -30,6 +30,7 @@ export class HangingMobile {
 
   add(rig, artworks) {
     const figures = new Map([...rig.querySelectorAll('.hanging-work')].map(figure => [figure.querySelector('button').dataset.artwork, figure]));
+    const leaves = new Map();
     const decoration = (parent, kind) => {
       const node = document.createElement('span'); node.className = kind; node.setAttribute('aria-hidden', 'true'); parent.append(node); return node;
     };
@@ -43,7 +44,8 @@ export class HangingMobile {
         const id = serial++;
         if (items.length === 1) {
           const artwork = items[0]; const figure = figures.get(artwork.id); host.append(figure);
-          return { figure, index: period.works.indexOf(artwork), wire: decoration(host, 'mobile-link mobile-wire'), depth, id };
+          const leaf = { figure, index: period.works.indexOf(artwork), wire: decoration(host, 'mobile-link mobile-wire'), depth, id };
+          leaves.set(figure, leaf); return leaf;
         }
         const middle = Math.ceil(items.length / 2);
         return {
@@ -57,9 +59,19 @@ export class HangingMobile {
     });
     const tail = decoration(rig, 'mobile-link mobile-wire');
     const charm = decoration(rig, 'mobile-charm'); charm.textContent = '✦';
-    this.scene = { rig, periods, tail, charm, time: 0, visible: false, width: rig.clientWidth, portraitBottom: 0 };
+    this.scene = { rig, periods, leaves, tail, charm, time: 0, rotationTime: 0, turnRate: 1, held: null, visible: false, width: rig.clientWidth, portraitBottom: 0 };
     this.measure(); this.observer.observe(rig); this.resize.observe(rig);
     this.resize.observe(document.querySelector('.portrait-hanger'));
+  }
+
+  hold(trigger) {
+    const scene = this.scene; if (!scene) return;
+    const leaf = scene.leaves.get(trigger?.closest('.hanging-work')) ?? null;
+    if (leaf === scene.held) return;
+    if (scene.held) scene.held.release = { pose: scene.held.pose, time: scene.time };
+    scene.held = leaf;
+    if (leaf) { leaf.release = null; scene.turnRate = 0; }
+    scene.rig.classList.toggle('is-inspecting', Boolean(leaf));
   }
 
   measure() {
@@ -78,8 +90,13 @@ export class HangingMobile {
       const delta = previous ? Math.min((now - previous) / 1000, .08) : 0;
       if (!previous || delta >= 1 / 30) {
         previous = now;
-        if (!this.scene.rig.classList.contains('is-inspecting') && document.body.style.position !== 'fixed') {
-          this.scene.time += delta; this.draw();
+        if (document.body.style.position !== 'fixed') {
+          this.scene.time += delta;
+          if (!this.scene.held) {
+            this.scene.turnRate = Math.min(1, this.scene.turnRate + delta * 1.8);
+            this.scene.rotationTime += delta * this.scene.turnRate;
+          }
+          this.draw();
         }
       }
       if (this.scene?.visible && !document.hidden) this.frame = requestAnimationFrame(tick);
@@ -93,6 +110,7 @@ export class HangingMobile {
     const scene = this.scene; if (!scene?.width) return;
     const w = scene.width; const compact = w < 600; const still = this.reduced.matches;
     const t = still ? 0 : scene.time;
+    const rotation = still ? 0 : scene.rotationTime;
     const size = compact ? Math.max(57, Math.min(78, w * .18)) : Math.min(112, w * .12);
     const camera = w * 3.5;
     const project = point => {
@@ -114,7 +132,7 @@ export class HangingMobile {
       const rowGap = size + 46;
       const leafBase = top + Math.max(1, period.levels) * (compact ? 58 : 66) + 35;
       const origin = { x: incoming.x * .35, y: top, z: incoming.z * .35 };
-      const yaw = .22 + periodIndex * .8 + t * .19;
+      const yaw = .22 + periodIndex * .8 + rotation * .19;
       let continuation = origin;
       const staticPoint = index => ({
         x: (Math.floor(index / Math.ceil(count / 4)) - (Math.min(4, count) - 1) / 2) * w * .225,
@@ -123,17 +141,30 @@ export class HangingMobile {
       });
       function drawNode(node, mount, center, reach, heading) {
         if (node.figure) {
-          const target = still ? staticPoint(node.index) : {
+          let target = still ? staticPoint(node.index) : {
             x: mount.x + Math.sin(t * 1.15 + node.id) * 5,
             y: leafBase + node.index * (compact ? 27 : 23),
             z: mount.z + Math.sin(t * .9 + node.id) * 6
           };
+          let tilt = still ? 0 : Math.sin(t * 1.15 + node.id) * 2;
+          if (!still && scene.held === node && node.pose) {
+            // Pin this ornament in space; its string still follows the moving mount.
+            ({ target, tilt } = node.pose);
+          } else if (!still && node.release) {
+            const progress = Math.min(1, (t - node.release.time) / .6);
+            const blend = progress * progress * (3 - 2 * progress);
+            const from = node.release.pose;
+            target = Object.fromEntries(['x', 'y', 'z'].map(axis => [axis, from.target[axis] + (target[axis] - from.target[axis]) * blend]));
+            tilt = from.tilt + (tilt - from.tilt) * blend;
+            if (progress === 1) node.release = null;
+          }
+          node.pose = { target, tilt };
           const p = project(target);
           node.figure.style.width = `${size}px`;
           node.figure.style.transform = `translate(${p.x}px, ${p.y}px) translateX(-50%) scale(${p.scale.toFixed(4)})`;
           node.figure.style.zIndex = 501 + Math.round(target.z);
           node.figure.dataset.depth = target.z.toFixed(2);
-          node.figure.querySelector('.work-motion').style.transform = `rotate(${still ? 0 : Math.sin(t * 1.15 + node.id) * 2}deg)`;
+          node.figure.querySelector('.work-motion').style.transform = `rotate(${tilt}deg)`;
           line(node.wire, mount, target);
           return;
         }
@@ -149,7 +180,7 @@ export class HangingMobile {
         if (node.depth === 0) continuation = ends[periodIndex % 2];
         node.children.forEach((child, side) => {
           let next = { ...ends[side], y: ends[side].y + (compact ? 58 : 66) };
-          let nextHeading = heading + (still ? 0 : .5 + child.id * .8 + t * (child.id % 2 ? -.22 : .17));
+          let nextHeading = heading + (still ? 0 : .5 + child.id * .8 + rotation * (child.id % 2 ? -.22 : .17));
           if (still) {
             const indices = [];
             const collect = branch => branch.figure ? indices.push(branch.index) : branch.children.forEach(collect);
@@ -174,5 +205,6 @@ export class HangingMobile {
     line(scene.tail, { x: 0, y: 45, z: 0 }, weight); place(scene.charm, weight);
     scene.rig.style.height = `${Math.ceil(weight.y + 50)}px`;
     scene.rig.dataset.motionTime = t.toFixed(3);
+    scene.rig.dataset.rotationTime = rotation.toFixed(3);
   }
 }

@@ -39,11 +39,31 @@ const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'playwright');
     const firstBox = await page.locator('.work-button').first().boundingBox();
     await page.mouse.move(firstBox.x + firstBox.width / 2, firstBox.y + firstBox.height / 2);
     await page.locator('#scope').waitFor({ state: 'visible' }); await inside(page, '#scope');
-    const pausedTime = await page.locator('.mobile-rig').getAttribute('data-motion-time');
+    const pausedRotation = await page.locator('.mobile-rig').getAttribute('data-rotation-time');
+    const snapshot = () => page.evaluate(() => {
+      const src = document.querySelector('#scopeImage').getAttribute('src');
+      return [...document.querySelectorAll('.hanging-work')].map(figure => {
+        const point = figure.style.transform.match(/translate\(([\d.-]+)px, ([\d.-]+)px/);
+        const wire = figure.nextElementSibling;
+        const matrix = new DOMMatrix(getComputedStyle(wire).transform);
+        const length = parseFloat(wire.style.width);
+        return { held: figure.querySelector('img').getAttribute('src') === src,
+          pose: figure.style.transform, tilt: figure.querySelector('.work-motion').style.transform,
+          connected: Math.abs(matrix.e + matrix.a * length - Number(point[1])) < 1 && Math.abs(matrix.f + matrix.b * length - Number(point[2])) < 1 };
+      });
+    });
+    const heldBefore = await snapshot();
     await page.waitForTimeout(500);
-    assert.equal(await page.locator('.mobile-rig').getAttribute('data-motion-time'), pausedTime);
+    const heldAfter = await snapshot();
+    assert.equal(await page.locator('.mobile-rig').getAttribute('data-rotation-time'), pausedRotation);
+    assert.deepEqual(heldAfter.find(item => item.held), heldBefore.find(item => item.held), 'Hovered ornament must stay pinned');
+    assert.ok(heldAfter.some((item, i) => !item.held && item.pose !== heldBefore[i].pose), 'Other ornaments should continue swaying');
+    assert.ok(heldAfter.every(item => item.connected), 'Strings must still meet the ornaments');
     await page.screenshot({ path: '.test-results/desktop-preview.png' });
     await page.mouse.move(20, 550);
+    await page.locator('#scope').waitFor({ state: 'hidden' });
+    await page.waitForTimeout(700);
+    assert.ok(Number(await page.locator('.mobile-rig').getAttribute('data-rotation-time')) > Number(pausedRotation), 'Rotation should resume after release');
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.waitForFunction(() => matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('.mobile-rig').dataset.motionTime === '0.000');
     const stillPose = await page.locator('.hanging-work').first().getAttribute('style');

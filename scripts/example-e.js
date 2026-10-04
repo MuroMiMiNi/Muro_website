@@ -97,15 +97,14 @@ function queueHide() {
 }
 function hidePreview() {
   clearTimeout(hideTimer); scope.hidden = true;
-  previewTrigger?.closest('.mobile-rig').classList.remove('is-inspecting');
+  mobileMotion.hold(null);
   preview = null; previewTrigger = null;
 }
 function showPreview(artwork, trigger) {
   clearTimeout(hideTimer);
   if (dialog.open || artworkEntry) return;
-  previewTrigger?.closest('.mobile-rig').classList.remove('is-inspecting');
   preview = artwork; previewTrigger = trigger;
-  trigger.closest('.mobile-rig').classList.add('is-inspecting');
+  mobileMotion.hold(trigger);
   $('#scopeImage').src = artwork.src; $('#scopeImage').alt = title(artwork);
   $('#scopeCaption').textContent = title(artwork);
   scope.setAttribute('aria-label', t(`查看 ${title(artwork)} 詳情`, `Explore ${title(artwork)}`));
@@ -138,7 +137,7 @@ async function openArtwork(artwork, trigger, source = trigger.querySelector('img
   const controller = new AbortController(); artworkEntry = controller;
   const origin = artworkOrigin(source);
   trigger.setAttribute('aria-busy', 'true');
-  trigger.closest('.mobile-rig').classList.add('is-inspecting');
+  mobileMotion.hold(trigger);
   $('#artworkStatus').textContent = t('正在載入圖片…', 'Loading artwork…');
   try {
     const image = imageFor(artwork, 'detail-art');
@@ -155,7 +154,7 @@ async function openArtwork(artwork, trigger, source = trigger.querySelector('img
   } finally {
     if ($('#artworkStatus').textContent === t('正在載入圖片…', 'Loading artwork…')) $('#artworkStatus').textContent = '';
     trigger.removeAttribute('aria-busy');
-    trigger.closest('.mobile-rig').classList.remove('is-inspecting');
+    mobileMotion.hold(null);
     if (artworkEntry === controller) artworkEntry = null;
   }
 }
