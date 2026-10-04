@@ -94,7 +94,7 @@ export class HangingMobile {
           this.scene.time += delta;
           if (!this.scene.held) {
             this.scene.turnRate = Math.min(1, this.scene.turnRate + delta * 1.8);
-            this.scene.rotationTime += delta * this.scene.turnRate;
+            this.scene.rotationTime += delta * this.scene.turnRate * .65;
           }
           this.draw();
         }
