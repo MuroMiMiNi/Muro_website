@@ -27,55 +27,77 @@ export function createPixelMeteors(host) {
   canvas.setAttribute('aria-hidden','true'); host.append(canvas);
   const ctx = canvas.getContext('2d'), sprites = starFrames();
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let timer, frame;
+  let timer, frame, meteors = [];
   const allowed = () => !document.hidden && !reduced.matches;
+  const random = (min,max) => min + Math.random()*(max-min);
+  const point = (meteor,t) => {
+    const u = 1-t;
+    return {
+      x: u*u*meteor.start.x + 2*u*t*meteor.bend.x + t*t*meteor.end.x,
+      y: u*u*meteor.start.y + 2*u*t*meteor.bend.y + t*t*meteor.end.y
+    };
+  };
   function stop() {
-    clearTimeout(timer); cancelAnimationFrame(frame);
+    clearTimeout(timer); cancelAnimationFrame(frame); frame = 0; meteors = [];
     ctx.clearRect(0,0,canvas.width,canvas.height); canvas.hidden = true;
   }
   function schedule(first = false) {
-    if (allowed()) timer = setTimeout(fly, first ? 4000 + Math.random()*4000 : 12000 + Math.random()*12000);
+    if (allowed()) timer = setTimeout(launch, first ? random(1200,3000) : random(450,2400));
   }
-  function fly() {
+  function launch() {
     if (!allowed()) return;
-    canvas.width = Math.ceil(innerWidth/2); canvas.height = Math.ceil(innerHeight/2);
-    ctx.imageSmoothingEnabled = false; canvas.hidden = false;
-    const w = canvas.width, h = canvas.height, compact = innerWidth <= 600;
-    const direction = Math.random() < .5 ? -1 : 1;
-    const sizes = compact ? [8,10,12,14] : [10,13,17,20];
-    const size = sizes[Math.floor(Math.random()*sizes.length)];
-    const tail = (compact ? 42 : 65) * size / (compact ? 13 : 17);
-    const fromX = direction > 0 ? -tail : w+tail;
-    const fromY = h*(.1 + Math.random()*.32);
-    const dx = direction*(w+tail*2), dy = h*(.18 + Math.random()*.16);
-    const length = Math.hypot(dx,dy), ux = dx/length, uy = dy/length;
-    const duration = compact ? 2100 : 2600;
-    const spin = Math.random() < .5 ? -1 : 1;
-    const start = performance.now();
-    const draw = now => {
-      const progress = Math.min(1,(now-start)/duration);
-      const x = fromX+dx*progress, y = fromY+dy*progress;
-      ctx.clearRect(0,0,w,h);
-      ctx.globalAlpha = Math.min(1,progress/.12,(1-progress)/.18)*.78;
-      // Short square embers taper to cool blue, following the flight rather than the spin.
-      for (let piece = 27; piece >= 0; piece--) {
-        const age = piece/27, distance = 7+age*tail;
-        const scatter = piece % 3 === 0 ? Math.sin(piece*2.4)*age*4 : 0;
-        const size = piece < 6 ? 3 : piece < 17 ? 2 : 1;
-        const px = Math.round(x-ux*distance-uy*scatter), py = Math.round(y-uy*distance+ux*scatter);
-        ctx.fillStyle = age < .2 ? '#c9d9cc' : age < .48 ? '#789dad' : age < .76 ? '#446486' : '#2a4268';
-        ctx.fillRect(px,py,size,size);
-      }
-      const rotation = ((Math.floor((now-start)/65)*spin)%24+24)%24;
-      ctx.drawImage(sprites[rotation],Math.round(x-size/2),Math.round(y-size/2),size,size);
-      ctx.globalAlpha = 1;
-      if (progress < 1) frame = requestAnimationFrame(draw);
-      else { canvas.hidden = true; ctx.clearRect(0,0,w,h); schedule(); }
-    };
-    frame = requestAnimationFrame(draw);
+    if (meteors.length < 10) {
+      const w = canvas.width, h = canvas.height, compact = innerWidth <= 600;
+      const start = { x: w*random(.55,1.12), y: h*random(-.12,.3) };
+      const end = { x: w*random(-.2,.25), y: h*random(.75,1.15) };
+      meteors.push({
+        start, end,
+        bend: { x: start.x+(end.x-start.x)*random(.28,.58), y: start.y+(end.y-start.y)*random(.04,.26) },
+        size: Math.round(compact ? random(8,15) : random(10,20)),
+        duration: random(3800,9200), born: performance.now(), opacity: random(.24,.48),
+        spin: (Math.random() < .5 ? -1 : 1)*random(.6,1.2)
+      });
+      canvas.hidden = false;
+      if (!frame) frame = requestAnimationFrame(draw);
+    }
+    // One launch per timer: a full sky waits for room, never releases a queued batch.
+    schedule();
   }
-  document.addEventListener('visibilitychange', () => { stop(); schedule(true); });
-  reduced.addEventListener('change', () => { stop(); schedule(true); });
-  window.addEventListener('resize', () => { stop(); schedule(true); });
-  schedule(true);
+  function draw(now) {
+    frame = 0;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    meteors = meteors.filter(meteor => now-meteor.born < meteor.duration);
+    for (const meteor of meteors) {
+      const progress = (now-meteor.born)/meteor.duration;
+      const head = point(meteor,progress);
+      const fade = Math.min(1,progress/.13,(1-progress)/.22)*meteor.opacity;
+      // Sample earlier points on the same curve so the pixel embers bend with the flight.
+      for (let piece = 27; piece >= 0; piece--) {
+        const age = piece/27;
+        const past = progress-(.012+age*.14)*meteor.size/17;
+        if (past < 0) continue;
+        const ember = point(meteor,past);
+        const scatter = piece % 3 === 0 ? Math.sin(piece*2.4)*age*3 : 0;
+        const size = piece < 6 ? 3 : piece < 17 ? 2 : 1;
+        ctx.globalAlpha = fade*(1-age*.65);
+        ctx.fillStyle = age < .2 ? '#c9d9cc' : age < .48 ? '#789dad' : age < .76 ? '#446486' : '#2a4268';
+        ctx.fillRect(Math.round(ember.x+scatter),Math.round(ember.y-scatter),size,size);
+      }
+      const rotation = ((Math.floor((now-meteor.born)/65*meteor.spin)%24)+24)%24;
+      ctx.globalAlpha = fade;
+      ctx.drawImage(sprites[rotation],Math.round(head.x-meteor.size/2),Math.round(head.y-meteor.size/2),meteor.size,meteor.size);
+    }
+    ctx.globalAlpha = 1;
+    if (meteors.length) frame = requestAnimationFrame(draw);
+    else canvas.hidden = true;
+  }
+  function restart() {
+    stop();
+    canvas.width = Math.ceil(innerWidth/2); canvas.height = Math.ceil(innerHeight/2);
+    ctx.imageSmoothingEnabled = false; schedule(true);
+  }
+  document.addEventListener('visibilitychange', restart);
+  reduced.addEventListener('change', restart);
+  window.addEventListener('resize', restart);
+  restart();
 }
