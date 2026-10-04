@@ -1,6 +1,7 @@
 import { siteData, socialLinks } from './data/siteData.js';
 import { HangingMobile } from './hanging-mobile.js';
 import { artworkOrigin, decodeArtwork, enterArtwork } from './artwork-transition.js';
+import { createPixelClouds } from './pixel-clouds.js';
 
 const $ = selector => document.querySelector(selector);
 const gallery = $('#mobileGallery');
@@ -53,16 +54,7 @@ for (let i = 0; i < 72; i++) {
   $('#stars').append(star);
 }
 $('#year').textContent = new Date().getFullYear();
-// Matching halves make every cloud layer loop without a visible reset.
-for (let layer = 0; layer < 3; layer++) {
-  const track = element('div', `cloud-track cloud-layer-${layer}`);
-  for (let copy = 0; copy < 2; copy++) {
-    const band = element('div', 'cloud-band');
-    for (let i = 0; i < 3; i++) band.append(element('i', `pixel-cloud cloud-${i}`));
-    track.append(band);
-  }
-  $('#pixelClouds').append(track);
-}
+createPixelClouds($('#pixelClouds'));
 document.addEventListener('visibilitychange', () => {
   $('#pixelClouds').classList.toggle('is-paused', document.hidden);
 });
