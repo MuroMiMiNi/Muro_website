@@ -215,7 +215,7 @@ function setLanguage() {
   document.documentElement.lang = lang === 'zh' ? 'zh-TW' : 'en';
   document.title = t('木洛 Muro｜夜空作品室', 'Muro | A little universe');
   document.querySelectorAll('[data-zh]').forEach(node => { node.textContent = node.dataset[lang]; });
-  $('#language').textContent = t('語系 中文', 'Language EN');
+  $('#language').textContent = t('EN', '中文');
   $('#language').setAttribute('aria-label', t('Switch to English', '切換繁體中文'));
   addSocials($('#socialLinks')); renderGallery(); hidePreview();
   if (dialog.open) renderDialog();
