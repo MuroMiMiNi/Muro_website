@@ -2,6 +2,7 @@ import { siteData, socialLinks } from './data/siteData.js';
 import { HangingMobile, buildTimeline } from './hanging-mobile.js';
 import { artworkOrigin, decodeArtwork, enterArtwork } from './artwork-transition.js';
 import { createPixelClouds } from './pixel-clouds.js';
+import { createPixelMeteors } from './pixel-meteors.js';
 
 const $ = selector => document.querySelector(selector);
 const gallery = $('#mobileGallery');
@@ -55,6 +56,7 @@ for (let i = 0; i < 72; i++) {
 }
 $('#year').textContent = new Date().getFullYear();
 createPixelClouds($('#pixelClouds'));
+createPixelMeteors($('.night-sky'));
 document.addEventListener('visibilitychange', () => {
   $('#pixelClouds').classList.toggle('is-paused', document.hidden);
 });

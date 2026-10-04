@@ -68,3 +68,6 @@ dialog.is-arriving .detail-art{opacity:var(--art-arrival,0)}
 #artworkStatus{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40;margin:0;padding:8px 16px;max-width:calc(100% - 32px);background:#10213bf2;border:1px solid #6383ab;color:var(--silver);font-size:12px;pointer-events:none}
 #artworkStatus:empty{display:none}
 @media(prefers-reduced-motion:reduce){.cloud-track{animation:none;will-change:auto;transform:translateX(-20%)}.artwork-transit canvas{display:none}dialog.is-arriving::backdrop{backdrop-filter:none}}
+
+.pixel-meteors{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.pixel-meteors{display:none}}
