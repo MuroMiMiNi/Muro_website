@@ -1,4 +1,5 @@
 import { siteData, socialLinks } from './data/siteData.js';
+import { HangingMobile } from './hanging-mobile.js';
 
 const $ = selector => document.querySelector(selector);
 const gallery = $('#mobileGallery');
@@ -50,27 +51,16 @@ for (let i = 0; i < 72; i++) {
   $('#stars').append(star);
 }
 $('#year').textContent = new Date().getFullYear();
-const visibility = new IntersectionObserver(entries => {
-  entries.forEach(entry => entry.target.classList.toggle('is-visible', entry.isIntersecting));
-}, { rootMargin: '100px' });
+const mobileMotion = new HangingMobile();
 
 function renderGallery() {
-  visibility.disconnect();
+  mobileMotion.clear();
   gallery.replaceChildren();
   if (!artworks.length) gallery.append(element('p', 'loading', t('作品整理中，稍後見。', 'More artworks are on their way.')));
-  for (let index = 0; index < artworks.length; index += 2) {
+  for (let index = 0; index < artworks.length; index += 8) {
     const tier = element('div', 'tier');
-    for (const decoration of ['beam', 'joint', 'hanging-charm']) {
-      const node = element('span', decoration); node.setAttribute('aria-hidden', 'true'); tier.append(node);
-    }
-    artworks.slice(index, index + 2).forEach((artwork, side) => {
+    artworks.slice(index, index + 8).forEach(artwork => {
       const figure = element('figure', 'hanging-work');
-      const alternating = (index / 2) % 2;
-      const drop = side === 0 ? 100 : 160;
-      const beamY = 36 + (side === 0 ? 25 : -25) * (alternating ? -1 : 1);
-      const mobileDrop = side === 0 ? 83 : 153;
-      figure.style.cssText = `--left:${side ? 78 : 22}%;--size:${side ? 232 : 208}px;--drop:${drop}px;--wire:${drop - beamY}px;--mobile-left:${side ? 77 : 23}%;--mobile-size:${side ? 'min(36vw, 155px)' : 'min(33vw, 145px)'};--mobile-drop:${mobileDrop}px;--mobile-wire:${mobileDrop - (18 + (side ? -11 : 11) * (alternating ? -1 : 1))}px;--duration:${12 + index % 5}s;--delay:-${index + side * 4}s`;
-      const wire = element('span', 'suspension'); wire.setAttribute('aria-hidden', 'true');
       const motion = element('div', 'work-motion');
       const button = element('button', 'metal-frame work-button');
       button.type = 'button'; button.dataset.artwork = artwork.id;
@@ -88,20 +78,26 @@ function renderGallery() {
       });
       const caption = element('figcaption');
       caption.append(element('span', 'work-title', title(artwork)), element('span', 'work-meta', artwork.date ?? t('作品收藏', 'From the collection')));
-      motion.append(button, caption); figure.append(wire, motion); tier.append(figure);
+      motion.append(button, caption); figure.append(motion); tier.append(figure);
     });
-    gallery.append(tier); visibility.observe(tier);
+    gallery.append(tier); mobileMotion.add(tier, index / 8);
   }
   $('#galleryHint').textContent = t(`${artworks.length} 件作品 · ${touch.matches ? '點按預覽，再點按看詳情' : '停留觀測，點按看詳情'}`, `${artworks.length} artworks · ${touch.matches ? 'Tap to preview; tap again to explore' : 'Hover to observe, click to explore'}`);
 }
 function queueHide() {
   if (!touch.matches) hideTimer = setTimeout(() => { if (!scope.matches(':hover') && document.activeElement !== scope) hidePreview(); }, 240);
 }
-function hidePreview() { clearTimeout(hideTimer); scope.hidden = true; preview = null; previewTrigger = null; }
+function hidePreview() {
+  clearTimeout(hideTimer); scope.hidden = true;
+  previewTrigger?.closest('.tier').classList.remove('is-inspecting');
+  preview = null; previewTrigger = null;
+}
 function showPreview(artwork, trigger) {
   clearTimeout(hideTimer);
   if (dialog.open) return;
+  previewTrigger?.closest('.tier').classList.remove('is-inspecting');
   preview = artwork; previewTrigger = trigger;
+  trigger.closest('.tier').classList.add('is-inspecting');
   $('#scopeImage').src = artwork.src; $('#scopeImage').alt = title(artwork);
   $('#scopeCaption').textContent = title(artwork);
   scope.setAttribute('aria-label', t(`查看 ${title(artwork)} 詳情`, `Explore ${title(artwork)}`));
