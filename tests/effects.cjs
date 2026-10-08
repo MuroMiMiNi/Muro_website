@@ -24,15 +24,8 @@ const closed = page => page.waitForFunction(() => !document.querySelector('#deta
       // Each repeated band contains all its silhouettes; no cloud is cut off at a loop seam.
       assert.ok(await page.locator('.cloud-band').evaluateAll(bands => bands.every(b => [...b.children].every(c => c.offsetLeft + c.offsetWidth <= b.offsetWidth + 1))));
       const work = page.locator('.work-button').first();
-      if (mobile) {
-        await work.evaluate(b => scrollTo({ top: scrollY + b.getBoundingClientRect().top - 300, behavior: 'instant' }));
-        await page.waitForTimeout(150);
-        const box = await work.boundingBox();
-        await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
-        await page.locator('#scope').waitFor({ state: 'visible' });
-        const lens = await page.locator('#scope').boundingBox();
-        await page.touchscreen.tap(lens.x + lens.width / 2, lens.y + lens.height / 2);
-      }
+      await work.scrollIntoViewIfNeeded(); await page.waitForTimeout(150);
+      if (mobile) { await work.tap(); await page.locator('#scope').tap(); }
       else { await work.focus(); await page.keyboard.press('Enter'); }
       await page.waitForSelector('.artwork-transit');
       const start = Date.now();

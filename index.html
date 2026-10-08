@@ -5,8 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b1733">
   <meta name="description" content="木洛 Muro 的夜空作品室。沿著星光與床鈴，慢慢欣賞每一件作品。">
-  <title>木洛 Muro｜夜空作品室</title>
+  <title>木洛 Muro</title>
   <link rel="stylesheet" href="./styles/example-e.css">
+  <link rel="stylesheet" href="./styles/mobile-three.css">
+  <link rel="stylesheet" href="./styles/click-stars.css">
+  <link rel="stylesheet" href="./styles/interface.css">
+  <link rel="stylesheet" href="./styles/all-works.css">
+  <link rel="stylesheet" href="./styles/social-wave.css">
+  <link rel="preload" href="./assets/fonts/Cubic_11.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
   <svg width="0" height="0" aria-hidden="true" style="position:absolute"><filter id="signature-ink" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .78  0 0 0 0 .87  0 0 0 0 .94  -1 -1 -1 0 2.3"/></filter></svg>
@@ -14,28 +20,28 @@
   <div class="night-sky" aria-hidden="true"><div id="stars"></div><div id="pixelClouds"></div><div class="horizon"></div></div>
   <header id="siteHeader">
     <a class="signature" href="#top" aria-label="木洛 Muro"><img src="./assets/profile/muro-signature.png" alt="木洛Muro" width="460" height="161"></a>
-    <nav aria-label="主導覽 / Main navigation">
-      <button type="button" data-page="about" data-zh="關於" data-en="About">關於</button>
-      <a href="#works" data-zh="作品" data-en="Works">作品</a>
+    <nav id="primaryNavigation" aria-label="主導覽 / Main navigation">
+      <button type="button" data-page="guide" data-zh="委託" data-en="Commission">委託</button>
+      <button type="button" data-page="allWorks" data-zh="所有作品" data-en="All works">所有作品</button>
       <button type="button" data-page="games" data-zh="遊戲" data-en="Games">遊戲</button>
+      <button type="button" data-page="about" data-zh="關於" data-en="About">關於</button>
     </nav>
+    <nav id="headerSocials" class="social-wave" aria-label="社群連結 / Social links"></nav>
     <button type="button" id="language" aria-label="Switch to English">EN</button>
   </header>
   <main id="top">
     <section class="intro" aria-label="木洛 Muro">
       <div class="portrait-hanger">
-        <span class="portrait-wire" aria-hidden="true"></span>
         <button type="button" class="metal-frame portrait" data-page="about" aria-label="關於木洛 / About Muro"><img src="./assets/profile/muro-night.png" width="2078" height="2671" alt="木洛的白髮藍眼角色圖示" fetchpriority="high"><span class="corner-mark" aria-hidden="true">✦</span></button>
       </div>
     </section>
     <section id="works" aria-label="懸掛作品集 / Hanging portfolio">
       <div id="mobileGallery" class="mobile-gallery" aria-live="polite"><p class="loading">正在掛上作品…</p></div>
     </section>
-    <footer><p data-zh="謝謝你，走進我的小小宇宙。" data-en="Thank you for visiting my little universe.">謝謝你，走進我的小小宇宙。</p><div id="socialLinks"></div><small>© <span id="year"></span> 木洛 Muro</small><a href="#top" data-zh="回到頂端" data-en="Back to top">回到頂端</a></footer>
+    <footer><div id="socialLinks"></div><small>© <span id="year"></span> 木洛 Muro</small><a href="#top" data-zh="回到頂端" data-en="Back to top">回到頂端</a></footer>
   </main>
-  <button type="button" id="scope" class="scope" aria-label="開啟作品詳情" hidden><span class="scope-label" data-zh="作品觀測鏡" data-en="Artwork viewer">作品觀測鏡</span><span class="scope-lens"><img alt="" id="scopeImage"></span><span class="scope-caption" id="scopeCaption"></span><span class="scope-action" data-zh="點按查看作品 ↗" data-en="Tap to explore ↗">點按查看作品 ↗</span></button>
   <button type="button" id="floatingGif" class="floating-gif" aria-label="木洛的蛋，雙擊開啟關於" title="拖曳移動 · 雙擊關於"><img src="./assets/floating-mascot.gif" alt="" width="79" height="64" draggable="false"></button>
-  <dialog id="detailDialog" aria-labelledby="dialogTitle"><div class="dialog-top"><button type="button" id="stepBack">← 返回</button><button type="button" id="closeDialog" aria-label="返回作品 / Close">✕</button></div><div id="dialogContent"></div></dialog>
+  <dialog id="detailDialog" aria-labelledby="dialogTitle"><div class="view-veil" aria-hidden="true"></div><div class="arrival-cloud cloud-left" aria-hidden="true"></div><div class="arrival-cloud cloud-right" aria-hidden="true"></div><div class="dialog-top"><button type="button" id="stepBack">← 返回</button><button type="button" id="closeDialog" aria-label="返回作品 / Close">✕</button></div><div id="dialogContent"></div></dialog>
   <p id="artworkStatus" role="status" aria-live="polite"></p>
   <noscript><p class="no-script">請啟用 JavaScript 以瀏覽作品集。Enable JavaScript to view the gallery.</p></noscript>
   <script type="module" src="./scripts/example-e.js"></script>

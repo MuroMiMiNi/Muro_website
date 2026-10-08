@@ -1,0 +1,16 @@
+@font-face{font-family:"Cubic 11";src:url("../../assets/fonts/Cubic_11.woff2") format("woff2");font-display:swap}
+:root{color-scheme:dark;font-family:"Cubic 11","Microsoft JhengHei",sans-serif;color:#d5e4ed;background:#0b1733}
+*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at 50% 36%,#253c555c,transparent 58%),#0b1733;line-height:1.7}
+.preview-header{display:flex;justify-content:space-between;align-items:center;gap:36px;padding:22px 44px}
+.preview-signature{width:160px;height:auto;filter:url(#preview-signature-ink);opacity:.82}
+.corner-preview{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.preview-note{margin:0;color:#8ca6bd;font-size:13px}
+main{max-width:760px;margin:90px auto 0;padding:0 24px;text-align:center}
+h1{font-size:32px;font-weight:400;line-height:1.5;margin:12px 0}
+.preview-copy{font-size:16px;color:#b9ccdc;margin:0}
+#largeWave{margin:54px auto 34px}
+#pauseWave{font:inherit;font-size:15px;color:#d7c899;background:none;border:1px solid #8095a966;padding:8px 18px;min-height:44px;cursor:pointer}
+#pauseWave:hover{border-color:#d7c899}#pauseWave:focus-visible{outline:2px solid #d7c899;outline-offset:4px}
+.preview-help{font-size:13px;line-height:1.9;color:#8ca6bd;margin-top:24px}
+footer{text-align:center;font-size:12px;color:#697f97;padding:60px 20px 30px}
+@media(max-width:600px){.preview-header{padding:20px 18px;align-items:flex-start;flex-direction:column;gap:22px}.preview-signature{width:125px}.corner-preview{align-self:flex-end}.preview-note{font-size:12px}main{margin-top:42px;padding-inline:16px}h1{font-size:28px}.preview-copy{font-size:14px}#largeWave{margin-top:36px;margin-bottom:28px}footer{padding-top:34px}}

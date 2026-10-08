@@ -45,7 +45,7 @@ const settle = () => new Promise(resolve => setTimeout(resolve,150));
    await page.emulateMedia({reducedMotion:'no-preference'});await settle();await page.clock.runFor(3500);
    assert.ok(await page.locator('.pixel-meteors').isVisible());
    await page.locator('.work-button').first().dispatchEvent('click',{detail:0});
-   await page.waitForSelector('.artwork-transit');await page.clock.runFor(1000);
+   await page.waitForSelector('.flying-art');await page.clock.runFor(1200);
    await page.waitForFunction(()=>document.querySelector('#detailDialog').open&&!document.querySelector('#detailDialog').classList.contains('is-arriving'));
    await page.locator('#closeDialog').click();assert.deepEqual(errors,[]);
    console.log(`PASS ${width}px: moon, curved down-left motion, rotation, sizes, staggered launch, peak ${maximum}, reduced motion, open/close`);

@@ -1,181 +1,127 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs/promises');
 const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'playwright');
+const base = process.env.TEST_URL || 'http://127.0.0.1:5505';
+const ready = page => page.waitForSelector('#mobileGallery[data-ready]');
+const entered = page => page.waitForFunction(() => {
+  const dialog = document.querySelector('#detailDialog');
+  return dialog.open && !dialog.classList.contains('is-arriving');
+});
+const closed = page => page.waitForFunction(() => !document.querySelector('#detailDialog').open && document.body.style.position === '');
 
 (async () => {
   await fs.mkdir('.test-results', { recursive: true });
   const browser = await chromium.launch({ channel: 'msedge', headless: true });
   const errors = [];
-  const watch = page => {
-    page.on('pageerror', error => errors.push(error.message));
-    page.on('response', response => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
-  };
-  const entered = page => page.waitForFunction(() => { const d = document.querySelector('#detailDialog'); return d.open && !d.classList.contains('is-arriving'); });
-  const inside = async (page, selector) => {
-    const box = await page.locator(selector).boundingBox();
-    const viewport = page.viewportSize();
-    assert.ok(box.x >= 0 && box.y >= 0 && box.x + box.width <= viewport.width + 1 && box.y + box.height <= viewport.height + 1, `${selector} outside viewport: ${JSON.stringify(box)}`);
-  };
+  const catalog = JSON.parse(await fs.readFile('scripts/data/artwork-catalog.json', 'utf8')).slice(0, 20);
   try {
-    const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } }); watch(page);
-    await page.goto('http://127.0.0.1:5505'); await page.waitForLoadState('networkidle');
-    const catalog = JSON.parse(await fs.readFile('scripts/data/artwork-catalog.json', 'utf8')).slice(0, 20);
-    const firstTitle = catalog[0].title.zh;
-    assert.equal(await page.locator('.work-button').count(), catalog.length);
-    assert.equal(await page.locator('.mobile-rig').count(), 1);
-    assert.equal(await page.locator('.timeline-branch').count(), new Set(catalog.map(item => item.date?.slice(0, 7) ?? 'undated')).size);
-    assert.equal(await page.locator('.work-meta').count(), catalog.filter(item => item.date).length);
-    assert.equal(await page.getByRole('link', { name: '回到頂端', exact: true }).count(), 1);
-    for (const removed of ['作品收藏', '把喜歡的，掛在星空裡', '我是木洛。畫角色', '星空下的收藏', '件作品 ·', '讓作品輕輕搖晃', '讓時間慢慢流過', '像素之間，收藏微光', '往下，遇見作品', "Muro's little universe"]) {
-      assert.ok(!(await page.locator('body').innerText()).includes(removed), `Unwanted copy remains: ${removed}`);
-    }
-    assert.equal(await page.locator('.work-button img[loading="lazy"]').count(), catalog.length);
-    assert.ok(await page.locator('.portrait img').evaluate(img => img.complete && img.naturalWidth === 2078));
-    const pose = await page.locator('.hanging-work').first().getAttribute('style');
-    const depth = await page.locator('.hanging-work').first().getAttribute('data-depth');
-    await page.waitForTimeout(1200);
-    assert.notEqual(await page.locator('.hanging-work').first().getAttribute('style'), pose);
-    assert.notEqual(await page.locator('.hanging-work').first().getAttribute('data-depth'), depth);
-    const firstBox = await page.locator('.work-button').first().boundingBox();
-    await page.mouse.move(firstBox.x + firstBox.width / 2, firstBox.y + firstBox.height / 2);
-    await page.locator('#scope').waitFor({ state: 'visible' }); await inside(page, '#scope');
-    const pausedRotation = await page.locator('.mobile-rig').getAttribute('data-rotation-time');
-    const snapshot = () => page.evaluate(() => {
-      const src = document.querySelector('#scopeImage').getAttribute('src');
-      return [...document.querySelectorAll('.hanging-work')].map(figure => {
-        const point = figure.style.transform.match(/translate\(([\d.-]+)px, ([\d.-]+)px/);
-        const wire = figure.nextElementSibling;
-        const matrix = new DOMMatrix(getComputedStyle(wire).transform);
-        const length = parseFloat(wire.style.width);
-        return { held: figure.querySelector('img').getAttribute('src') === src,
-          pose: figure.style.transform, tilt: figure.querySelector('.work-motion').style.transform,
-          connected: Math.abs(matrix.e + matrix.a * length - Number(point[1])) < 1 && Math.abs(matrix.f + matrix.b * length - Number(point[2])) < 1 };
+    for (const width of [1440, 768, 390, 320]) {
+      const page = await browser.newPage({ viewport: { width, height: 900 }, isMobile: width < 600, hasTouch: width < 600 });
+      page.on('pageerror', error => errors.push(error.message));
+      page.on('response', response => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
+      await page.goto(base); await ready(page); await page.waitForLoadState('networkidle');
+      const displayed = () => page.locator('.work-button').evaluateAll(nodes => nodes.map(node => node.dataset.artwork));
+      assert.deepEqual(await displayed(), catalog.map(work => work.id));
+      const report = await page.evaluate(() => {
+        const rig = document.querySelector('#mobileGallery').mobile3D;
+        let pictures = 0, backs = 0, rings = 0;
+        rig.scene.traverse(object => {
+          if (object.name === 'artwork image / uncropped contain') pictures++;
+          if (object.userData.imageMeshes) {
+            const decoded = object.userData.imageMeshes.every(mesh => mesh.material.map.image.complete);
+            if (!decoded) throw Error('Undecoded artwork');
+            backs += object.userData.imageMeshes.length - 1;
+          }
+          if (object.name === 'Free interlocking suspension ring') rings++;
+        });
+        return { pictures, backs, rings, cords: rig.cords.length, counts: rig.chainCounts, firstY: rig.chainFirstYs, gl: rig.renderer.getContext().constructor.name, contacts: rig.audit() };
       });
-    });
-    const heldBefore = await snapshot();
-    await page.waitForTimeout(500);
-    const heldAfter = await snapshot();
-    assert.equal(await page.locator('.mobile-rig').getAttribute('data-rotation-time'), pausedRotation);
-    assert.deepEqual(heldAfter.find(item => item.held), heldBefore.find(item => item.held), 'Hovered ornament must stay pinned');
-    assert.ok(heldAfter.some((item, i) => !item.held && item.pose !== heldBefore[i].pose), 'Other ornaments should continue swaying');
-    assert.ok(heldAfter.every(item => item.connected), 'Strings must still meet the ornaments');
-    await page.screenshot({ path: '.test-results/desktop-preview.png' });
-    await page.mouse.move(20, 550);
-    await page.locator('#scope').waitFor({ state: 'hidden' });
-    await page.waitForTimeout(700);
-    assert.ok(Number(await page.locator('.mobile-rig').getAttribute('data-rotation-time')) > Number(pausedRotation), 'Rotation should resume after release');
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.waitForFunction(() => matchMedia('(prefers-reduced-motion: reduce)').matches && document.querySelector('.mobile-rig').dataset.motionTime === '0.000');
-    const stillPose = await page.locator('.hanging-work').first().getAttribute('style');
-    await page.waitForTimeout(500);
-    assert.equal(await page.locator('.hanging-work').first().getAttribute('style'), stillPose);
-    await page.evaluate(() => scrollTo(0, 500)); await page.waitForTimeout(100);
-    assert.ok(await page.locator('#siteHeader').evaluate(node => node.classList.contains('is-hidden')));
-    const position = await page.evaluate(() => scrollY);
-    await page.locator('.work-button').first().click(); await entered(page);
-    assert.equal(await page.locator('#dialogTitle').innerText(), firstTitle);
-    await page.getByRole('button', { name: '查看委託須知', exact: true }).click();
-    assert.equal(await page.locator('#dialogTitle').innerText(), '委託須知');
-    await page.getByRole('button', { name: '下一步：價目表' }).click();
-    assert.equal(await page.locator('tbody tr').count(), 3);
-    await page.getByRole('button', { name: '下一步：委託表單' }).click();
-    await page.getByLabel('委託方案', { exact: true }).selectOption('half-body');
-    const form = new URL(await page.getByRole('link', { name: '填寫委託表單' }).getAttribute('href'));
-    assert.equal(form.searchParams.get('entry.1679931923'), '半身委託－NT$1100');
-    assert.equal(await page.getByRole('link', { name: '填寫委託表單' }).getAttribute('target'), '_blank');
-    await page.screenshot({ path: '.test-results/commission-form.png' });
-    for (const expected of ['價目表', '委託須知', firstTitle]) {
-      await page.locator('#stepBack').click(); assert.equal(await page.locator('#dialogTitle').innerText(), expected);
+      assert.equal(report.gl, 'WebGL2RenderingContext');
+      assert.equal(report.pictures, catalog.length); assert.equal(report.backs, catalog.length);
+      assert.equal(report.rings, report.cords * 2);
+      assert.equal(report.counts.reduce((sum, count) => sum + count, 0), catalog.length);
+      assert.ok(report.counts.every(count => count >= 1 && count <= 5));
+      assert.ok(Math.max(...report.counts) - Math.min(...report.counts) >= 2);
+      assert.ok(Math.max(...report.firstY) - Math.min(...report.firstY) > 2);
+      assert.ok(report.contacts.every(joint => joint.topError < 1e-6 && joint.bottomError < 1e-6));
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      assert.equal(await page.locator('#scope, .mobile-link').count(), 0);
+      await page.screenshot({ path: `.test-results/e-three-${width}.png`, fullPage: true });
+      // Real mesh click, preserving scroll and focus when returning.
+      const work = page.locator('.work-button').first();
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.waitForTimeout(100);
+      await work.scrollIntoViewIfNeeded();
+      const target = await work.evaluate(button => button.artworkBounds());
+      await page.evaluate(y => scrollBy(0, y - innerHeight * .4), target.y + target.h / 2);
+      await page.waitForTimeout(100);
+      const origin = await work.evaluate(button => button.artworkBounds());
+      const position = await page.evaluate(() => scrollY);
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      await page.mouse.click(origin.x + origin.w / 2, origin.y + origin.h / 2);
+      await page.waitForSelector('.flying-art');
+      await page.waitForTimeout(300);
+      if (width === 1440 || width === 390) await page.screenshot({ path: `.test-results/e-arriving-${width}.png` });
+      await entered(page);
+      assert.equal(await page.locator('#dialogTitle').textContent(), catalog[0].title.zh);
+      assert.equal(await page.locator('.flying-art').count(), 0);
+      assert.equal(await page.locator('.art-space img').evaluate(image => getComputedStyle(image).opacity), '1');
+      if (width === 1440 || width === 390) await page.screenshot({ path: `.test-results/e-detail-${width}.png` });
+      await page.getByRole('button', { name: '查看委託須知', exact: true }).click();
+      assert.ok(!await page.locator('#detailDialog').evaluate(dialog => dialog.classList.contains('is-artwork')));
+      await page.getByRole('button', { name: '下一步：價目表' }).click();
+      assert.equal(await page.locator('tbody tr').count(), 3);
+      await page.getByRole('button', { name: '下一步：委託表單' }).click();
+      await page.getByLabel('委託方案', { exact: true }).selectOption('half-body');
+      const form = new URL(await page.getByRole('link', { name: '填寫委託表單' }).getAttribute('href'));
+      assert.equal(form.searchParams.get('entry.1679931923'), '半身委託－NT$1100');
+      for (const expected of ['價目表', '委託須知', catalog[0].title.zh]) {
+        await page.locator('#stepBack').click(); assert.equal(await page.locator('#dialogTitle').textContent(), expected);
+      }
+      await page.getByRole('button', { name: '返回床鈴', exact: true }).click(); await closed(page);
+      assert.ok(Math.abs(await page.evaluate(() => scrollY) - position) < 2);
+      assert.equal(await page.evaluate(() => document.activeElement.dataset.artwork), catalog[0].id);
+      assert.equal(await page.evaluate(() => document.body.style.getPropertyValue('--scene')), '');
+      // Cancel during flight; no stuck animation or scroll lock.
+      await work.focus(); await page.keyboard.press('Enter'); await page.waitForSelector('.flying-art');
+      await page.keyboard.press('Escape'); await closed(page);
+      await page.waitForSelector('.flying-art', { state: 'detached' });
+      // Language refresh keeps the exact same physical scene and randomized chain layout.
+      await page.evaluate(() => { window.originalRig = document.querySelector('#mobileGallery').mobile3D; scrollTo({ top: 0, behavior: 'instant' }); });
+      await page.locator('#language').click();
+      assert.equal(await page.locator('html').getAttribute('lang'), 'en');
+      assert.deepEqual(await displayed(), catalog.map(work => work.id));
+      assert.ok(await page.evaluate(() => originalRig === document.querySelector('#mobileGallery').mobile3D));
+      assert.equal(await work.textContent(), catalog[0].title.en);
+      await page.getByRole('button', { name: 'Games', exact: true }).click();
+      assert.equal(await page.locator('#dialogTitle').textContent(), 'Games');
+      await page.keyboard.press('Escape'); await closed(page);
+      await page.locator('#language').click();
+      await page.locator('#floatingGif').dblclick();
+      assert.equal(await page.locator('#dialogTitle').textContent(), '關於木洛');
+      await page.keyboard.press('Escape'); await closed(page);
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      if (width < 600) await work.tap();
+      else { await work.focus(); await page.keyboard.press('Enter'); }
+      await entered(page);
+      await page.locator('#closeDialog').click(); await closed(page);
+      console.log(`PASS ${width}: real 3D, joined rings, double-sided catalog, mesh pick, sky arrival, commission, return, keyboard, language, mascot`);
+      await page.close();
     }
-    await page.locator('#closeDialog').click();
-    await page.waitForFunction(() => document.body.style.position === '');
-    assert.ok(Math.abs(await page.evaluate(() => scrollY) - position) < 2);
-    assert.equal(await page.evaluate(() => document.activeElement.dataset.artwork), catalog[0].id);
-    await page.keyboard.press('Enter'); await entered(page); assert.ok(await page.locator('#detailDialog').evaluate(node => node.open));
-    await page.keyboard.press('Escape'); await page.waitForFunction(() => document.body.style.position === ''); assert.ok(!await page.locator('#detailDialog').evaluate(node => node.open));
-    await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(100);
-    await page.screenshot({ path: '.test-results/desktop.png' });
-    await page.locator('#language').click(); assert.equal(await page.locator('html').getAttribute('lang'), 'en');
-    await page.getByRole('button', { name: 'Games', exact: true }).click(); assert.equal(await page.locator('#dialogTitle').innerText(), 'Games');
-    await page.keyboard.press('Escape'); await page.waitForFunction(() => document.body.style.position === ''); await page.locator('#language').click();
-    // Real pointer drag, clamped at viewport edges.
-    const egg = await page.locator('#floatingGif').boundingBox();
-    await page.mouse.move(egg.x + 20, egg.y + 20); await page.mouse.down(); await page.mouse.move(4, 4); await page.mouse.up(); await inside(page, '#floatingGif');
-    await page.locator('#floatingGif').dblclick(); assert.equal(await page.locator('#dialogTitle').innerText(), '關於木洛'); await page.keyboard.press('Escape'); await page.waitForFunction(() => document.body.style.position === '');
-    await page.emulateMedia({ reducedMotion: 'no-preference' });
-    await page.setViewportSize({ width: 1440, height: 200 });
-    await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
-    await page.waitForTimeout(150);
-    const offscreenTime = await page.locator('.mobile-rig').getAttribute('data-motion-time');
-    await page.waitForTimeout(600);
-    assert.equal(await page.locator('.mobile-rig').getAttribute('data-motion-time'), offscreenTime);
-    console.log('PASS desktop: one connected timeline rig, removed copy, depth changes, pause, reduced motion, navigation, commission flow, return position, keyboard, language, mascot');
-
-    const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' }); watch(mobile);
-    await mobile.goto('http://127.0.0.1:5505'); await mobile.waitForLoadState('networkidle');
-    await mobile.screenshot({ path: '.test-results/mobile.png' });
-    await mobile.evaluate(() => scrollTo(0, 700)); await mobile.waitForTimeout(100);
-    await mobile.screenshot({ path: '.test-results/mobile-gallery.png' });
-    const mobileWork = mobile.locator('.work-button').first();
-    await mobileWork.tap();
-    assert.ok(!await mobile.locator('#detailDialog').evaluate(node => node.open));
-    await mobile.locator('#scope').waitFor({ state: 'visible' }); await inside(mobile, '#scope');
-    await mobile.screenshot({ path: '.test-results/mobile-preview.png' });
-    await mobile.locator('#scope').tap(); await entered(mobile);
-    assert.equal(await mobile.locator('#dialogTitle').innerText(), firstTitle);
-    await mobile.locator('#closeDialog').tap(); await mobile.waitForFunction(() => document.body.style.position === '');
-    // Two taps on the same artwork also open details.
-    await mobileWork.tap(); await mobileWork.tap(); await entered(mobile);
-    assert.ok(await mobile.locator('#detailDialog').evaluate(node => node.open)); await mobile.locator('#closeDialog').tap(); await mobile.waitForFunction(() => document.body.style.position === '');
-    for (let i = 0; i < catalog.length; i++) {
-      await mobile.locator('.work-button').nth(i).tap();
-      await mobile.locator('#scope').tap(); await entered(mobile);
-      assert.equal(await mobile.locator('#dialogTitle').innerText(), catalog[i].title.zh);
-      await mobile.locator('#closeDialog').tap(); await mobile.waitForFunction(() => document.body.style.position === '');
-    }
-    for (const width of [320, 390, 768, 1024]) {
-      await mobile.setViewportSize({ width, height: 844 });
-      await mobile.evaluate(() => scrollTo(0, 0)); await mobile.waitForTimeout(100);
-      assert.ok(await mobile.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `Overflow at ${width}`);
-      if (width === 768) await mobile.screenshot({ path: '.test-results/tablet.png' });
-    }
-    await mobile.setViewportSize({ width: 320, height: 640 });
-    await mobile.locator('#language').tap();
-    assert.ok(await mobile.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'English overflow at 320px');
-    await mobile.setViewportSize({ width: 844, height: 390 });
-    await mobile.locator('.work-button').first().scrollIntoViewIfNeeded();
-    await mobile.locator('.work-button').first().tap(); await inside(mobile, '#scope');
-    console.log('PASS touch: first tap preview, second tap details, 320–1024px layouts, landscape preview bounds');
-    const dated = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' }); watch(dated);
-    const fixture = catalog.map((work, i) => ({ ...work, date: i < 10 ? '2026-10-04' : i < 12 ? '2026-09-30' : i < 14 ? '2025-12-31' : null }));
-    await dated.route('**/scripts/data/artwork-catalog.json', route => route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixture) }));
-    await dated.goto('http://127.0.0.1:5505'); await dated.waitForLoadState('networkidle');
-    assert.deepEqual(await dated.locator('.timeline-branch').evaluateAll(nodes => nodes.map(node => node.dataset.period)), ['2026-10', '2026-09', '2025-12', 'undated']);
-    assert.equal(await dated.locator('[data-period="2026-10"] .work-button').count(), 10);
-    const branchBounds = await dated.locator('.timeline-branch').evaluateAll(nodes => nodes.map(node => {
-      const boxes = [...node.querySelectorAll('.work-button')].map(button => button.getBoundingClientRect());
-      return { top: Math.min(...boxes.map(box => box.top)), bottom: Math.max(...boxes.map(box => box.bottom)) };
-    }));
-    for (let i = 1; i < branchBounds.length; i++) assert.ok(branchBounds[i].top > branchBounds[i - 1].bottom, 'Older period appeared above newer work');
-    // Limit only the displayed mobile, after date ordering, including language rerenders.
-    const overflow = Array.from({ length: 25 }, (_, i) => ({ ...catalog[i % catalog.length], id: `dated-${i}`, date: `2026-10-${String(i + 1).padStart(2, '0')}` }));
-    await dated.unroute('**/scripts/data/artwork-catalog.json');
-    await dated.route('**/scripts/data/artwork-catalog.json', route => route.fulfill({ json: [...catalog.map(work => ({ ...work, date: null })), ...overflow] }));
-    await dated.reload(); await dated.waitForLoadState('networkidle');
-    const newest = overflow.slice(-20).reverse().map(work => work.id);
-    const displayed = () => dated.locator('.work-button').evaluateAll(nodes => nodes.map(node => node.dataset.artwork));
-    assert.deepEqual(await displayed(), newest);
-    assert.equal(await dated.locator('.timeline-branch').count(), 1);
-    await dated.locator('#language').click();
-    assert.deepEqual(await displayed(), newest);
-    console.log('PASS latest 20: sorted before limiting, undated fallback excluded when full, language preserves selection');
-    await dated.close();
-    console.log('PASS dated fixture: month branches, 10 works remain together, newer periods above older');
-    await page.goto('http://127.0.0.1:5505/dist/index.html'); await page.waitForLoadState('networkidle');
+    const page = await browser.newPage({ reducedMotion: 'reduce' });
+    // Date ordering still happens before the twenty-work limit.
+    const newest = Array.from({ length: 25 }, (_, index) => ({ ...catalog[index % catalog.length], id: `dated-${index}`, date: `2026-10-${String(index + 1).padStart(2, '0')}` }));
+    await page.route('**/scripts/data/artwork-catalog.json', route => route.fulfill({ json: [...catalog, ...newest] }));
+    await page.goto(base); await ready(page);
+    assert.deepEqual(await page.locator('.work-button').evaluateAll(nodes => nodes.map(node => node.dataset.artwork)), newest.slice(-20).reverse().map(work => work.id));
+    await page.unroute('**/scripts/data/artwork-catalog.json');
+    await page.route('**/scripts/data/artwork-catalog.json', route => route.fulfill({ json: catalog.slice(0, 1) }));
+    await page.reload(); await ready(page); assert.equal(await page.locator('.work-button').count(), 1);
+    await page.unroute('**/scripts/data/artwork-catalog.json');
+    await page.goto(base + '/dist/index.html'); await ready(page);
     assert.equal(await page.locator('.work-button').count(), catalog.length);
-    assert.ok(await page.locator('.portrait img').evaluate(img => img.complete && img.naturalWidth > 0));
-    console.log('PASS built dist site and relative asset paths');
+    await page.close();
     assert.deepEqual(errors, []);
-    console.log('PASS no browser errors or failed HTTP responses');
+    console.log('PASS date-sorted latest twenty, sparse catalog, built relative paths, no browser errors');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

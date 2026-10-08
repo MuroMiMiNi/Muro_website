@@ -1,0 +1,2 @@
+.click-stars{position:fixed;inset:auto;width:160px;height:160px;max-width:none;max-height:none;margin:0;padding:0;border:0;background:transparent;overflow:visible;pointer-events:none;image-rendering:pixelated;user-select:none}
+.click-stars::backdrop{background:transparent;pointer-events:none}

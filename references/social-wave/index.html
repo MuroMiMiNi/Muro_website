@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1733">
+  <title>木洛｜像素社群圖示預覽</title>
+  <link rel="stylesheet" href="./social-wave.css">
+  <link rel="stylesheet" href="./preview.css">
+</head>
+<body>
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute"><filter id="preview-signature-ink" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .78  0 0 0 0 .87  0 0 0 0 .94  -1 -1 -1 0 2.3"/></filter></svg>
+  <header class="preview-header">
+    <img class="preview-signature" src="../../assets/profile/muro-signature.png" alt="木洛 Muro" width="460" height="161">
+    <div class="corner-preview"><span class="preview-note">右上角實際尺寸</span><nav id="cornerWave" class="social-wave" aria-label="社群連結：實際尺寸"></nav></div>
+  </header>
+  <main>
+    <p class="preview-note">獨立預覽</p>
+    <h1>像素社群圖示</h1>
+    <p class="preview-copy">六個圖示，沿著同一道波浪依序起伏。</p>
+    <nav id="largeWave" class="social-wave social-wave--large" aria-label="社群連結：放大檢視"></nav>
+    <button id="pauseWave" type="button" aria-pressed="false">暫停擺動</button>
+    <p class="preview-help">滑鼠移入或鍵盤聚焦時，整列暫停。<br>點擊圖示可前往平台，Email 會開啟郵件程式。</p>
+  </main>
+  <footer>已接入版本 E · 此頁保留作為獨立預覽</footer>
+  <script type="module" src="./preview.js"></script>
+</body>
+</html>

@@ -1,30 +1,35 @@
 import { siteData, socialLinks } from './data/siteData.js';
-import { HangingMobile, buildTimeline } from './hanging-mobile.js';
+import { buildTimeline } from './hanging-mobile.js';
+import { mountMobile } from './mobile-three.js';
 import { artworkOrigin, decodeArtwork, enterArtwork } from './artwork-transition.js';
 import { createPixelClouds } from './pixel-clouds.js';
 import { createPixelMeteors } from './pixel-meteors.js';
 import { createPixelMoon } from './pixel-moon.js';
+import { createClickStars } from './click-stars.js';
+import { mountAllWorks } from './all-works.js';
+import { mountSocialWave } from './social-wave.js';
 
 const $ = selector => document.querySelector(selector);
 const gallery = $('#mobileGallery');
-const scope = $('#scope');
 const dialog = $('#detailDialog');
 const content = $('#dialogContent');
-const touch = matchMedia('(hover: none), (pointer: coarse)');
 let lang = 'zh';
 let artworks = [];
-let preview = null;
-let previewTrigger = null;
-let hideTimer;
+let mobileMotion = null;
 let page = null;
 let selected = null;
 let returnFocus = null;
 let returnY = 0;
 let selectedPlan = 'avatar';
 let artworkEntry = null;
+let allWorks = [], collection = null, collectionCategory = '全部', collectionLoading = false;
+let collectionIntro = true, collectionScroll = 0;
+let artworkSource = 'mobile';
+let guideOrigin = 'about', collectionFromGuide = false, collectionGuideArtwork = null;
 const t = (zh, en) => lang === 'zh' ? zh : en;
 const text = value => typeof value === 'string' ? value : value?.[lang] ?? '';
 const title = artwork => text(artwork.title);
+const profile = { src: './assets/profile/muro-night.png', title: { zh: '木洛 Muro', en: 'Muro' } };
 const plans = [
   { id: 'avatar', zh: '頭像委託', en: 'Avatar', price: 'NT$ 500', time: { zh: '7 天', en: '7 days' }, value: '頭像委託－NT$500' },
   { id: 'half-body', zh: '半身委託', en: 'Half body', price: 'NT$ 1,100 起', priceEn: 'From NT$ 1,100', time: { zh: '7–14 天', en: '7–14 days' }, value: '半身委託－NT$1100' },
@@ -47,102 +52,72 @@ function imageFor(artwork, className) {
   return image;
 }
 
-// Deterministic, sparse stars: no canvas render loop or image filtering.
+// Sparse, distant stars; only a few gently twinkle on staggered CSS cycles.
 for (let i = 0; i < 72; i++) {
   const star = element('i', `star${i % 11 === 0 ? ' cross' : ''}`);
   star.style.left = `${(i * 37.71 + 3) % 100}%`;
   star.style.top = `${(i * 23.37 + 7) % 100}%`;
   star.style.setProperty('--opacity', .18 + (i % 5) * .11);
+  if (i % 6 === 2) {
+    const twinkle = Math.floor(i / 6), depth = twinkle % 3;
+    star.classList.add('twinkle');
+    star.style.setProperty('--opacity', .12 + depth * .03);
+    star.style.setProperty('--twinkle-peak', .28 + depth * .04);
+    star.style.setProperty('--star-blur', `${.85 - depth * .15}px`);
+    star.style.setProperty('--twinkle-duration', `${22 + (twinkle % 5) * 3}s`);
+    star.style.setProperty('--twinkle-delay', `${-twinkle * 7.37}s`);
+  }
   $('#stars').append(star);
 }
 $('#year').textContent = new Date().getFullYear();
+mountSocialWave($('#headerSocials'), socialLinks);
 createPixelClouds($('#pixelClouds'));
 createPixelMoon($('.night-sky'));
 createPixelMeteors($('.night-sky'));
+createClickStars();
 document.addEventListener('visibilitychange', () => {
   $('#pixelClouds').classList.toggle('is-paused', document.hidden);
+  $('#stars').classList.toggle('is-paused', document.hidden);
+  $('#headerSocials').toggleAttribute('data-paused', document.hidden);
 });
-const mobileMotion = new HangingMobile();
-
-function renderGallery() {
-  mobileMotion.clear();
+async function renderGallery() {
   gallery.replaceChildren();
   const visibleArtworks = buildTimeline(artworks).flatMap(period => period.works).slice(0, 20);
   if (!artworks.length) gallery.append(element('p', 'loading', t('作品整理中，稍後見。', 'More artworks are on their way.')));
-  if (artworks.length) {
-    const rig = element('div', 'mobile-rig');
-    visibleArtworks.forEach(artwork => {
-      const figure = element('figure', 'hanging-work');
-      const motion = element('div', 'work-motion');
-      const button = element('button', 'metal-frame work-button');
-      button.type = 'button'; button.dataset.artwork = artwork.id;
-      button.setAttribute('aria-label', t(`預覽 ${title(artwork)}`, `Preview ${title(artwork)}`));
-      button.setAttribute('aria-haspopup', 'dialog');
-      const image = imageFor(artwork); image.loading = 'lazy'; image.width = 400; image.height = 400;
-      button.append(image);
-      button.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse' && !touch.matches) showPreview(artwork, button); });
-      button.addEventListener('pointerleave', queueHide);
-      button.addEventListener('focus', () => { if (!touch.matches) showPreview(artwork, button); });
-      button.addEventListener('blur', queueHide);
-      button.addEventListener('click', event => {
-        if (artworkEntry) return;
-        if ((touch.matches || event.pointerType === 'touch') && event.detail !== 0 && preview?.id !== artwork.id) showPreview(artwork, button);
-        else openArtwork(artwork, button);
-      });
-      const caption = element('figcaption');
-      caption.append(element('span', 'work-title', title(artwork)));
-      if (artwork.date) caption.append(element('span', 'work-meta', artwork.date));
-      motion.append(button, caption); figure.append(motion); rig.append(figure);
-    });
-    gallery.append(rig); mobileMotion.add(rig, visibleArtworks);
-  }
+  if (artworks.length) mobileMotion = await mountMobile(gallery, visibleArtworks, openArtwork, title);
 }
-function queueHide() {
-  if (!touch.matches) hideTimer = setTimeout(() => { if (!scope.matches(':hover') && document.activeElement !== scope) hidePreview(); }, 240);
-}
-function hidePreview() {
-  clearTimeout(hideTimer); scope.hidden = true;
-  mobileMotion.hold(null);
-  preview = null; previewTrigger = null;
-}
-function showPreview(artwork, trigger) {
-  clearTimeout(hideTimer);
-  if (dialog.open || artworkEntry) return;
-  preview = artwork; previewTrigger = trigger;
-  mobileMotion.hold(trigger);
-  $('#scopeImage').src = artwork.src; $('#scopeImage').alt = title(artwork);
-  $('#scopeCaption').textContent = title(artwork);
-  scope.setAttribute('aria-label', t(`查看 ${title(artwork)} 詳情`, `Explore ${title(artwork)}`));
-  scope.hidden = false;
-  const rect = trigger.getBoundingClientRect();
-  const width = scope.offsetWidth; const height = scope.offsetHeight; const gap = 16;
-  let left = rect.right + gap;
-  if (left + width > innerWidth - 12) left = rect.left - width - gap;
-  if (touch.matches) left = (innerWidth - width) / 2;
-  let top = rect.top + rect.height / 2 - height / 2;
-  if (touch.matches) {
-    const above = rect.top - height - 16;
-    top = above >= 12 ? above : rect.bottom + 16;
-  }
-  scope.style.left = `${Math.max(12, Math.min(innerWidth - width - 12, left))}px`;
-  scope.style.top = `${Math.max(12, Math.min(innerHeight - height - 12, top))}px`;
-}
-scope.addEventListener('pointerenter', () => clearTimeout(hideTimer));
-scope.addEventListener('pointerleave', queueHide);
-scope.addEventListener('focus', () => clearTimeout(hideTimer));
-scope.addEventListener('blur', queueHide);
-scope.addEventListener('click', () => { if (preview) openArtwork(preview, previewTrigger, $('#scopeImage')); });
-document.addEventListener('pointerdown', event => { if (!event.target.closest('.work-button, #scope')) hidePreview(); });
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape') { artworkEntry?.abort(); hidePreview(); }
+  if (event.key === 'Escape') artworkEntry?.abort();
 });
 
-async function openArtwork(artwork, trigger, source = trigger.querySelector('img')) {
-  if (artworkEntry || dialog.open) return;
+function openArtwork(artwork, trigger) { return openImagePage('artwork', artwork, trigger); }
+async function openCollection(trigger) {
+  if (collectionLoading || artworkEntry || (dialog.open && page !== 'guide')) return;
+  const fromGuide = dialog.open && page === 'guide', guideArtwork = selected;
+  collectionLoading = true; trigger.setAttribute('aria-busy', 'true');
+  $('#artworkStatus').textContent = t('正在載入所有作品…', 'Loading all artworks…');
+  try {
+    const response = await fetch('./scripts/data/all-artwork-catalog.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error('All artwork catalog unavailable');
+    allWorks = await response.json(); collectionCategory = '全部'; collectionIntro = true; collectionScroll = 0;
+    $('#artworkStatus').textContent = '';
+    if (fromGuide ? dialog.open && page === 'guide' : !dialog.open) {
+      collectionFromGuide = fromGuide; collectionGuideArtwork = guideArtwork;
+      openPage('allWorks', null, trigger);
+    }
+  } catch {
+    $('#artworkStatus').textContent = t('所有作品無法載入，請再次點按重試。', 'Could not load artworks. Tap again to retry.');
+  } finally {
+    collectionLoading = false; trigger.removeAttribute('aria-busy');
+  }
+}
+async function openImagePage(next, artwork, trigger) {
+  if (artworkEntry || (dialog.open && page !== 'allWorks')) return;
+  if (page === 'allWorks') collectionScroll = dialog.scrollTop;
+  artworkSource = page === 'allWorks' ? 'collection' : 'mobile';
   const controller = new AbortController(); artworkEntry = controller;
-  const origin = artworkOrigin(source);
+  const origin = artworkOrigin(trigger);
   trigger.setAttribute('aria-busy', 'true');
-  mobileMotion.hold(trigger);
   $('#artworkStatus').textContent = t('正在載入圖片…', 'Loading artwork…');
   try {
     const image = imageFor(artwork, 'detail-art');
@@ -150,7 +125,7 @@ async function openArtwork(artwork, trigger, source = trigger.querySelector('img
     if (controller.signal.aborted) return;
     $('#artworkStatus').textContent = '';
     dialog.classList.add('is-arriving');
-    openPage('artwork', artwork, trigger, image);
+    openPage(next, next === 'artwork' ? artwork : null, trigger, image);
     await enterArtwork(dialog, image, origin, controller.signal);
   } catch (error) {
     if (error.name !== 'AbortError') {
@@ -159,66 +134,122 @@ async function openArtwork(artwork, trigger, source = trigger.querySelector('img
   } finally {
     if ($('#artworkStatus').textContent === t('正在載入圖片…', 'Loading artwork…')) $('#artworkStatus').textContent = '';
     trigger.removeAttribute('aria-busy');
-    mobileMotion.hold(null);
     if (artworkEntry === controller) artworkEntry = null;
   }
 }
 function openPage(next, artwork = selected, trigger = document.activeElement, preparedImage = null) {
   if (artworkEntry && !preparedImage) return;
+  if (next === 'guide' && !['guide', 'prices', 'form', 'allWorks'].includes(page)) guideOrigin = page === 'artwork' ? 'artwork' : page === 'about' ? 'about' : 'mobile';
   if (!dialog.open) {
-    returnY = scrollY; returnFocus = trigger; selected = artwork;
-    hidePreview();
+    returnY = scrollY; returnFocus = trigger;
     document.body.style.position = 'fixed'; document.body.style.top = `-${returnY}px`;
     document.body.style.width = '100%';
     dialog.showModal();
   }
-  page = next; renderDialog(preparedImage);
-  dialog.scrollTop = 0;
+  selected = artwork;
+  page = next;
+  dialog.classList.toggle('is-artwork', next === 'artwork' || next === 'about');
+  dialog.classList.toggle('is-collection', next === 'allWorks');
+  renderDialog(preparedImage);
+  dialog.scrollTop = next === 'allWorks' ? collectionScroll : 0;
   $('#dialogTitle').focus({ preventScroll: true });
 }
 function closeDialog() { dialog.close(); }
 dialog.addEventListener('close', () => {
   artworkEntry?.abort();
+  collection?.destroy(); collection = null;
+  document.body.style.removeProperty('--scene');
   document.body.style.position = ''; document.body.style.top = ''; document.body.style.width = '';
   window.scrollTo({ top: returnY, behavior: 'instant' });
   previousY = returnY;
   returnFocus?.focus({ preventScroll: true });
-  hidePreview(); page = null;
+  dialog.classList.remove('is-artwork', 'is-collection'); page = null;
 });
 $('#closeDialog').addEventListener('click', closeDialog);
 $('#stepBack').addEventListener('click', () => {
-  const previous = { guide: selected ? 'artwork' : 'about', prices: 'guide', form: 'prices' }[page];
-  if (previous) openPage(previous); else closeDialog();
+  const previous = { guide: guideOrigin === 'mobile' ? null : guideOrigin, prices: 'guide', form: 'prices' }[page];
+  if (page === 'allWorks' && collectionFromGuide) openPage('guide', collectionGuideArtwork);
+  else if (page === 'artwork' && artworkSource === 'collection') openPage('allWorks', null);
+  else if (previous) openPage(previous); else closeDialog();
 });
 dialog.addEventListener('click', event => {
   const rect = dialog.getBoundingClientRect();
   if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) closeDialog();
 });
 function heading(value) { const h = element('h2', '', value); h.id = 'dialogTitle'; h.tabIndex = -1; return h; }
+function renderGuidelines(copy) {
+  const names = ['委託與付款', '參考圖片', '繪製與展示', '用途與買斷'];
+  const groups = copy.split(/\n\/\n/);
+  groups.forEach((group, index) => {
+    const section = element('section', 'guideline-section');
+    const label = element('h3', '', names[index]);
+    label.id = `guideline-${index}`; section.setAttribute('aria-labelledby', label.id);
+    if (index === 1) {
+      const row = element('div', 'guideline-heading');
+      const link = element('a', 'guideline-artworks', t('所有作品', 'All works'));
+      link.href = '#all-works'; link.setAttribute('aria-haspopup', 'dialog');
+      link.addEventListener('click', event => { event.preventDefault(); openCollection(link); });
+      row.append(label, link); section.append(row);
+    } else section.append(label);
+    const lines = group.split('\n').map(line => line.replace(/^[✎♠︎♥︎♦︎♣︎ꕤ]+/u, ''));
+    if (index === 3) {
+      const list = element('dl', 'usage-prices');
+      lines.forEach(line => {
+        const [name, value] = line.split(' - ');
+        const row = element('div', 'usage-row');
+        const term = element('dt', '', name);
+        if (name.endsWith('買斷價格')) term.replaceChildren(document.createTextNode(name.slice(0, -4)), element('span', 'usage-term', '買斷價格'));
+        row.append(term, element('dd', '', value.replace(/X(\d+)/, ' × $1')));
+        list.append(row);
+      }); section.append(list);
+    } else {
+      const list = element('ul', 'guideline-list');
+      lines.forEach(line => list.append(element('li', '', line)));
+      section.append(list);
+    }
+    content.append(section);
+  });
+}
 function renderDialog(preparedImage = null) {
+  if (collection) { collectionCategory = collection.category; collection.destroy(); collection = null; }
   content.replaceChildren();
+  const commission = ['guide', 'prices', 'form'].includes(page);
   $('#stepBack').textContent = t(page === 'artwork' || page === 'about' || page === 'games' ? '← 返回作品' : '← 上一步', page === 'artwork' || page === 'about' || page === 'games' ? '← Back to works' : '← Previous step');
-  if (['guide', 'prices', 'form'].includes(page)) {
+  if (page === 'guide') $('#stepBack').textContent = guideOrigin === 'mobile' ? t('← 返回床鈴', '← Back to mobile') : t(selected ? '← 返回作品' : '← 返回關於', selected ? '← Back to artwork' : '← Back to about');
+  if (commission) {
     const steps = element('div', 'step-indicator');
     ['guide', 'prices', 'form'].forEach((key, index) => {
       const step = element('span', key === page ? 'current' : '', `${index + 1}. ${t(['委託須知', '價目表', '委託表單'][index], ['Guidelines', 'Pricing', 'Request'][index])}`);
       if (key === page) step.setAttribute('aria-current', 'step'); steps.append(step);
     }); content.append(steps);
   }
-  if (page === 'artwork' && selected) {
+  if (page === 'allWorks') {
+    $('#stepBack').textContent = collectionFromGuide ? t('← 返回委託須知', '← Back to guidelines') : t('← 返回床鈴', '← Back to mobile');
+    content.append(heading(t('所有作品', 'All works')));
+    collection = mountAllWorks(content, allWorks, lang, title, openArtwork, collectionCategory, collectionIntro);
+    collectionIntro = false;
+  } else if (page === 'artwork' && selected) {
+    if (artworkSource === 'collection') $('#stepBack').textContent = t('← 返回所有作品', '← Back to all works');
     const layout = element('div', 'detail-layout');
-    const details = element('div');
+    const details = element('div', 'details');
+    details.append(element('span', 'little-star', '✦'), element('p', 'meta', t('木洛的作品', 'Artwork by Muro')));
     if (selected.date) details.append(element('div', 'detail-meta', selected.date));
     details.append(heading(title(selected)));
     if (selected.category) details.append(element('p', '', selected.category));
     if (selected.description) details.append(element('p', '', text(selected.description)));
     details.append(element('p', '', t('想委託屬於你的角色？\n先看看委託須知，再挑選適合的方案。', 'A character of your own?\nRead the guidelines, then find your commission type.')), action(t('查看委託須知', 'Read commission guidelines'), () => openPage('guide')));
-    layout.append(preparedImage ?? imageFor(selected, 'detail-art'), details); content.append(layout);
+    details.append(artworkSource === 'collection'
+      ? action(t('返回所有作品', 'Back to all works'), () => openPage('allWorks', null))
+      : action(t('返回床鈴', 'Back to mobile'), closeDialog));
+    const artSpace = element('div', 'art-space');
+    artSpace.append(preparedImage ?? imageFor(selected, 'detail-art'));
+    layout.append(artSpace, details); content.append(layout);
   } else if (page === 'guide') {
     content.append(heading(t('委託須知', 'Commission guidelines')));
     const copy = siteData[1].subs[1].copy;
     if (lang === 'en' && copy.en === 'Coming Soon') content.append(element('p', '', 'Guidelines are currently available in Traditional Chinese. Please review the original terms below before requesting a commission.'));
-    content.append(element('p', '', copy.zh), action(t('下一步：價目表', 'Next: pricing'), () => openPage('prices')));
+    renderGuidelines(copy.zh);
+    content.append(action(t('下一步：價目表', 'Next: pricing'), () => openPage('prices')));
   } else if (page === 'prices') {
     content.append(heading(t('價目表', 'Commission pricing')));
     const table = element('table', 'price-table');
@@ -241,25 +272,38 @@ function renderDialog(preparedImage = null) {
     }
     select.addEventListener('change', updateLink); updateLink(); content.append(link);
   } else if (page === 'about') {
-    const layout = element('div', 'detail-layout'); const img = element('img', 'detail-art'); img.src = './assets/profile/muro-night.png'; img.alt = '木洛 Muro';
-    const copy = element('div'); copy.append(heading(t('關於木洛', 'About Muro')), element('p', '', text(siteData[0].subs[0].copy)), action(t('委託須知', 'Commission guidelines'), () => openPage('guide'))); layout.append(img, copy); content.append(layout);
-    const socials = element('div', 'dialog-social'); addSocials(socials); content.append(socials);
+    const layout = element('div', 'detail-layout');
+    const artSpace = element('div', 'art-space');
+    artSpace.append(preparedImage ?? imageFor(profile, 'detail-art'));
+    const copy = element('div', 'details');
+    copy.append(element('span', 'little-star', '✦'), heading(t('關於木洛', 'About Muro')), element('p', '', text(siteData[0].subs[0].copy)), action(t('委託須知', 'Commission guidelines'), () => openPage('guide')), action(t('返回床鈴', 'Back to mobile'), closeDialog));
+    const socials = element('div', 'dialog-social'); addSocials(socials); copy.append(socials);
+    layout.append(artSpace, copy); content.append(layout);
   } else if (page === 'games') {
     content.append(heading(t('遊戲', 'Games')), element('p', '', text(siteData[2].subs[0].copy)), element('h3', '', text(siteData[0].subs[1].title)), element('p', '', text(siteData[0].subs[1].copy)), element('h3', '', text(siteData[0].subs[2].title)), element('p', '', text(siteData[0].subs[2].copy)));
   }
+  if (commission) {
+    const actions = element('div', 'dialog-actions');
+    [...content.children].filter(node => node.classList.contains('action')).forEach(node => actions.append(node));
+    content.append(actions);
+  }
 }
-document.querySelectorAll('[data-page]').forEach(button => button.addEventListener('click', () => openPage(button.dataset.page, null, button)));
+document.querySelectorAll('[data-page]').forEach(button => button.addEventListener('click', () => {
+  if (button.matches('.portrait')) openImagePage('about', profile, button);
+  else if (button.dataset.page === 'allWorks') openCollection(button);
+  else openPage(button.dataset.page, null, button);
+}));
 function addSocials(host) {
   host.replaceChildren();
   socialLinks.forEach(item => { const link = element('a', '', text(item.label)); link.href = item.url; if (!item.url.startsWith('mailto:')) { link.target = '_blank'; link.rel = 'noopener noreferrer'; } host.append(link); });
 }
 function setLanguage() {
   document.documentElement.lang = lang === 'zh' ? 'zh-TW' : 'en';
-  document.title = t('木洛 Muro｜夜空作品室', 'Muro | A little universe');
+  document.title = t('木洛 Muro', 'Muro');
   document.querySelectorAll('[data-zh]').forEach(node => { node.textContent = node.dataset[lang]; });
   $('#language').textContent = t('EN', '中文');
   $('#language').setAttribute('aria-label', t('Switch to English', '切換繁體中文'));
-  addSocials($('#socialLinks')); renderGallery(); hidePreview();
+  addSocials($('#socialLinks')); mobileMotion?.refreshLabels();
   if (dialog.open) renderDialog();
 }
 $('#language').addEventListener('click', () => { if (artworkEntry) return; lang = lang === 'zh' ? 'en' : 'zh'; setLanguage(); });
@@ -272,11 +316,10 @@ window.addEventListener('scroll', () => {
     const y = scrollY;
     if (y < 80 || y < previousY - 3) $('#siteHeader').classList.remove('is-hidden');
     else if (y > 160 && y > previousY + 3) $('#siteHeader').classList.add('is-hidden');
-    if (y !== previousY) hidePreview();
     previousY = y; scrollPending = false;
   });
 }, { passive: true });
-window.addEventListener('resize', () => { hidePreview(); clampEgg(); });
+window.addEventListener('resize', clampEgg);
 
 // Keep the existing draggable mascot, including touch and viewport bounds.
 const egg = $('#floatingGif'); let drag = null;
@@ -295,7 +338,8 @@ egg.addEventListener('keydown', event => { if (event.key === 'Enter' || event.ke
 try {
   const response = await fetch('./scripts/data/artwork-catalog.json');
   if (!response.ok) throw new Error('Artwork catalog unavailable');
-  artworks = await response.json(); setLanguage();
+  artworks = await response.json();
+  await renderGallery(); setLanguage();
 } catch (error) {
   gallery.replaceChildren(element('p', 'loading', '作品暫時無法載入，請重新整理。 / Please reload to try again.'));
   console.error(error);

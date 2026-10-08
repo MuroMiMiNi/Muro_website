@@ -1,0 +1,16 @@
+.social-wave{--wave-height:6px;display:flex;align-items:center;justify-content:center;gap:8px}
+.social-wave-link{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px;flex:0 0 44px;height:60px;color:#b9ccdc;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.social-wave-art{display:block;width:32px;height:32px;max-width:none;image-rendering:pixelated;animation:social-wave-bob 2.8s ease-in-out var(--wave-delay) infinite;pointer-events:none}
+.social-wave-name{display:none;font-size:14px;line-height:1.4}
+.social-wave-link:focus-visible{outline:2px solid #d7c899;outline-offset:2px}
+.social-wave-link:focus-visible .social-wave-art{filter:brightness(1.15)}
+.social-wave:has(.social-wave-link:focus-visible) .social-wave-art,.social-wave[data-paused] .social-wave-art{animation-play-state:paused}
+.social-wave--large{--wave-height:10px;gap:12px}
+.social-wave--large .social-wave-link{flex-basis:88px;height:118px}
+.social-wave--large .social-wave-art{width:64px;height:64px}
+.social-wave--large .social-wave-name{display:block}
+@keyframes social-wave-bob{0%,100%{transform:translateY(calc(-1 * var(--wave-height)))}50%{transform:translateY(var(--wave-height))}}
+@media(hover:hover){.social-wave:has(.social-wave-link:hover) .social-wave-art{animation-play-state:paused}.social-wave-link:hover .social-wave-art{filter:brightness(1.15)}.social-wave-link:hover .social-wave-name{color:#e4d7b0}}
+@media(max-width:600px){.social-wave--large{display:grid;grid-template-columns:repeat(3,88px);gap:14px 12px}}
+@media(max-width:380px){.social-wave{gap:0}.social-wave--large{gap:14px 4px}}
+@media(prefers-reduced-motion:reduce){.social-wave-art{animation:none;transform:none}}

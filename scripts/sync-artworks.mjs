@@ -45,6 +45,13 @@ export async function createCatalog(directory = path.join(root, 'assets/artworks
 export async function syncArtworks() {
   const catalog = await createCatalog();
   await writeFile(path.join(root, 'scripts/data/artwork-catalog.json'), JSON.stringify(catalog, null, 2) + '\n');
+  await syncAllArtworks();
+  return catalog;
+}
+export async function syncAllArtworks() {
+  const catalog = (await createCatalog(path.join(root, 'assets/all-artworks'), './assets/all-artworks'))
+    .map(item => ({ ...item, category: item.category?.split(/[\\/]/)[0] ?? null }));
+  await writeFile(path.join(root, 'scripts/data/all-artwork-catalog.json'), JSON.stringify(catalog, null, 2) + '\n');
   return catalog;
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -1,0 +1,31 @@
+dialog#detailDialog.is-collection{position:fixed;inset:0;width:100%;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#0b1733ee;box-shadow:none;overflow-x:hidden;overflow-y:auto}
+dialog#detailDialog.is-collection::backdrop{background:#070f2399;backdrop-filter:none}
+body:has(dialog.is-collection[open]) main,body:has(dialog.is-collection[open]) header,body:has(dialog.is-collection[open]) .floating-gif{opacity:0;pointer-events:none}
+dialog.is-collection .dialog-top{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;padding:12px 30px;background:#0b1733ed;border:0}
+dialog.is-collection #dialogContent{width:min(1320px,100%);margin:0 auto;padding:24px 48px 70px}
+dialog.is-collection #dialogTitle{font-size:38px;margin:0 0 22px}
+.collection-filters{display:flex;flex-wrap:wrap;gap:12px 28px;margin:0}
+.collection-filters button{font-family:var(--display);font-size:17px;letter-spacing:0;min-height:44px;padding:8px 0;border-bottom:2px solid transparent;background:none;color:#9db7d0}
+.collection-filters button[aria-pressed=true]{color:#d7c899;border-bottom-color:#d7c899}
+dialog.is-collection #dialogContent .collection-status{font-size:13px;margin:14px 0 28px;color:#9db7d0}
+.collection-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:42px 30px;align-items:start}
+.collection-work{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0;width:100%;padding:0;border:0;background:none;color:#d5e4ed;transform-origin:center;cursor:pointer}
+.collection-work img{width:100%;height:240px;object-fit:contain;background:none;filter:drop-shadow(0 10px 16px #030a1b40)}
+.collection-caption{max-width:100%;font-family:var(--reading);font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.collection-work:hover .collection-caption{color:#d7c899}
+.is-collection .collection-filters,.is-collection .collection-status,.is-collection #dialogTitle,.is-collection .collection-caption{transition:opacity .3s ease}
+.collection-wall{position:relative;z-index:2}
+dialog.is-collection[data-revealing]{overflow-y:hidden}
+.is-collection[data-revealing] .collection-wall{opacity:0;pointer-events:none;will-change:transform,opacity}
+.is-collection[data-revealing]:not([data-collection-phase=settled]) .collection-filters,.is-collection[data-revealing]:not([data-collection-phase=settled]) .collection-status,.is-collection[data-revealing]:not([data-collection-phase=settled]) #dialogTitle,.is-collection[data-revealing]:not([data-collection-phase=settled]) .collection-caption{opacity:0}
+.collection-flight{position:fixed;inset:0;z-index:3;overflow:hidden;pointer-events:none;perspective-origin:50% 43%}
+.collection-flight-camera{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+.collection-flight-work{position:absolute;left:50%;top:43%;opacity:0;backface-visibility:hidden}
+.collection-flight-work img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.collection-flight-moon{position:absolute;left:8%;top:18%;width:80px;height:80px;opacity:.28;image-rendering:pixelated}
+.collection-flight-cloud{position:absolute;bottom:-8%;width:48%;max-width:none;height:auto;opacity:.15;image-rendering:pixelated}
+.collection-flight-cloud.flight-cloud-0{left:-12%}.collection-flight-cloud.flight-cloud-1{right:-15%;bottom:0}
+@media(max-width:600px){.collection-flight-moon{width:55px;height:55px;left:6%;top:20%}.collection-flight-cloud{width:90%;bottom:0}.collection-flight-cloud.flight-cloud-0{left:-40%}.collection-flight-cloud.flight-cloud-1{right:-45%;bottom:10%}}
+@media(min-width:1500px){.collection-grid{grid-template-columns:repeat(5,minmax(0,1fr))}.collection-work img{height:220px}}
+@media(max-width:1000px){.collection-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:32px 24px}.collection-work img{height:220px}}
+@media(max-width:600px){dialog.is-collection .dialog-top{padding:6px 14px}dialog.is-collection #dialogContent{padding:18px 22px 50px}dialog.is-collection #dialogTitle{font-size:30px}.collection-filters{gap:8px 20px}.collection-filters button{font-size:16px}.collection-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 18px}.collection-work img{height:190px}.collection-caption{font-size:12px}}

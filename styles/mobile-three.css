@@ -1,0 +1,30 @@
+.mobile-gallery.mobile-three{position:relative;overflow:hidden}
+.mobile-canvas{display:block;width:100%;height:100%;touch-action:none}
+.mobile-three .work-button{position:absolute;transform:translateX(-50%);border:0;background:none;padding:3px 5px;font-size:10px;color:#bacbdd;white-space:nowrap;max-width:135px;text-overflow:ellipsis;overflow:hidden;box-shadow:none;aspect-ratio:auto}
+.mobile-three .work-button:before{display:none}
+.mobile-three .work-button:hover{color:#e6eff7}
+dialog .view-veil,dialog .arrival-cloud{display:none}
+dialog.is-artwork{position:fixed;inset:0;width:100%;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:transparent;box-shadow:none;color:#d5e4ed;overflow-y:auto}
+dialog.is-artwork::backdrop{background:transparent;backdrop-filter:none}
+dialog.is-artwork .view-veil{display:block;position:fixed;inset:0;background:#0b173366;opacity:var(--arrival,1);pointer-events:none;backdrop-filter:blur(1px)}
+dialog.is-artwork .dialog-top{position:fixed;inset:0 0 auto;z-index:5;background:none;border:0;padding:24px 30px;opacity:var(--arrival-ui,1);pointer-events:none}
+dialog.is-artwork .dialog-top button{pointer-events:auto;min-width:44px;min-height:44px}
+dialog.is-artwork #closeDialog{font-size:22px}
+dialog.is-artwork #dialogContent{position:relative;z-index:2;height:100%;padding:0}
+dialog.is-artwork .detail-layout{position:relative;min-height:100%;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.85fr);align-items:center;gap:70px;width:min(880px,calc(100% - 100px));margin:auto;padding:70px 0}
+.is-artwork .art-space{display:flex;align-items:center;justify-content:center}
+.is-artwork .art-space img{width:100%;height:min(62dvh,510px);max-height:none;object-fit:contain;background:none;opacity:var(--art-arrival,1);filter:drop-shadow(0 16px 28px #040b1a55)}
+.is-artwork .details{position:relative;opacity:var(--arrival-ui,1);transform:translateY(calc((1 - var(--arrival-ui,1))*12px));padding:34px 0}
+.is-artwork .details:before{content:"";position:absolute;inset:-40px -50px;background:radial-gradient(ellipse,#243c5973,transparent 70%);z-index:-1;pointer-events:none}
+.is-artwork .details .meta{font-size:11px;color:#91abc6;letter-spacing:.1em;margin:10px 0}
+.is-artwork .little-star{color:#d7c899;font-size:22px}
+#dialogContent .details h2{font-size:28px;font-weight:400;letter-spacing:.07em;line-height:1.5;margin:0 0 28px}
+#dialogTitle:focus{outline:none}
+.is-artwork .details .action{background:none;border:0;border-bottom:1px solid #7a93ad66;box-shadow:none;margin:12px 20px 0 0;padding:9px 0;font-size:12px;color:#d7c899}
+dialog.is-artwork .arrival-cloud{display:block;position:fixed;width:650px;height:225px;opacity:var(--cloud-opacity,.6);pointer-events:none;z-index:1;background-position:center;background-size:contain;background-repeat:no-repeat;image-rendering:pixelated;filter:drop-shadow(0 0 26px #273f5c11)}
+.arrival-cloud.cloud-left{left:-230px;bottom:6%;transform:translateX(calc(var(--drift,1)*-90px))}
+.arrival-cloud.cloud-right{right:-150px;top:12%;transform:translateX(calc(var(--drift,1)*100px))}
+.flying-art{position:fixed;z-index:4;left:0;top:0;max-width:none;object-fit:contain;transform-origin:0 0;pointer-events:none;filter:drop-shadow(0 8px 20px #070f2355)}
+body:has(dialog.is-artwork[open]) main,body:has(dialog.is-artwork[open]) header,body:has(dialog.is-artwork[open]) .floating-gif{opacity:var(--scene,0);pointer-events:none}
+@media(max-width:600px){.mobile-three .work-button{font-size:9px;max-width:95px}dialog.is-artwork .dialog-top{padding:12px 14px}dialog.is-artwork .detail-layout{width:calc(100% - 52px);grid-template-columns:1fr;gap:0;padding:72px 0 28px}.is-artwork .art-space img{height:36dvh}.is-artwork .details{padding:22px 8px 20px;max-width:100%}#dialogContent .details h2{font-size:24px;margin-bottom:14px}.is-artwork .little-star{position:absolute;right:12px;top:26px}.is-artwork .details .action{width:auto}.arrival-cloud.cloud-right{right:-420px;top:28%}.arrival-cloud.cloud-left{left:-360px;bottom:3%}}
+@media(prefers-reduced-motion:reduce){dialog.is-artwork .view-veil{backdrop-filter:none}}
