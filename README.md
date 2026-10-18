@@ -1,57 +1,26 @@
-# 範例E：夜空床鈴作品室
+# Muro Example E
 
-分支：`codex/example-e`。使用提供的個人圖示與簽名，保留可拖曳的蛋。
+This repository contains the current personal portfolio site for the `codex/example-e` branch.
 
-## 啟動與更新
-
-需要 Node.js 20 以上，網站本身沒有第三方執行期套件。
+## Develop and verify
 
 ```powershell
-node scripts/serve.mjs
+npm run dev
+npm test
+npm run build
 ```
 
-開啟 http://127.0.0.1:5505。預覽模式每次重新整理會掃描作品資料夾。
+- `npm run dev` starts a local preview at `http://127.0.0.1:5505`.
+- `npm test` checks the artwork catalog and timeline rules.
+- `npm run build` refreshes the artwork catalogs and produces the deployable `dist/` directory.
 
-```powershell
-node scripts/sync-artworks.mjs # 更新靜態網站作品清單
-node scripts/build.mjs         # 更新清單並輸出 dist/ 網站
-node --test tests/catalog.test.mjs tests/timeline.test.mjs
-```
+## Main locations
 
-也可使用 `npm run dev`、`npm run sync`、`npm run build`、`npm test`。靜態主機部署 `dist/` 內容；只上傳新圖片而未同步清單不會更新作品。這次未變更正式站部署設定。
+- `index.html` — site entry point.
+- `scripts/example-e.js` — homepage and dialog behavior.
+- `scripts/data/siteData.js` — profile, commission, and social-link copy.
+- `assets/artworks/` — hanging-gallery works; run `npm run sync` after changes.
+- `assets/all-artworks/` — categorized artwork shown in the all-works dialog.
+- `styles/` — styles loaded by the current site.
 
-## 作品資料夾
-
-- 自動遞迴讀取 `assets/artworks/` 的 PNG、JPEG、WebP、GIF、AVIF，新增或刪除後執行更新或建置。
-- 檔名可含 `YYYY-MM-DD`、`YYYY_MM_DD`、`YYYY.MM.DD` 或 `YYYYMMDD`；有日期的作品依日期由新到舊。
-- 無日期的既有作品沿用 `scripts/data/artworksData.js` 順序；其餘無日期檔案依檔名自然排序，放在後方。不以檔案修改時間冒充創作日期。
-- 日期相同時沿用既有順序，再按檔名排序。子資料夾名稱可顯示為作品分類。
-- `scripts/data/artwork-catalog.json` 是產生的清單，不必逐件編輯床鈴節點。現有 16 張作品皆沒有日期。
-
-## 操作與素材
-
-- 桌面停留或鍵盤聚焦顯示觀測鏡，點按／Enter 開啟作品；觸控第一次點按預覽，再點作品或預覽進入詳情。
-- 詳情依序通往委託須知、價目表、委託表單；上一步、關閉與 Escape 均可使用。原瀏覽位置與焦點會保留。
-- Google 表單使用原專案連結及方案預填欄位，在新分頁開啟；網站不會自動送出委託。
-- 價格沿用原網站目前呈現的頭像 500／半身 1,100 起／全身 2,800 起；須知保留原文。英文須知尚無原稿，因此顯示提示並保留中文條款。
-- `assets/profile/muro-night.png`、`muro-signature.png` 為提供的原圖；簽名只透過瀏覽器濾鏡轉為淺色透明底，未改寫原圖。
-- 整座床鈴只有一個懸掛起點。主分支由年／月決定，依日期由新到舊相接；同月作品不因件數增加而拆成另一組。沒有日期的作品集中在最後一條主分支，保持既有順序，不推測創作日期。目前 16 件皆無日期，因此共用一條主分支。
-- 同時段的作品透過逐層平衡橫桿懸掛；每條子吊線都由上游橫桿端點接出。這些支撐橫桿只負責排列同時段作品，不另創時間分組。下個月份的支架接在上個月份的支架上，不再重複獨立的整座床鈴與尾飾。
-- 三維座標投影為像素金屬結構，原圖保持正面、比例與色彩。預覽時暫停整座床鈴，以維持相接的結構；整座離屏或分頁隱藏時停止更新。圖片延遲載入，`prefers-reduced-motion` 使用展開的靜態構圖，保留全部作品入口。
-- 已取得並查看 [X 參考影片](https://x.com/duck_wtd/status/2105640227360706653) 的完整 30 秒時間序列及前六秒逐秒畫面。此次修正依據主架繞垂直軸轉動、分支不同步轉動與吊件前後交錯；影片僅作分析參考，不隨網站發布。
-
-瀏覽器驗證：本機安裝 Playwright 與 Microsoft Edge 後執行 `node tests/browser.cjs`。也可用 `PLAYWRIGHT_PATH` 指向已安裝的 Playwright。測試需先啟動預覽，截圖寫入忽略版控的 `.test-results/`；測試不提交外部表單。
-
----
-
-About me<br>
-卯咪寶寶巴士工作室繪師<br>
-木洛 / muro / 楊莫<br>
-可以用各種形式稱呼我，歡迎幫我想愛稱<br>
-＊＊＊＊<br>
-練習像素（Pixel Art）風格中 沒什麼特別的雷點<br>
-講話會注音文<br>
-笑聲超大聲<br>
-講話很機車<br>
-＊＊＊＊<br>
-重度網癮者，歡迎找我打遊戲<br>
+`scripts/data/artwork-catalog.json` and `scripts/data/all-artwork-catalog.json` are generated files and should not be edited manually.

@@ -1,4 +1,4 @@
-import { siteData, socialLinks } from './data/siteData.js';
+import { commissionGuidelines, gameContent, profileContent, socialLinks } from './data/siteData.js';
 import { buildTimeline } from './hanging-mobile.js';
 import { mountMobile } from './mobile-three.js';
 import { artworkOrigin, decodeArtwork, enterArtwork } from './artwork-transition.js';
@@ -246,7 +246,7 @@ function renderDialog(preparedImage = null) {
     layout.append(artSpace, details); content.append(layout);
   } else if (page === 'guide') {
     content.append(heading(t('委託須知', 'Commission guidelines')));
-    const copy = siteData[1].subs[1].copy;
+    const copy = commissionGuidelines;
     if (lang === 'en' && copy.en === 'Coming Soon') content.append(element('p', '', 'Guidelines are currently available in Traditional Chinese. Please review the original terms below before requesting a commission.'));
     renderGuidelines(copy.zh);
     content.append(action(t('下一步：價目表', 'Next: pricing'), () => openPage('prices')));
@@ -276,11 +276,11 @@ function renderDialog(preparedImage = null) {
     const artSpace = element('div', 'art-space');
     artSpace.append(preparedImage ?? imageFor(profile, 'detail-art'));
     const copy = element('div', 'details');
-    copy.append(element('span', 'little-star', '✦'), heading(t('關於木洛', 'About Muro')), element('p', '', text(siteData[0].subs[0].copy)), action(t('委託須知', 'Commission guidelines'), () => openPage('guide')), action(t('返回床鈴', 'Back to mobile'), closeDialog));
+    copy.append(element('span', 'little-star', '✦'), heading(t('關於木洛', 'About Muro')), element('p', '', text(profileContent)), action(t('委託須知', 'Commission guidelines'), () => openPage('guide')), action(t('返回床鈴', 'Back to mobile'), closeDialog));
     const socials = element('div', 'dialog-social'); addSocials(socials); copy.append(socials);
     layout.append(artSpace, copy); content.append(layout);
   } else if (page === 'games') {
-    content.append(heading(t('遊戲', 'Games')), element('p', '', text(siteData[2].subs[0].copy)), element('h3', '', text(siteData[0].subs[1].title)), element('p', '', text(siteData[0].subs[1].copy)), element('h3', '', text(siteData[0].subs[2].title)), element('p', '', text(siteData[0].subs[2].copy)));
+    content.append(heading(t('遊戲', 'Games')), element('p', '', text(gameContent.intro)), element('h3', '', text(gameContent.favoriteGameTypes.title)), element('p', '', text(gameContent.favoriteGameTypes.copy)), element('h3', '', text(gameContent.onlineGames.title)), element('p', '', text(gameContent.onlineGames.copy)));
   }
   if (commission) {
     const actions = element('div', 'dialog-actions');
