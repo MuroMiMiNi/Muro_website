@@ -178,7 +178,7 @@ dialog.addEventListener('click', event => {
 });
 function heading(value) { const h = element('h2', '', value); h.id = 'dialogTitle'; h.tabIndex = -1; return h; }
 function renderGuidelines(copy) {
-  const names = ['委託與付款', '參考圖片', '繪製與展示', '用途與買斷'];
+  const names = ['確認委託即默認買家成年＆詳閱下列注意事項，先付款後排單', '參考圖片', '繪製與展示', '用途與買斷'];
   const groups = copy.split(/\n\/\n/);
   groups.forEach((group, index) => {
     const section = element('section', 'guideline-section');
