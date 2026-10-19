@@ -15,7 +15,7 @@ export const profileContent = {
 // Edit this field to update the commission-guidelines dialog.
 // Use \n for a new line and \n/\n to start the next section.
 export const commissionGuidelines = {
-  zh: '週日不進行繪製作業，因此工期不包含週日的天數\n不接受一切難以理解之理由取消委託\n付款後除我方問題外恕不退款\n/\n✎請務必以你覺得最醜的那張圖來當作參考\n/\n✎因要素呈現不易，成圖會有適當簡化\n✎硬性要求與色票相同者請繞道\n✎一律只有灰色背景，如需簡易背景請加購\n✎繪製完成後會上水印展示\n/\n♠︎非商價格 - 如價目表定價所示\n♥︎商用價格 - 定價 X2\n♦︎非商用買斷價格 - 定價 X3\n♣︎商用買斷價格 - 定價 X5\nꕤ繪師著作人格權以外買斷價格 - 定價 X10',
+  zh: '週日不進行繪製作業，因此工期不包含週日的天數\n驚喜包除設定畫錯之外，完稿限不動到構圖下修改一次，第二次及以上需加價\n不接受一切難以理解之理由取消委託\n付款後除我方問題外恕不退款\n/\n✎請務必以你覺得最醜的那張圖來當作參考\n/\n✎因像素風格可能導致要素呈現不易，成圖會有適當簡化\n✎硬性要求與色票相同者請繞道\n✎一律只有灰色背景，如需簡易背景請加購\n✎繪製完成後會上水印展示\n/\n♠︎非商價格 - 如價目表定價所示\n♥︎商用價格 - 定價 X2\n♦︎非商用買斷價格 - 定價 X3\n♣︎商用買斷價格 - 定價 X5\nꕤ繪師著作人格權以外買斷價格 - 定價 X10',
   en: 'Coming Soon'
 };
 
@@ -32,4 +32,5 @@ export const gameContent = {
     title: { zh: '線上遊戲', en: 'Online games' },
     copy: { zh: '♣ Final Fantasy XIV\n♦ Wuthering Waves\n♥ League of Legends', en: '♣ Final Fantasy XIV\n♦ Wuthering Waves\n♥ League of Legends' }
   }
+
 };
