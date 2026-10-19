@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1733">
+  <meta name="description" content="木洛 Muro 的委託排單進度表。">
+  <title>排單進度表｜木洛 Muro</title>
+  <link rel="stylesheet" href="./styles/example-e.css">
+  <link rel="stylesheet" href="./styles/interface.css">
+  <link rel="stylesheet" href="./styles/social-wave.css">
+  <link rel="preload" href="./assets/fonts/Cubic_11.woff2" as="font" type="font/woff2" crossorigin>
+  <style>
+    .queue-board-link{color:#e3c4bb!important}.queue-board-link:hover{color:#fff0e9!important;text-shadow:0 0 15px #e3c4bb88!important}.queue-page{min-height:100vh}.queue-stars{position:absolute;inset:0;background-image:radial-gradient(circle at 12% 18%,#c1d8e080 0 1px,transparent 1.5px),radial-gradient(circle at 78% 25%,#c1d8e055 0 1px,transparent 1.5px),radial-gradient(circle at 60% 72%,#c1d8e055 0 1px,transparent 1.5px),radial-gradient(circle at 28% 80%,#c1d8e055 0 1px,transparent 1.5px);background-size:220px 180px,310px 270px,260px 230px,330px 250px}.queue-main{width:min(1196px,calc(100% - 48px));margin:0 auto;padding:158px 0 32px}.queue-intro{text-align:center;margin:0 auto 34px;max-width:620px}.queue-kicker{margin:0 0 4px;color:#e3c4bb;font:16px/1.4 var(--display);letter-spacing:.08em}.queue-intro h1,.queue-panel h2,.queue-notes h2{font:400 30px/1.4 var(--display);letter-spacing:.04em;color:#e3edf3}.queue-intro h1{margin:0 0 12px}.queue-intro p:not(.queue-kicker){margin:0;color:#c4d3e3;font-family:var(--reading);font-size:16px}.queue-panel,.queue-notes{border:1px solid #6f91a866;background:linear-gradient(145deg,#142945eF,#0b1930ed);box-shadow:3px 4px 0 #07132999,0 18px 52px #0004}.queue-panel{padding:clamp(18px,3vw,32px)}.panel-heading{display:flex;align-items:baseline;justify-content:space-between;gap:20px;padding-bottom:16px;border-bottom:1px solid #7590a52e}.queue-panel h2,.queue-notes h2{margin:0;font-size:23px}.panel-heading p{margin:0;color:#9db7d0;font:13px/1.5 var(--reading);text-align:right}.queue-table-wrap{width:100%;overflow:auto;margin-top:18px;outline-offset:4px}.queue-table{width:max-content;min-width:100%;border-collapse:collapse;font-family:var(--reading);font-size:15px;line-height:1.65}.queue-table th,.queue-table td{white-space:nowrap;text-align:left;vertical-align:top;padding:15px 14px;border-bottom:1px solid #718da733}.queue-table th{color:#e3c4bb;font-weight:600;background:#0e203a99}.queue-table td{color:#cbd8e5}.queue-table tbody tr:last-child td{border-bottom:0}.queue-table tbody tr:hover{background:#b7d0e00b}.queue-empty{min-height:180px;display:grid;place-items:center;margin:0;text-align:center;color:#aebfd0;font:16px/1.8 var(--reading);padding:28px}.queue-empty.is-error{color:#e3c4bb}.queue-notes{margin-top:18px;padding:clamp(22px,3vw,32px)}.queue-notes h2{padding-bottom:15px;border-bottom:1px solid #e3c4bb55;color:#e3c4bb}.queue-notes p{margin:15px 0 0;color:#c4d3e3;font:16px/1.9 var(--reading);white-space:pre-line}.queue-page footer{padding-top:42px}@media(max-width:1100px){.queue-main{padding-top:172px}}@media(max-width:600px){.queue-main{width:min(100% - 28px,1040px);padding-top:195px}.queue-intro{margin-bottom:26px}.queue-intro h1{font-size:27px}.queue-intro p:not(.queue-kicker),.queue-notes p{font-size:15px}.queue-panel{padding:17px}.panel-heading{display:block}.panel-heading p{text-align:left;margin-top:5px;font-size:12px}.queue-table-wrap{margin-top:13px}.queue-table{font-size:14px}.queue-table th,.queue-table td{padding:13px 11px}.queue-notes{padding:21px}.queue-panel h2,.queue-notes h2{font-size:21px}}
+  </style>
+</head>
+<body class="queue-page" id="top">
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute"><filter id="signature-ink" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .78 0 0 0 0 .87 0 0 0 0 .94 -1 -1 -1 0 2.3"/></filter></svg>
+  <a class="skip-link" href="#queueBoard">跳至排單表</a>
+  <div class="night-sky" aria-hidden="true"><div class="queue-stars"></div><div class="horizon"></div></div>
+  <header id="siteHeader">
+    <a class="signature" href="./index.html#top" aria-label="木洛 Muro"><img src="./assets/profile/muro-signature.png" alt="木洛 Muro" width="460" height="161"></a>
+    <nav id="primaryNavigation" aria-label="主導覽">
+      <a href="./index.html">委託</a><a href="./index.html">所有作品</a><a href="./index.html">遊戲</a><a href="./index.html">關於</a>
+      <a class="queue-board-link" href="./queue.html" aria-current="page">排單進度表</a>
+    </nav>
+    <nav id="headerSocials" class="social-wave" aria-label="社群連結"></nav>
+    <a id="language" href="./index.html" aria-label="返回首頁">首頁</a>
+  </header>
+  <main class="queue-main">
+    <section class="queue-intro" aria-labelledby="queueTitle"><p class="queue-kicker">✦ COMMISSION QUEUE</p><h1 id="queueTitle">排單進度表</h1><p>委託進度會隨試算表更新；請以此頁顯示的內容為準。</p></section>
+    <section id="queueBoard" class="queue-panel" aria-labelledby="queueTableTitle"><div class="panel-heading"><h2 id="queueTableTitle">目前排單</h2><p id="queueUpdated" role="status" aria-live="polite">正在讀取排單…</p></div><div id="queueTableWrap" class="queue-table-wrap" tabindex="0"></div></section>
+    <section id="queueNotes" class="queue-notes" aria-labelledby="notesTitle"><h2 id="notesTitle">委託說明</h2><div id="queueNotesContent"></div></section>
+  </main>
+  <footer><small>© <span id="year"></span> 木洛 Muro</small><a href="#top">回到頂端</a></footer>
+  <script type="module">
+    import { socialLinks } from './scripts/data/siteData.js';
+    import { mountSocialWave } from './scripts/social-wave.js';
+    // 將 Google 試算表「發布到網路」產生的 CSV 網址貼在 csvUrl；notes 可直接改成你的說明。
+    const queueBoardConfig = { csvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTFgrA8LfqQEo_YHnrOh4YATHJJEiiRHCBw7JOhvrOSA14Rhvdj9X4xByxjwA6ziRSF-eqZtaxAQwiH/pub?gid=0&single=true&output=csv', notes: ['此處可填寫委託的補充說明、付款提醒、排單規則或聯絡方式。', '請在 queue.html 最下方的 queueBoardConfig 中直接修改這段內容。'] };
+    const $ = selector => document.querySelector(selector), tableWrap = $('#queueTableWrap'), status = $('#queueUpdated');
+    function parseCsv(source) { const rows = []; let row = [], cell = '', quoted = false; for (let i = 0; i < source.length; i += 1) { const char = source[i]; if (char === '"') { if (quoted && source[i + 1] === '"') { cell += '"'; i += 1; } else quoted = !quoted; } else if (char === ',' && !quoted) { row.push(cell); cell = ''; } else if ((char === '\n' || char === '\r') && !quoted) { if (char === '\r' && source[i + 1] === '\n') i += 1; row.push(cell); if (row.some(value => value.trim())) rows.push(row); row = []; cell = ''; } else cell += char; } row.push(cell); if (row.some(value => value.trim())) rows.push(row); return rows; }
+    function message(copy, className = 'queue-empty') { const p = document.createElement('p'); p.className = className; p.textContent = copy; tableWrap.replaceChildren(p); }
+    function renderTable(rows) { const [headers, ...entries] = rows; if (!headers?.length) return message('試算表目前沒有可顯示的資料。'); const table = document.createElement('table'); table.className = 'queue-table'; const head = document.createElement('thead'), headRow = document.createElement('tr'); headers.forEach(value => { const th = document.createElement('th'); th.scope = 'col'; th.textContent = value; headRow.append(th); }); head.append(headRow); const body = document.createElement('tbody'); entries.forEach(entry => { const row = document.createElement('tr'); headers.forEach((_, col) => { const td = document.createElement('td'); td.textContent = entry[col] ?? ''; row.append(td); }); body.append(row); }); table.append(head, body); tableWrap.replaceChildren(table); }
+    async function loadQueue() { if (!queueBoardConfig.csvUrl.trim()) { message('尚未設定 CSV 網址。請在 queue.html 最下方貼上 Google 試算表發布後的 CSV 網址。'); status.textContent = '等待設定資料來源'; return; } try { const response = await fetch(queueBoardConfig.csvUrl, { cache: 'no-store' }); if (!response.ok) throw new Error(`CSV request failed: ${response.status}`); renderTable(parseCsv(await response.text())); status.textContent = `更新於 ${new Intl.DateTimeFormat('zh-TW', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date())}`; } catch (error) { message('排單資料暫時無法載入，請稍後重新整理。', 'queue-empty is-error'); status.textContent = '資料載入失敗'; console.error(error); } }
+    $('#year').textContent = new Date().getFullYear(); mountSocialWave($('#headerSocials'), socialLinks); queueBoardConfig.notes.forEach(note => { const p = document.createElement('p'); p.textContent = note; $('#queueNotesContent').append(p); }); loadQueue();
+  </script>
+</body>
+</html>
