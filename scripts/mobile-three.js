@@ -91,10 +91,20 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
   let batchStart=0;
   const shown=index=>artworks[(batchStart+index)%artworks.length];
   const canopy=buildCanopy({THREE,parent:root,pt,bar,suspension,crownAnchor:crown.userData.bottomAnchor,artworkCount:slotCount});
-  const textureCache=new Map();
+  const textureCache=new Map(),textureLimit=640;
   function loadTexture(artwork){
     if(!textureCache.has(artwork.src))textureCache.set(artwork.src,new THREE.TextureLoader().loadAsync(artwork.src).then(texture=>{
-      texture.colorSpace=THREE.SRGBColorSpace;texture.magFilter=THREE.NearestFilter;return texture;
+      texture.colorSpace=THREE.SRGBColorSpace;texture.magFilter=THREE.NearestFilter;
+      // Frames are at most a few hundred pixels on screen, so large pictures are shrunk by a whole factor
+      // (keeping pixel-art edges crisp) to save video memory. The detail view still shows the original file.
+      const image=texture.image,longest=Math.max(image.naturalWidth||image.width,image.naturalHeight||image.height),factor=Math.ceil(longest/textureLimit);
+      if(factor>1){
+        const canvas=document.createElement('canvas');
+        canvas.width=Math.round((image.naturalWidth||image.width)/factor);canvas.height=Math.round((image.naturalHeight||image.height)/factor);
+        const context=canvas.getContext('2d');context.imageSmoothingEnabled=false;context.drawImage(image,0,0,canvas.width,canvas.height);
+        texture.image=canvas;texture.needsUpdate=true;
+      }
+      return texture;
     }));
     return textureCache.get(artwork.src);
   }
@@ -170,8 +180,7 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
     const x=parent.x+portrait.offsetLeft+origin[0]+point.x,y=parent.y+portrait.offsetTop+origin[1]+point.y;
     return {x,y};
   }
-  function connectPortrait(){
-    const {x,y}=portraitAnchor(),rect=renderer.domElement.getBoundingClientRect();
+  function connectPortrait({x,y},rect){
     const lower=crown.getWorldPosition(v(0,0,0));
     const upper=v((x-rect.x)/rect.width*2-1,1-(y-rect.y)/rect.height*2,lower.clone().project(camera).z).unproject(camera);
     const ringDown=v(0,-1,0).applyQuaternion(camera.quaternion);
@@ -195,10 +204,9 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
     const normal=v(0,0,1).transformDirection(front.matrixWorld);
     return normal.dot(camera.position.clone().sub(front.getWorldPosition(v(0,0,0))))>=0?front:frame.userData.imageMeshes[1];
   }
-  function projectedBounds(object){
+  function projectedBounds(object,rect=renderer.domElement.getBoundingClientRect()){
     const box=object.geometry.boundingBox??(object.geometry.computeBoundingBox(),object.geometry.boundingBox);
     const corners=[[box.min.x,box.min.y],[box.max.x,box.min.y],[box.min.x,box.max.y],[box.max.x,box.max.y]].map(([x,y])=>object.localToWorld(v(x,y,box.max.z)).project(camera));
-    const rect=renderer.domElement.getBoundingClientRect();
     const xs=corners.map(p=>(p.x+1)*rect.width/2),ys=corners.map(p=>(1-p.y)*rect.height/2);
     return {x:rect.x+Math.min(...xs),y:rect.y+Math.min(...ys),w:Math.max(...xs)-Math.min(...xs),h:Math.max(...ys)-Math.min(...ys)};
   }
@@ -310,14 +318,15 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
       for(const cord of cords){cord.update(dt,reduced.matches);cord.updateSleeves()}
     }
     updatePull(dt);updateSwap(dt);
-    connectPortrait();
+    // Read every layout value once, before any label is moved, so the browser lays out at most once per frame.
+    const canvasRect=renderer.domElement.getBoundingClientRect(),hostRect=host.getBoundingClientRect(),anchor=portraitAnchor();
+    connectPortrait(anchor,canvasRect);
     renderer.render(scene,camera);
-    const hostRect=host.getBoundingClientRect();
-    for(const {frame,button} of leaves){const bounds=projectedBounds(visibleImage(frame));button.style.left=`${bounds.x-hostRect.x+bounds.w/2}px`;button.style.top=`${bounds.y-hostRect.y+bounds.h+13}px`;button.style.maxWidth=`${bounds.w*1.2}px`;button.hidden=closeup;
+    for(const {frame,button} of leaves){const bounds=projectedBounds(visibleImage(frame),canvasRect);button.style.left=`${bounds.x-hostRect.x+bounds.w/2}px`;button.style.top=`${bounds.y-hostRect.y+bounds.h+13}px`;button.style.maxWidth=`${bounds.w*1.2}px`;button.hidden=closeup;
       // Labels on the far side of the ring fade out so they do not pile onto the front pictures.
       const place=frame.getWorldPosition(v(0,0,0)),facing=place.z/Math.max(Math.hypot(place.x,place.z),.001);
       const shown=THREE.MathUtils.smoothstep(facing,-.25,.35);button.style.opacity=shown.toFixed(2);button.classList.toggle('is-behind',shown<.3)}
-    const bellPoint=bell.node.getWorldPosition(v(0,0,0)).project(camera),canvasRect=renderer.domElement.getBoundingClientRect();
+    const bellPoint=bell.node.getWorldPosition(v(0,0,0)).project(camera);
     bellButton.style.left=`${canvasRect.x-hostRect.x+(bellPoint.x+1)*canvasRect.width/2}px`;
     bellButton.style.top=`${canvasRect.y-hostRect.y+(1-bellPoint.y)*canvasRect.height/2}px`;
     bellButton.hidden=closeup||artworks.length<2;
@@ -335,7 +344,14 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
   new ResizeObserver(resize).observe(host);resize();
   let visible=true;
   new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(!visible)previousTime=null},{rootMargin:'100px'}).observe(host);
-  renderer.setAnimationLoop(time=>{if(!document.hidden&&visible)render(time)});
+  // While a dialog covers the page, the mobile keeps its last frame instead of redrawing behind it.
+  // The artwork entry animation still draws while it fades the scene out through --scene.
+  function covered(){
+    if(!document.querySelector('dialog[open]'))return false;
+    const scene=document.body.style.getPropertyValue('--scene');
+    return scene===''||Number(scene)===0;
+  }
+  renderer.setAnimationLoop(time=>{if(!document.hidden&&visible&&!covered())render(time);else previousTime=null});
   host.dataset.ready='true';
   return host.mobile3D;
 }

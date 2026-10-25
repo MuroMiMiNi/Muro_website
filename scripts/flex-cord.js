@@ -47,6 +47,8 @@ export function flexCord(parent,start,end,material,short=false,bendDirection=1){
   const clearEnds=length?Math.min(lightMargin/length,.45):0;
   const lights=stringLights(parent,lightCount(length));
   const normal=new THREE.Vector3(),binormal=new THREE.Vector3(),offset=new THREE.Vector3(),shade=new THREE.Vector3();
+  const center=new THREE.Vector3(),tangent=new THREE.Vector3(),sideways=new THREE.Vector3(),facing=new THREE.Vector3(),depthAxis=new THREE.Vector3(0,0,1);
+  let shapedBend=null;
   function update(dt,settle=false){
     parent.updateWorldMatrix(true,false);parent.localToWorld(position.copy(middle));
     if(!sampled||dt===0||settle){previous.copy(position);velocity.set(0,0,0);sampled=true;if(settle){state.bend=rest;state.speed=0}}
@@ -63,13 +65,19 @@ export function flexCord(parent,start,end,material,short=false,bendDirection=1){
       previous.copy(position);velocity.copy(nextVelocity);
     }
     control.copy(middle).addScaledVector(across,state.bend);
-    const frames=curve.computeFrenetFrames(24,false),positions=geometry.attributes.position,normals=geometry.attributes.normal;
+    time+=dt;lights.place((t,target)=>curve.getPoint(t,target),time,!settle,clearEnds);
+    // The ribbon only needs reshaping when its bend has actually moved.
+    if(shapedBend!==null&&Math.abs(state.bend-shapedBend)<1e-5)return;
+    shapedBend=state.bend;
+    const positions=geometry.attributes.position,normals=geometry.attributes.normal;
     for(let segment=0;segment<=24;segment++){
-      const center=curve.getPoint(segment/24);
+      curve.getPoint(segment/24,center);curve.getTangent(segment/24,tangent);
+      // The cord bends within its own plane, so a fixed depth axis gives a stable frame without per-frame allocations.
+      sideways.crossVectors(tangent,depthAxis).normalize();facing.crossVectors(sideways,tangent);
       // Flatten the tube into a thin ellipse and turn it slowly along its length so it reads as a ribbon.
       const turn=twistPhase+twist*segment/24,c=Math.cos(turn),s=Math.sin(turn);
-      normal.copy(frames.normals[segment]).multiplyScalar(c).addScaledVector(frames.binormals[segment],s);
-      binormal.copy(frames.binormals[segment]).multiplyScalar(c).addScaledVector(frames.normals[segment],-s);
+      normal.copy(facing).multiplyScalar(c).addScaledVector(sideways,s);
+      binormal.copy(sideways).multiplyScalar(c).addScaledVector(facing,-s);
       for(let radial=0;radial<=6;radial++){
         const angle=radial/6*Math.PI*2,x=-Math.cos(angle),y=Math.sin(angle);
         offset.copy(normal).multiplyScalar(x*ribbonDepth).addScaledVector(binormal,y*ribbonWidth);
@@ -80,7 +88,6 @@ export function flexCord(parent,start,end,material,short=false,bendDirection=1){
       }
     }
     positions.needsUpdate=true;normals.needsUpdate=true;
-    time+=dt;lights.place((t,target)=>curve.getPoint(t,target),time,!settle,clearEnds);
   }
   return {mesh,start:curve.v0,end:curve.v2,curve,state,update};
 }
