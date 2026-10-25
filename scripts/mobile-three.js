@@ -186,8 +186,9 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
     tether.updateMatrixWorld(true);
   }
   const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
-  let yaw=-.22,pitch=.08,drag=null,held=false,closeup=false,distance=18;
-  let turnPhase=Math.asin(yaw/.55);
+  // The mobile turns a full circle: a slow constant spin, with drag-and-release inertia.
+  const autoSpin=.16;
+  let yaw=0,spin=autoSpin,pitch=.08,drag=null,held=false,closeup=false,distance=18;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   function visibleImage(frame){
     const front=frame.userData.imageMesh;
@@ -271,14 +272,16 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
   }
   renderer.domElement.addEventListener('pointerdown',e=>{
     if(pickBell(e)){bellDrag={y:e.clientY,moved:false};held=true;renderer.domElement.setPointerCapture(e.pointerId);return}
-    drag={x:e.clientX,y:e.clientY,yaw,pitch,moved:false};held=true;renderer.domElement.setPointerCapture(e.pointerId);
+    drag={x:e.clientX,y:e.clientY,yaw,pitch,moved:false,lastX:e.clientX,lastTime:e.timeStamp};spin=0;held=true;renderer.domElement.setPointerCapture(e.pointerId);
   });
   renderer.domElement.addEventListener('pointermove',e=>{
     if(bellDrag){const dy=Math.max(0,e.clientY-bellDrag.y);bellDrag.moved||=dy>5;pull.length=Math.min(dy*worldPerPixel(),pull.max);pull.speed=0}
-    else if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag.moved||=Math.hypot(dx,dy)>5;yaw=THREE.MathUtils.clamp(drag.yaw+dx*.008,-.65,.65);pitch=THREE.MathUtils.clamp(drag.pitch+dy*.004,-.35,.35)}
+    else if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag.moved||=Math.hypot(dx,dy)>5;yaw=drag.yaw+dx*.008;
+      const elapsed=(e.timeStamp-drag.lastTime)/1000;if(elapsed>0){spin=THREE.MathUtils.clamp((e.clientX-drag.lastX)*.008/elapsed,-4,4);drag.lastX=e.clientX;drag.lastTime=e.timeStamp}
+      pitch=THREE.MathUtils.clamp(drag.pitch+dy*.004,-.35,.35)}
     else renderer.domElement.style.cursor=pickBell(e)?'ns-resize':pick(e)!==undefined?'pointer':'grab';
   });
-  function release(){drag=null;bellDrag=null;held=false;turnPhase=Math.asin(THREE.MathUtils.clamp(yaw/.55,-1,1))}
+  function release(){if(drag&&(!drag.moved||performance.now()-drag.lastTime>120))spin=0;drag=null;bellDrag=null;held=false}
   renderer.domElement.addEventListener('pointerup',e=>{
     if(bellDrag){
       if(!bellDrag.moved){pull.length=Math.max(pull.length,.18);ringBell()}
@@ -298,7 +301,8 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
     const dt=previousTime!==null&&time>previousTime?Math.min((time-previousTime)/1000,.05):0;
     previousTime=time;
     const motion=reduced.matches||held||closeup||document.activeElement?.matches('.work-button:focus-visible')||document.querySelector('dialog[open]')?0:1;
-    if(motion){turnPhase+=dt*.18;yaw+=(.55*Math.sin(turnPhase)-yaw)*(1-Math.exp(-2*dt))}
+    // A flung mobile eases back to its slow spin.
+    if(motion){spin+=(autoSpin-spin)*(1-Math.exp(-.9*dt));yaw=(yaw+spin*dt)%(Math.PI*2)}
     root.rotation.set(pitch, yaw,Math.sin(time*.00035)*.012*motion);
     scene.updateMatrixWorld(true);
     if(!document.querySelector('dialog[open]')){
@@ -309,7 +313,10 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
     connectPortrait();
     renderer.render(scene,camera);
     const hostRect=host.getBoundingClientRect();
-    for(const {frame,button} of leaves){const bounds=projectedBounds(visibleImage(frame));button.style.left=`${bounds.x-hostRect.x+bounds.w/2}px`;button.style.top=`${bounds.y-hostRect.y+bounds.h+13}px`;button.style.maxWidth=`${bounds.w*1.2}px`;button.hidden=closeup}
+    for(const {frame,button} of leaves){const bounds=projectedBounds(visibleImage(frame));button.style.left=`${bounds.x-hostRect.x+bounds.w/2}px`;button.style.top=`${bounds.y-hostRect.y+bounds.h+13}px`;button.style.maxWidth=`${bounds.w*1.2}px`;button.hidden=closeup;
+      // Labels on the far side of the ring fade out so they do not pile onto the front pictures.
+      const place=frame.getWorldPosition(v(0,0,0)),facing=place.z/Math.max(Math.hypot(place.x,place.z),.001);
+      const shown=THREE.MathUtils.smoothstep(facing,-.25,.35);button.style.opacity=shown.toFixed(2);button.classList.toggle('is-behind',shown<.3)}
     const bellPoint=bell.node.getWorldPosition(v(0,0,0)).project(camera),canvasRect=renderer.domElement.getBoundingClientRect();
     bellButton.style.left=`${canvasRect.x-hostRect.x+(bellPoint.x+1)*canvasRect.width/2}px`;
     bellButton.style.top=`${canvasRect.y-hostRect.y+(1-bellPoint.y)*canvasRect.height/2}px`;

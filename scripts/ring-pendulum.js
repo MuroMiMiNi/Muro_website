@@ -15,7 +15,7 @@ export function ringPendulum(group,parent,length,{damping=1.7,torsionDamping=1.2
     const supportYaw=Math.atan2(forward.x,forward.z);
     if(!sampled||dt===0||settle){
       previous.copy(position);velocity.set(0,0,0);acceleration.set(0,0,0);previousYaw=supportYaw;
-      if(!sampled||settle)Object.assign(state,{x:0,z:0,yaw:THREE.MathUtils.clamp(supportYaw+yawOffset,-maxYaw,maxYaw),vx:0,vz:0,vy:0});
+      if(!sampled||settle)Object.assign(state,{x:0,z:0,yaw:supportYaw+yawOffset,vx:0,vz:0,vy:0});
       sampled=true;
     }else{
       nextVelocity.copy(position).sub(previous).divideScalar(dt);
@@ -30,7 +30,9 @@ export function ringPendulum(group,parent,length,{damping=1.7,torsionDamping=1.2
         state.vy+=(stiffness*wrap(supportYaw+yawOffset-state.yaw)+.65*supportSpeed-torsionDamping*state.vy)*step;
         state.x+=state.vx*step;state.z+=state.vz*step;state.yaw+=state.vy*step;
         for(const [angle,speed] of [['x','vx'],['z','vz']])if(Math.abs(state[angle])>maxSwing){state[angle]=Math.sign(state[angle])*maxSwing;state[speed]*=-.2}
-        if(Math.abs(state.yaw)>maxYaw){state.yaw=Math.sign(state.yaw)*maxYaw;state.vy*=.2}
+        // Twist is limited relative to the support, so the whole mobile can turn a full circle.
+        const twistFromSupport=wrap(state.yaw-supportYaw);
+        if(Math.abs(twistFromSupport)>maxYaw){state.yaw=supportYaw+Math.sign(twistFromSupport)*maxYaw;state.vy*=.2}
       }
       previous.copy(position);velocity.copy(nextVelocity);previousYaw=supportYaw;
     }
