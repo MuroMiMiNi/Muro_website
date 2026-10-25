@@ -1,10 +1,12 @@
 import * as THREE from './vendor/three.module.js';
-import {makeCrown,makeCharm,makeFrame} from './mobile-parts.js';
+import {makeCrown,makeCharm,makeFrame,setFrameImage} from './mobile-parts.js';
 import {ringPendulum} from './ring-pendulum.js';
 import {buildCanopy} from './mobile-canopy.js';
 import {flexCord,stringLights} from './flex-cord.js';
+import {playChime} from './bell-chime.js';
 
-export async function mountMobile(host, artworks, onSelect, title = artwork => artwork.title) {
+// The mobile hangs a fixed number of frames; pulling the bell shows the next batch of artworks.
+export async function mountMobile(host, artworks, onSelect, title = artwork => artwork.title, bellLabel = () => 'Pull the bell for more artworks', slotLimit = 20) {
   host.classList.add('mobile-three');
   const renderer = new THREE.WebGLRenderer({alpha:true,antialias:true});
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));
@@ -85,25 +87,36 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
     }
     return curve;
   }
-  const canopy=buildCanopy({THREE,parent:root,pt,bar,suspension,crownAnchor:crown.userData.bottomAnchor,artworkCount:artworks.length});
-  const textures=await Promise.all(artworks.map(a=>new THREE.TextureLoader().loadAsync(a.src)));
-  const pickObjects=[],buttons=[];
+  const slotCount=Math.min(slotLimit,artworks.length);
+  let batchStart=0;
+  const shown=index=>artworks[(batchStart+index)%artworks.length];
+  const canopy=buildCanopy({THREE,parent:root,pt,bar,suspension,crownAnchor:crown.userData.bottomAnchor,artworkCount:slotCount});
+  const textureCache=new Map();
+  function loadTexture(artwork){
+    if(!textureCache.has(artwork.src))textureCache.set(artwork.src,new THREE.TextureLoader().loadAsync(artwork.src).then(texture=>{
+      texture.colorSpace=THREE.SRGBColorSpace;texture.magFilter=THREE.NearestFilter;return texture;
+    }));
+    return textureCache.get(artwork.src);
+  }
+  const textures=await Promise.all(Array.from({length:slotCount},(_,index)=>loadTexture(shown(index))));
+  const pickObjects=[],buttons=[],frames=[];
+  function labelButton(button,index){
+    const artwork=shown(index);
+    button.dataset.artwork=artwork.id;button.textContent=title(artwork);button.setAttribute('aria-label',title(artwork));
+  }
   function addArtwork(parent,mount,target,index,linkBelow){
-      const texture=textures[index];texture.colorSpace=THREE.SRGBColorSpace;
-      texture.magFilter=THREE.NearestFilter;
-      const frame=makeFrame(texture,linkBelow);
+      const frame=makeFrame(textures[index],linkBelow);frames[index]=frame;
       const hanging=suspension(parent,mount,target,frame,frame.userData.attachment);
       hanging.userData.maxSwing=target.distanceTo(mount)<.9?.035:.065;
       const pendulum=ringPendulum(frame,hanging,1.1+(index%3)*.08,{damping:2+(index%4)*.2,torsionDamping:1+(index%5)*.13,stiffness:2.1+(index%7)*.17,yawOffset:[-.12,.08,-.04,.14,-.08][index%5],maxYaw:.85,maxSwing:.075});
       picturePendulums.push({index,node:frame,...pendulum});
       frame.traverse(o=>{if(o.isMesh){o.userData.index=index;pickObjects.push(o)}});
       const button=document.createElement('button');button.type='button';button.className='work-button';
-      button.dataset.artwork=artworks[index].id;
-      button.setAttribute('aria-label',title(artworks[index]));
+      labelButton(button,index);
       button.setAttribute('aria-haspopup','dialog');
-      button.textContent=title(artworks[index]);host.append(button);
+      host.append(button);
       button.artworkBounds=()=>projectedBounds(visibleImage(frame));
-      button.addEventListener('click',()=>onSelect(artworks[index],button));
+      button.addEventListener('click',()=>onSelect(shown(index),button));
       buttons[index]=button;leaves.push({frame,button});
       return frame;
   }
@@ -130,8 +143,11 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
   const tailHook=new THREE.Group();
   bar(tailHook,v(-.12,0,0),v(0,.05,0),v(.12,0,0));
   const tailTop=eye(tailHook,v(0,0,0),1);
-  suspension(canopy.tailMount.parent,canopy.tailMount.point,canopy.tailTarget,tailHook,tailTop);
+  const tail=suspension(canopy.tailMount.parent,canopy.tailMount.point,canopy.tailTarget,tailHook,tailTop);
+  const tailLength=canopy.tailMount.point.distanceTo(canopy.tailTarget);
   addRingCharm(tailHook,eye(tailHook,v(0,0,0),-1),'bell');
+  const bell=pendulums.find(p=>p.kind==='bell'),bellMeshes=[];
+  tailHook.traverse(o=>{if(o.isMesh)bellMeshes.push(o)});
   const hangingPendulums=joints.filter(j=>j.cord||j.group.userData.directRing).map((j,index)=>{
     const pendulum=ringPendulum(j.group,j.parent,j.group.userData.pendulumLength??j.length,{damping:2.2+(index%3)*.2,torsionDamping:1.7+(index%4)*.15,stiffness:3.1,maxYaw:.65,maxSwing:j.group.userData.maxSwing??.025});
     return {name:j.object.name,node:j.group,...pendulum};
@@ -201,18 +217,82 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
     const target=closeup?v(-4.15*spread,1.55,0):v(0,canopy.viewCenterY,0);
     camera.position.copy(target).add(v(0,.4,closeup?5.1:distance));camera.lookAt(target);camera.updateMatrixWorld();
   }
-  function pick(event){
+  function aim(event){
     const rect=renderer.domElement.getBoundingClientRect();pointer.set((event.clientX-rect.x)/rect.width*2-1,-(event.clientY-rect.y)/rect.height*2+1);
-    raycaster.setFromCamera(pointer,camera);return raycaster.intersectObjects(pickObjects,false)[0]?.object.userData.index;
+    raycaster.setFromCamera(pointer,camera);
   }
-  renderer.domElement.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,yaw,pitch,moved:false};held=true;renderer.domElement.setPointerCapture(e.pointerId)});
-  renderer.domElement.addEventListener('pointermove',e=>{
-    if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag.moved||=Math.hypot(dx,dy)>5;yaw=THREE.MathUtils.clamp(drag.yaw+dx*.008,-.65,.65);pitch=THREE.MathUtils.clamp(drag.pitch+dy*.004,-.35,.35)}
-    else renderer.domElement.style.cursor=pick(e)!==undefined?'pointer':'grab';
+  function pick(event){aim(event);return raycaster.intersectObjects(pickObjects,false)[0]?.object.userData.index}
+  function pickBell(event){aim(event);return raycaster.intersectObjects(bellMeshes,false).length>0}
+  // Pulling the bell stretches the tail ribbon; a long enough pull (or a tap) rings it and changes the batch.
+  const pull={length:0,speed:0,max:.7,trigger:.28};let bellDrag=null,swap=null;
+  const worldPerPixel=()=>2*distance*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))/renderer.domElement.clientHeight;
+  function ringBell(){
+    playChime();
+    if(bell){bell.state.vx+=2.6;bell.state.vz+=(Math.random()-.5)*1.6}
+    nextBatch();
+  }
+  async function nextBatch(){
+    if(swap||artworks.length<2)return;
+    // Beyond one full mobile, show the next batch; otherwise rotate the works so each pull still changes the view.
+    const step=artworks.length>slotCount?slotCount:Math.max(1,Math.round(slotCount/3));
+    const next=(batchStart+step)%artworks.length;
+    swap={fade:1,direction:-1,textures:null};
+    const pending=swap;
+    try{
+      pending.next=next;
+      pending.textures=await Promise.all(Array.from({length:slotCount},(_,index)=>loadTexture(artworks[(next+index)%artworks.length])));
+    }catch(error){console.error(error);pending.direction=1}
+  }
+  function updateSwap(dt){
+    if(!swap)return;
+    if(swap.direction<0){
+      swap.fade=reduced.matches?0:Math.max(0,swap.fade-dt*3.5);
+      if(swap.fade===0&&swap.textures){
+        batchStart=swap.next;
+        frames.forEach((frame,index)=>setFrameImage(frame,swap.textures[index]));
+        buttons.forEach(labelButton);
+        swap.direction=1;
+      }
+    }else{
+      swap.fade=reduced.matches?1:Math.min(1,swap.fade+dt*2.5);
+      if(swap.fade===1)swap=null;
+    }
+    const opacity=swap?swap.fade:1;
+    for(const frame of frames)frame.userData.imageMesh.material.opacity=opacity;
+  }
+  function updatePull(dt){
+    if(!bellDrag){
+      pull.speed+=(-70*pull.length-7*pull.speed)*dt;
+      pull.length=THREE.MathUtils.clamp(pull.length+pull.speed*dt,-.12,pull.max);
+      if(Math.abs(pull.length)<.0005&&Math.abs(pull.speed)<.01)pull.length=pull.speed=0;
+    }
+    const stretch=1+pull.length/tailLength;
+    tail.scale.y=stretch;tailHook.scale.y=1/stretch;
+  }
+  renderer.domElement.addEventListener('pointerdown',e=>{
+    if(pickBell(e)){bellDrag={y:e.clientY,moved:false};held=true;renderer.domElement.setPointerCapture(e.pointerId);return}
+    drag={x:e.clientX,y:e.clientY,yaw,pitch,moved:false};held=true;renderer.domElement.setPointerCapture(e.pointerId);
   });
-  function release(){drag=null;held=false;turnPhase=Math.asin(THREE.MathUtils.clamp(yaw/.55,-1,1))}
-  renderer.domElement.addEventListener('pointerup',e=>{if(drag&&!drag.moved){const index=pick(e);if(index!==undefined)onSelect(artworks[index],buttons[index])}release()});
+  renderer.domElement.addEventListener('pointermove',e=>{
+    if(bellDrag){const dy=Math.max(0,e.clientY-bellDrag.y);bellDrag.moved||=dy>5;pull.length=Math.min(dy*worldPerPixel(),pull.max);pull.speed=0}
+    else if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag.moved||=Math.hypot(dx,dy)>5;yaw=THREE.MathUtils.clamp(drag.yaw+dx*.008,-.65,.65);pitch=THREE.MathUtils.clamp(drag.pitch+dy*.004,-.35,.35)}
+    else renderer.domElement.style.cursor=pickBell(e)?'ns-resize':pick(e)!==undefined?'pointer':'grab';
+  });
+  function release(){drag=null;bellDrag=null;held=false;turnPhase=Math.asin(THREE.MathUtils.clamp(yaw/.55,-1,1))}
+  renderer.domElement.addEventListener('pointerup',e=>{
+    if(bellDrag){
+      if(!bellDrag.moved){pull.length=Math.max(pull.length,.18);ringBell()}
+      else if(pull.length>=pull.trigger)ringBell();
+    }
+    else if(drag&&!drag.moved){const index=pick(e);if(index!==undefined)onSelect(shown(index),buttons[index])}
+    release();
+  });
   renderer.domElement.addEventListener('pointercancel',release);
+  // Keyboard and screen-reader users get an equivalent button positioned over the bell.
+  const bellButton=document.createElement('button');bellButton.type='button';bellButton.className='bell-button';
+  bellButton.addEventListener('click',()=>{pull.length=Math.max(pull.length,.22);ringBell()});
+  host.append(bellButton);
+  const refreshBellLabel=()=>{bellButton.setAttribute('aria-label',bellLabel());bellButton.title=bellLabel()};refreshBellLabel();
   let previousTime=null;
   function render(time){
     const dt=previousTime!==null&&time>previousTime?Math.min((time-previousTime)/1000,.05):0;
@@ -225,11 +305,17 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
       for(const p of orderedPhysics)p.update(dt,reduced.matches);
       for(const cord of cords){cord.update(dt,reduced.matches);cord.updateSleeves()}
     }
+    updatePull(dt);updateSwap(dt);
     connectPortrait();
     renderer.render(scene,camera);
-    for(const {frame,button} of leaves){const bounds=projectedBounds(visibleImage(frame));const rect=host.getBoundingClientRect();button.style.left=`${bounds.x-rect.x+bounds.w/2}px`;button.style.top=`${bounds.y-rect.y+bounds.h+13}px`;button.style.maxWidth=`${bounds.w*1.2}px`;button.hidden=closeup}
+    const hostRect=host.getBoundingClientRect();
+    for(const {frame,button} of leaves){const bounds=projectedBounds(visibleImage(frame));button.style.left=`${bounds.x-hostRect.x+bounds.w/2}px`;button.style.top=`${bounds.y-hostRect.y+bounds.h+13}px`;button.style.maxWidth=`${bounds.w*1.2}px`;button.hidden=closeup}
+    const bellPoint=bell.node.getWorldPosition(v(0,0,0)).project(camera),canvasRect=renderer.domElement.getBoundingClientRect();
+    bellButton.style.left=`${canvasRect.x-hostRect.x+(bellPoint.x+1)*canvasRect.width/2}px`;
+    bellButton.style.top=`${canvasRect.y-hostRect.y+(1-bellPoint.y)*canvasRect.height/2}px`;
+    bellButton.hidden=closeup||artworks.length<2;
   }
-  host.mobile3D={renderer,scene,camera,root,pendulums,picturePendulums,hangingPendulums,cords,chainCounts:canopy.chainCounts,chainFirstYs:canopy.chainFirstYs,branchStemLengths:canopy.branchStemLengths,refreshLabels(){buttons.forEach((button,index)=>{button.textContent=title(artworks[index]);button.setAttribute('aria-label',title(artworks[index]))})},setView(y,p=0){yaw=y;pitch=p;held=true;render(0)},closeup(value){closeup=value;updateCamera();render(0)},audit(){scene.updateMatrixWorld(true);return joints.map(j=>{
+  host.mobile3D={renderer,scene,camera,root,pendulums,picturePendulums,hangingPendulums,cords,chainCounts:canopy.chainCounts,chainFirstYs:canopy.chainFirstYs,branchStemLengths:canopy.branchStemLengths,refreshLabels(){buttons.forEach(labelButton);refreshBellLabel()},nextBatch,setView(y,p=0){yaw=y;pitch=p;held=true;render(0)},closeup(value){closeup=value;updateCamera();render(0)},audit(){scene.updateMatrixWorld(true);return joints.map(j=>{
     const expected=j.parent.localToWorld(j.upper.clone());
     const endpoint=j.group.getWorldPosition(v(0,0,0));
     const bottom=j.cord?j.group.localToWorld(j.delta.clone()):endpoint;

@@ -3,6 +3,8 @@
 .mobile-three .work-button{position:absolute;transform:translateX(-50%);border:0;background:none;padding:3px 5px;font-size:10px;color:#bacbdd;white-space:nowrap;max-width:135px;text-overflow:ellipsis;overflow:hidden;box-shadow:none;aspect-ratio:auto}
 .mobile-three .work-button:before{display:none}
 .mobile-three .work-button:hover{color:#e6eff7}
+.mobile-three .bell-button{position:absolute;width:44px;height:44px;transform:translate(-50%,-10%);border:0;border-radius:50%;background:none;box-shadow:none;padding:0;opacity:0;pointer-events:none}
+.mobile-three .bell-button:focus-visible{opacity:1;outline:2px solid #d7c899;outline-offset:2px}
 dialog .view-veil,dialog .arrival-cloud{display:none}
 dialog.is-artwork{position:fixed;inset:0;width:100%;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:transparent;box-shadow:none;color:#d5e4ed;overflow-y:auto}
 dialog.is-artwork::backdrop{background:transparent;backdrop-filter:none}

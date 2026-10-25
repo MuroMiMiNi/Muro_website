@@ -193,3 +193,16 @@ export function makeFrame(texture,linkBelow=false) {
   group.userData.attachment.ringTube=.022;
   return group;
 }
+
+// Swap the picture inside an existing frame, keeping its uncropped contain sizing.
+export function setFrameImage(frame, texture) {
+  const image = texture.image;
+  const imageWidth = image?.naturalWidth || image?.width || 1;
+  const imageHeight = image?.naturalHeight || image?.height || 1;
+  const scale = Math.min(1.235 / imageWidth, 1.495 / imageHeight);
+  const [front, back] = frame.userData.imageMeshes;
+  front.geometry.dispose();
+  front.geometry = back.geometry = new THREE.PlaneGeometry(imageWidth * scale, imageHeight * scale);
+  front.material.map = texture; front.material.needsUpdate = true;
+  frame.userData.imageDimensions.set(imageWidth * scale, imageHeight * scale);
+}
