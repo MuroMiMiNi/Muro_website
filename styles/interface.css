@@ -27,6 +27,7 @@ dialog:not(.is-artwork)::backdrop{background:#030a1ba6;backdrop-filter:blur(7px)
 #dialogContent .guideline-section h3{font-family:var(--reading);font-size:17px;font-weight:600;line-height:1.6;margin:0 0 11px;color:#dce7ef}
 .guideline-heading{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 20px;margin-bottom:11px}
 #dialogContent .guideline-heading h3{margin:0}
+#dialogContent .favorites-title{font-size:18px;margin:34px 0 10px}
 .guideline-artworks{font-family:var(--display);font-size:16px;color:var(--gold);text-decoration:underline;text-underline-offset:5px;padding:8px 0}
 .guideline-artworks:hover{color:#f0e3bb}
 .guideline-list{list-style:disc;margin:0;padding-left:19px;font-family:var(--reading);font-size:16px;line-height:1.85;color:#c4d3e3}

@@ -1,6 +1,8 @@
 import { startCollectionIntro } from './collection-intro.js';
 
-const categories = [['全部', 'All'], ['頭像', 'Avatar'], ['半身', 'Half body'], ['全身', 'Full body']];
+export const categories = [['全部', 'All'], ['頭像', 'Avatar'], ['半身', 'Half body'], ['全身', 'Full body']];
+// Each category gets its own grid so avatar, half-body and full-body sizes can be styled separately.
+export const groupClasses = { 頭像: 'is-avatar', 半身: 'is-half-body', 全身: 'is-full-body' };
 
 export function mountAllWorks(host, works, lang, title, onSelect, initialCategory = '全部', playIntro = true) {
   const node = (tag, className, text) => {
@@ -11,7 +13,19 @@ export function mountAllWorks(host, works, lang, title, onSelect, initialCategor
   };
   const filters = node('nav', 'collection-filters');
   filters.setAttribute('aria-label', lang === 'zh' ? '作品分類' : 'Artwork categories');
-  const grid = node('div', 'collection-grid');
+  const groupsHost = node('div', 'collection-groups');
+  const groups = new Map();
+  const groupFor = value => {
+    if (groups.has(value)) return groups.get(value);
+    const label = categories.find(([zh]) => zh === value);
+    const section = node('section', `collection-group ${groupClasses[value] ?? 'is-other'}`);
+    section.dataset.category = value;
+    const heading = node('h3', 'collection-group-title', label ? (lang === 'zh' ? label[0] : label[1]) : (value || (lang === 'zh' ? '其他' : 'Other')));
+    const grid = node('div', 'collection-grid');
+    section.append(heading, grid); groupsHost.append(section);
+    groups.set(value, grid);
+    return grid;
+  };
   const status = node('p', 'collection-status');
   status.setAttribute('role', 'status');
   const buttons = [];
@@ -27,6 +41,7 @@ export function mountAllWorks(host, works, lang, title, onSelect, initialCategor
     finish(); category = value;
     filters.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.category === value)));
     buttons.forEach(button => { button.hidden = value !== '全部' && button.dataset.category !== value; });
+    groupsHost.querySelectorAll('.collection-group').forEach(section => { section.hidden = value !== '全部' && section.dataset.category !== value; });
     const count = buttons.filter(button => !button.hidden).length;
     status.textContent = count ? (lang === 'zh' ? `${count} 件作品` : `${count} artworks`) : (lang === 'zh' ? '這個分類還沒有作品。' : 'No artworks in this category yet.');
   }
@@ -35,6 +50,7 @@ export function mountAllWorks(host, works, lang, title, onSelect, initialCategor
     const button = node('button', '', `${lang === 'zh' ? zh : en} ${count}`);
     button.type = 'button'; button.dataset.category = zh;
     button.addEventListener('click', () => filter(zh)); filters.append(button);
+    if (zh !== '全部' && count) groupFor(zh);
   }
   for (const work of works) {
     const button = node('button', 'collection-work');
@@ -44,9 +60,9 @@ export function mountAllWorks(host, works, lang, title, onSelect, initialCategor
     const image = node('img', ''); image.src = work.src; image.alt = title(work); image.decoding = 'async';
     button.append(image, node('span', 'collection-caption', title(work)));
     button.addEventListener('click', () => { finish(); onSelect(work, button); });
-    grid.append(button); buttons.push(button);
+    groupFor(work.category ?? '').append(button); buttons.push(button);
   }
-  wall.append(host.querySelector('#dialogTitle'), filters, status, grid);
+  wall.append(host.querySelector('#dialogTitle'), filters, status, groupsHost);
   host.append(wall); filter(category);
   const visible = buttons.filter(button => !button.hidden);
   if (playIntro && !reduced.matches && visible.length) {

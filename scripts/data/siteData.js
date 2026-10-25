@@ -20,17 +20,30 @@ export const commissionGuidelines = {
 };
 
 export const gameContent = {
-  intro: { zh: '建置中', en: 'Coming Soon' },
   favoriteGameTypes: {
     title: { zh: '喜歡的遊戲類型', en: 'Favorite game types' },
     copy: {
       zh: '⚀ 牧場經營類型\n⚁ 競技類（含 DOTA、射擊、賽車等）\n⚂ 刺客教條（還沒變成無雙以前的潛行玩法）\n⚃ 解謎類（鏽湖、我們在此系列等）\n⚄ 恐 R＆恐遊類（會怕但愛玩愛看）\n⚅ 氛圍向遊戲（Coffee Talk、VA-11 Hall-A 之類的）',
-      en: '⚀ Farm and ranch management games\n⚁ Competitive games (including DOTA, shooters, racing games, and more)\n⚂ Assassin’s Creed stealth gameplay\n⚃ Puzzle games (Rusty Lake, the We Were Here series, and similar titles)\n⚄ Horror RPGs and horror games\n⚅ Atmosphere-driven games (such as Coffee Talk and VA-11 Hall-A)'
+      en: '⚀ Farm and ranch management games\n⚁ Competitive games (including DOTA, shooters, racing games, and more)\n⚂ Assassin’s Creed (the stealth gameplay from before it turned into a musou-style action game)\n⚃ Puzzle games (Rusty Lake, the We Were Here series, and similar titles)\n⚄ Horror RPGs and horror games (scary, but I love playing and watching them)\n⚅ Atmosphere-driven games (such as Coffee Talk and VA-11 Hall-A)'
     }
   },
   onlineGames: {
-    title: { zh: '線上遊戲', en: 'Online games' },
-    copy: { zh: '♣ Final Fantasy XIV\n♦ Wuthering Waves\n♥ League of Legends', en: '♣ Final Fantasy XIV\n♦ Wuthering Waves\n♥ League of Legends' }
+    title: { zh: '目前有玩的遊戲', en: 'Currently playing' },
+    copy: { zh: '♣ Final Fantasy XIV - 迦樓羅\n♦ Wuthering Waves - Asia\n♥ League of Legends', en: '♣ Final Fantasy XIV - Garuda\n♦ Wuthering Waves - Asia\n♥ League of Legends' }
+  },
+  mobileGames: {
+    title: { zh: '手機遊戲', en: 'Mobile games' },
+    copy: {
+      zh: '❤︎ A3! - Best Love - 推し Shitoron、Arisugawa Homare❤︎\nღ ES!! - 推し Nagisa、wataru、kaoru、Arashi、Chitose\nღ Degrees of Lewdity - Sydney\nღ Welcome to Dreamland - Frank\nღ Love and Deepspace - Caleb',
+      en: '❤︎ A3! - Best Love - Oshi: Shitoron, Arisugawa Homare❤︎\nღ ES!! - Oshi: Nagisa, wataru, kaoru, Arashi, Chitose\nღ Degrees of Lewdity - Sydney\nღ Welcome to Dreamland - Frank\nღ Love and Deepspace - Caleb'
+    }
+  },
+  oshi: {
+    title: { zh: '推し', en: 'Oshi' },
+    copy: {
+      zh: 'Snow White with the Red Hair - My favorite Obi\nPokémon Scarlet / Violet - Grusha\nHolostars - 主推★Aragami Oga、Noir Vesper、Josuiji Shinri\n副☆箱推し\nWuthering Waves - Male ALL（目前缺Xiangli Yao）\nHonkai: Star Rail - Anaxagoras、Sunday、Aventurine\nMystic Messenger - 箱推し',
+      en: 'Snow White with the Red Hair - My favorite Obi\nPokémon Scarlet / Violet - Grusha\nHolostars - Main★Aragami Oga, Noir Vesper, Josuiji Shinri\nSub☆The whole group\nWuthering Waves - Male ALL (still missing Xiangli Yao)\nHonkai: Star Rail - Anaxagoras, Sunday, Aventurine\nMystic Messenger - The whole cast'
+    }
   }
 
 };

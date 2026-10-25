@@ -6,7 +6,7 @@ import { createPixelClouds } from './pixel-clouds.js';
 import { createPixelMeteors } from './pixel-meteors.js';
 import { createPixelMoon } from './pixel-moon.js';
 import { createClickStars } from './click-stars.js';
-import { mountAllWorks } from './all-works.js';
+import { categories, groupClasses, mountAllWorks } from './all-works.js';
 import { mountSocialWave } from './social-wave.js';
 
 const $ = selector => document.querySelector(selector);
@@ -231,11 +231,16 @@ function renderDialog(preparedImage = null) {
   } else if (page === 'artwork' && selected) {
     if (artworkSource === 'collection') $('#stepBack').textContent = t('← 返回所有作品', '← Back to all works');
     const layout = element('div', 'detail-layout');
+    // Half-body and full-body artworks use their own taller display containers.
+    if (groupClasses[selected.category]) layout.classList.add(groupClasses[selected.category]);
     const details = element('div', 'details');
     details.append(element('span', 'little-star', '✦'), element('p', 'meta', t('木洛的作品', 'Artwork by Muro')));
     if (selected.date) details.append(element('div', 'detail-meta', selected.date));
     details.append(heading(title(selected)));
-    if (selected.category) details.append(element('p', '', selected.category));
+    if (selected.category) {
+      const label = categories.find(([zh]) => zh === selected.category);
+      details.append(element('p', '', label ? t(...label) : selected.category));
+    }
     if (selected.description) details.append(element('p', '', text(selected.description)));
     details.append(element('p', '', t('想委託屬於你的角色？\n先看看委託須知，再挑選適合的方案。', 'A character of your own?\nRead the guidelines, then find your commission type.')), action(t('查看委託須知', 'Read commission guidelines'), () => openPage('guide')));
     details.append(artworkSource === 'collection'
@@ -280,7 +285,8 @@ function renderDialog(preparedImage = null) {
     const socials = element('div', 'dialog-social'); addSocials(socials); copy.append(socials);
     layout.append(artSpace, copy); content.append(layout);
   } else if (page === 'games') {
-    content.append(heading(t('遊戲', 'Games')), element('p', '', text(gameContent.intro)), element('h3', '', text(gameContent.favoriteGameTypes.title)), element('p', '', text(gameContent.favoriteGameTypes.copy)), element('h3', '', text(gameContent.onlineGames.title)), element('p', '', text(gameContent.onlineGames.copy)));
+    content.append(heading(t('喜好', 'Favorites')));
+    [gameContent.favoriteGameTypes, gameContent.onlineGames, gameContent.mobileGames, gameContent.oshi].forEach(section => content.append(element('h3', 'favorites-title', text(section.title)), element('p', '', text(section.copy))));
   }
   if (commission) {
     const actions = element('div', 'dialog-actions');
@@ -344,3 +350,5 @@ try {
   gallery.replaceChildren(element('p', 'loading', '作品暫時無法載入，請重新整理。 / Please reload to try again.'));
   console.error(error);
 }
+// The queue page links here with #guide to open the commission guidelines directly.
+if (location.hash === '#guide') openPage('guide', null);
