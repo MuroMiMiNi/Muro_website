@@ -9,6 +9,9 @@ import { createClickStars } from './click-stars.js';
 import { categories, groupClasses, mountAllWorks } from './all-works.js';
 import { mountSocialWave } from './social-wave.js';
 import { mountFloatingEgg } from './floating-egg.js';
+import { guardContent } from './content-guard.js';
+
+guardContent();
 
 const $ = selector => document.querySelector(selector);
 const gallery = $('#mobileGallery');
