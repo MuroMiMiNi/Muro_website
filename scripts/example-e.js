@@ -83,10 +83,10 @@ document.addEventListener('visibilitychange', () => {
 });
 async function renderGallery() {
   gallery.replaceChildren();
-  // The mobile shows 20 works at a time; pulling its bell moves on to the next batch.
+  // The mobile shows 10 works at a time; pulling its bell moves on to the next batch.
   const orderedArtworks = buildTimeline(artworks).flatMap(period => period.works);
   if (!artworks.length) gallery.append(element('p', 'loading', t('作品整理中，稍後見。', 'More artworks are on their way.')));
-  if (artworks.length) mobileMotion = await mountMobile(gallery, orderedArtworks, openArtwork, title, () => t('拉一下鈴鐺，換下一批作品', 'Pull the bell for the next set of artworks'));
+  if (artworks.length) mobileMotion = await mountMobile(gallery, orderedArtworks, openArtwork, title, () => t('拉一下鈴鐺，換下一批作品', 'Pull the bell for the next set of artworks'), 10);
 }
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape') artworkEntry?.abort();
