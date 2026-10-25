@@ -2,7 +2,7 @@ import * as THREE from './vendor/three.module.js';
 import {makeCrown,makeCharm,makeFrame} from './mobile-parts.js';
 import {ringPendulum} from './ring-pendulum.js';
 import {buildCanopy} from './mobile-canopy.js';
-import {flexCord} from './flex-cord.js';
+import {flexCord,stringLights} from './flex-cord.js';
 
 export async function mountMobile(host, artworks, onSelect, title = artwork => artwork.title) {
   host.classList.add('mobile-three');
@@ -31,7 +31,7 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
   }
   const silver=new THREE.MeshStandardMaterial({color:'#a2bad0',metalness:.85,roughness:.27});
   const gold=new THREE.MeshStandardMaterial({color:'#bfa570',metalness:.83,roughness:.3});
-  const wireMaterial=new THREE.MeshStandardMaterial({color:'#bcc9d2',metalness:.2,roughness:.7});
+  const wireMaterial=new THREE.MeshStandardMaterial({color:'#b3c3e8',metalness:.3,roughness:.42});
   const mesh=(parent,geometry,material,point)=>{const m=new THREE.Mesh(geometry,material);if(point)m.position.copy(point);parent.add(m);return m};
   const v=(x,y,z=0)=>new THREE.Vector3(x,y,z);
   const root=new THREE.Group();root.position.y=3.3;scene.add(root);
@@ -142,8 +142,10 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
   const portrait=document.querySelector('.portrait');
   const portraitRing=mesh(scene,new THREE.TorusGeometry(.054,.014,10,32),gold);
   portraitRing.name='Portrait bottom suspension ring';
-  const tether=mesh(scene,new THREE.CylinderGeometry(.014,.014,1,10),wireMaterial);
+  // The tether is a flat ribbon too, carrying its own string lights.
+  const tether=mesh(scene,new THREE.CylinderGeometry(.022,.022,1,10).scale(1,1,.16),wireMaterial);
   tether.name='Portrait to crown suspension';
+  const tetherLights=stringLights(scene,22),tetherFrom=v(0,0,0),tetherTo=v(0,0,0);
   function portraitAnchor(){
     const style=getComputedStyle(portrait),origin=style.transformOrigin.split(' ').map(parseFloat);
     const matrix=style.transform==='none'?new DOMMatrix():new DOMMatrix(style.transform);
@@ -162,6 +164,8 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
     upper.addScaledVector(ringDown,.136);
     tether.position.copy(upper).add(lower).multiplyScalar(.5);
     tether.scale.y=upper.distanceTo(lower);
+    tetherFrom.copy(upper);tetherTo.copy(lower);
+    tetherLights.place((t,target)=>target.lerpVectors(tetherFrom,tetherTo,t),performance.now()/1000,!reduced.matches,.04);
     tether.quaternion.setFromUnitVectors(v(0,1,0),upper.sub(lower).normalize());
     tether.updateMatrixWorld(true);
   }

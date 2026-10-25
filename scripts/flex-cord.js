@@ -1,5 +1,34 @@
 import * as THREE from './vendor/three.module.js';
 
+// Ribbon with string lights: a flat, gently twisting satin ribbon carrying small warm bulbs that glow in turn.
+const lightGap=.13,lightMargin=.08;
+const bulbGeometry=new THREE.SphereGeometry(.014,10,8),haloGeometry=new THREE.SphereGeometry(.036,12,10);
+const bulbMaterial=new THREE.MeshBasicMaterial({color:'#ffffff'});
+const haloMaterial=new THREE.MeshBasicMaterial({color:'#ffffff',transparent:true,opacity:.32,blending:THREE.AdditiveBlending,depthWrite:false});
+const warm=new THREE.Color('#ffe6a8'),dim=new THREE.Color('#5d5040'),lightColor=new THREE.Color(),lightMatrix=new THREE.Matrix4(),lightPoint=new THREE.Vector3();
+let lightSeed=0;
+export function lightCount(length){return Math.max(0,Math.floor((length-2*lightMargin)/lightGap)+1)}
+export function stringLights(parent,count){
+  if(!count)return {place(){}};
+  const bulbs=new THREE.InstancedMesh(bulbGeometry,bulbMaterial,count),halos=new THREE.InstancedMesh(haloGeometry,haloMaterial,count);
+  bulbs.name=halos.name='Ribbon string lights';
+  for(const lights of [bulbs,halos]){lights.frustumCulled=false;lights.renderOrder=1;parent.add(lights)}
+  const phase=(lightSeed++)*2.3;
+  // pointAt(t, target) writes a point along the ribbon; margin is the fraction kept clear at each end.
+  function place(pointAt,time,twinkle,margin=0){
+    for(let i=0;i<count;i++){
+      const t=count>1?margin+(1-2*margin)*i/(count-1):.5;
+      lightMatrix.makeTranslation(pointAt(t,lightPoint));
+      bulbs.setMatrixAt(i,lightMatrix);halos.setMatrixAt(i,lightMatrix);
+      const glow=twinkle?.5+.5*Math.sin(time*1.3-i*.85+phase):.7;
+      lightColor.lerpColors(dim,warm,.25+.75*glow);bulbs.setColorAt(i,lightColor);
+      halos.setColorAt(i,lightColor.multiplyScalar(glow));
+    }
+    for(const lights of [bulbs,halos]){lights.instanceMatrix.needsUpdate=true;lights.instanceColor.needsUpdate=true}
+  }
+  return {place};
+}
+
 export function flexCord(parent,start,end,material,short=false,bendDirection=1){
   const length=start.distanceTo(end),limit=short?.075:.24;
   const rest=Math.min(length*(short?.04:.08),short?.035:.14)*bendDirection;
@@ -13,7 +42,11 @@ export function flexCord(parent,start,end,material,short=false,bendDirection=1){
   const mesh=new THREE.Mesh(geometry,material);mesh.name='Flexible suspension cord';mesh.frustumCulled=false;parent.add(mesh);
   const previous=new THREE.Vector3(),velocity=new THREE.Vector3(),nextVelocity=new THREE.Vector3();
   const position=new THREE.Vector3(),acceleration=new THREE.Vector3(),rotation=new THREE.Quaternion();
-  const state={bend:rest,speed:0};let sampled=false;
+  const state={bend:rest,speed:0};let sampled=false,time=0;
+  const ribbonWidth=short?.017:.022,ribbonDepth=.0035,twist=length*2.2,twistPhase=bendDirection*.6;
+  const clearEnds=length?Math.min(lightMargin/length,.45):0;
+  const lights=stringLights(parent,lightCount(length));
+  const normal=new THREE.Vector3(),binormal=new THREE.Vector3(),offset=new THREE.Vector3(),shade=new THREE.Vector3();
   function update(dt,settle=false){
     parent.updateWorldMatrix(true,false);parent.localToWorld(position.copy(middle));
     if(!sampled||dt===0||settle){previous.copy(position);velocity.set(0,0,0);sampled=true;if(settle){state.bend=rest;state.speed=0}}
@@ -33,15 +66,21 @@ export function flexCord(parent,start,end,material,short=false,bendDirection=1){
     const frames=curve.computeFrenetFrames(24,false),positions=geometry.attributes.position,normals=geometry.attributes.normal;
     for(let segment=0;segment<=24;segment++){
       const center=curve.getPoint(segment/24);
+      // Flatten the tube into a thin ellipse and turn it slowly along its length so it reads as a ribbon.
+      const turn=twistPhase+twist*segment/24,c=Math.cos(turn),s=Math.sin(turn);
+      normal.copy(frames.normals[segment]).multiplyScalar(c).addScaledVector(frames.binormals[segment],s);
+      binormal.copy(frames.binormals[segment]).multiplyScalar(c).addScaledVector(frames.normals[segment],-s);
       for(let radial=0;radial<=6;radial++){
-        const angle=radial/6*Math.PI*2;
-        const normal=frames.normals[segment].clone().multiplyScalar(-Math.cos(angle)).addScaledVector(frames.binormals[segment],Math.sin(angle));
+        const angle=radial/6*Math.PI*2,x=-Math.cos(angle),y=Math.sin(angle);
+        offset.copy(normal).multiplyScalar(x*ribbonDepth).addScaledVector(binormal,y*ribbonWidth);
+        shade.copy(normal).multiplyScalar(x/ribbonDepth).addScaledVector(binormal,y/ribbonWidth).normalize();
         const index=segment*7+radial;
-        normals.setXYZ(index,normal.x,normal.y,normal.z);
-        positions.setXYZ(index,center.x+normal.x*(short?.009:.011),center.y+normal.y*(short?.009:.011),center.z+normal.z*(short?.009:.011));
+        normals.setXYZ(index,shade.x,shade.y,shade.z);
+        positions.setXYZ(index,center.x+offset.x,center.y+offset.y,center.z+offset.z);
       }
     }
     positions.needsUpdate=true;normals.needsUpdate=true;
+    time+=dt;lights.place((t,target)=>curve.getPoint(t,target),time,!settle,clearEnds);
   }
   return {mesh,start:curve.v0,end:curve.v2,curve,state,update};
 }
