@@ -8,6 +8,7 @@ import { createPixelMoon } from './pixel-moon.js';
 import { createClickStars } from './click-stars.js';
 import { categories, groupClasses, mountAllWorks } from './all-works.js';
 import { mountSocialWave } from './social-wave.js';
+import { mountFloatingEgg } from './floating-egg.js';
 
 const $ = selector => document.querySelector(selector);
 const gallery = $('#mobileGallery');
@@ -325,21 +326,10 @@ window.addEventListener('scroll', () => {
     previousY = y; scrollPending = false;
   });
 }, { passive: true });
-window.addEventListener('resize', clampEgg);
 
-// Keep the existing draggable mascot, including touch and viewport bounds.
-const egg = $('#floatingGif'); let drag = null;
-function moveEgg(x, y) {
-  egg.style.left = `${Math.max(0, Math.min(innerWidth - egg.offsetWidth, x))}px`;
-  egg.style.top = `${Math.max(0, Math.min(innerHeight - egg.offsetHeight, y))}px`;
-  egg.style.right = 'auto'; egg.style.bottom = 'auto';
-}
-function clampEgg() { const box = egg.getBoundingClientRect(); moveEgg(box.left, box.top); }
-egg.addEventListener('pointerdown', event => { const box = egg.getBoundingClientRect(); drag = { x: event.clientX - box.left, y: event.clientY - box.top }; egg.setPointerCapture(event.pointerId); });
-egg.addEventListener('pointermove', event => { if (drag) moveEgg(event.clientX - drag.x, event.clientY - drag.y); });
-egg.addEventListener('pointerup', () => { drag = null; }); egg.addEventListener('pointercancel', () => { drag = null; });
-egg.addEventListener('dblclick', () => openPage('about', null, egg));
-egg.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openPage('about', null, egg); } });
+// The draggable mascot egg is shared with the other pages; a click opens About.
+const egg = $('#floatingGif');
+mountFloatingEgg(egg, () => openPage('about', null, egg));
 
 try {
   const response = await fetch('./scripts/data/artwork-catalog.json');
@@ -350,5 +340,6 @@ try {
   gallery.replaceChildren(element('p', 'loading', '作品暫時無法載入，請重新整理。 / Please reload to try again.'));
   console.error(error);
 }
-// The queue page links here with #guide to open the commission guidelines directly.
+// Other pages link here with #guide or #about to open that dialog directly.
 if (location.hash === '#guide') openPage('guide', null);
+else if (location.hash === '#about') openPage('about', null);

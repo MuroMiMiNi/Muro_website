@@ -33,9 +33,12 @@
     <section id="queueNotes" class="queue-notes" aria-labelledby="notesTitle"><h2 id="notesTitle">委託說明　　<a class="queue-notes-guide" href="./index.html#guide">委託須知</a></h2><ul id="queueNotesContent" class="queue-notes-list"></ul></section>
   </main>
   <footer><small>© <span id="year"></span> 木洛 Muro</small><a href="#top">回到頂端</a></footer>
+  <button type="button" id="floatingGif" class="floating-gif" aria-label="木洛的蛋，點擊開啟關於" title="拖曳移動 · 點擊關於"><img src="./assets/floating-mascot.gif" alt="" width="79" height="64" draggable="false"></button>
   <script type="module">
     import { socialLinks } from './scripts/data/siteData.js';
     import { mountSocialWave } from './scripts/social-wave.js';
+    import { mountFloatingEgg } from './scripts/floating-egg.js';
+    mountFloatingEgg(document.querySelector('#floatingGif'), () => { location.href = './index.html#about'; });
     // 將 Google 試算表「發布到網路」產生的 CSV 網址貼在 csvUrl；notes 可直接改成你的說明。
     const queueBoardConfig = { csvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTFgrA8LfqQEo_YHnrOh4YATHJJEiiRHCBw7JOhvrOSA14Rhvdj9X4xByxjwA6ziRSF-eqZtaxAQwiH/pub?gid=0&single=true&output=csv', notes: ['填寫表單→聯繫並確認項目內容→付款即確認排單→草稿→完稿。若為驚喜包則付款排單後一鍵出圖。', '', ''] };
     const $ = selector => document.querySelector(selector), tableWrap = $('#queueTableWrap'), status = $('#queueUpdated');
