@@ -2,7 +2,8 @@ import * as THREE from './vendor/three.module.js';
 import {makeCrown,makeCharm,makeFrame,setFrameImage} from './mobile-parts.js';
 import {ringPendulum} from './ring-pendulum.js';
 import {buildCanopy} from './mobile-canopy.js';
-import {flexCord,stringLights} from './flex-cord.js';
+import {flexCord,stringOrnaments} from './flex-cord.js';
+import {plush} from './plush-material.js';
 import {playChime} from './bell-chime.js';
 
 // The mobile hangs a fixed number of frames; pulling the bell shows the next batch of artworks.
@@ -31,8 +32,9 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
   for(const [x,y,z,color,intensity] of [[-5,7,8,'#e4f1ff',4],[6,2,3,'#ffe1b2',2],[0,3,-7,'#709ee3',3]]){
     const light=new THREE.DirectionalLight(color,intensity);light.position.set(x,y,z);scene.add(light);
   }
-  const silver=new THREE.MeshStandardMaterial({color:'#a2bad0',metalness:.85,roughness:.27});
-  const gold=new THREE.MeshStandardMaterial({color:'#bfa570',metalness:.83,roughness:.3});
+  // Everything except the satin ribbons is soft plush, like a stuffed toy.
+  const silver=plush('#93aed0');
+  const gold=plush('#ddb978');
   const wireMaterial=new THREE.MeshStandardMaterial({color:'#b3c3e8',metalness:.3,roughness:.42});
   const mesh=(parent,geometry,material,point)=>{const m=new THREE.Mesh(geometry,material);if(point)m.position.copy(point);parent.add(m);return m};
   const v=(x,y,z=0)=>new THREE.Vector3(x,y,z);
@@ -168,10 +170,10 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
   const portrait=document.querySelector('.portrait');
   const portraitRing=mesh(scene,new THREE.TorusGeometry(.054,.014,10,32),gold);
   portraitRing.name='Portrait bottom suspension ring';
-  // The tether is a flat ribbon too, carrying its own string lights.
+  // The tether is a flat ribbon too, threaded with its own felt ornaments.
   const tether=mesh(scene,new THREE.CylinderGeometry(.022,.022,1,10).scale(1,1,.16),wireMaterial);
   tether.name='Portrait to crown suspension';
-  const tetherLights=stringLights(scene,22),tetherFrom=v(0,0,0),tetherTo=v(0,0,0);
+  const tetherOrnaments=stringOrnaments(scene,6),tetherFrom=v(0,0,0),tetherTo=v(0,0,0);
   function portraitAnchor(){
     const style=getComputedStyle(portrait),origin=style.transformOrigin.split(' ').map(parseFloat);
     const matrix=style.transform==='none'?new DOMMatrix():new DOMMatrix(style.transform);
@@ -190,7 +192,7 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
     tether.position.copy(upper).add(lower).multiplyScalar(.5);
     tether.scale.y=upper.distanceTo(lower);
     tetherFrom.copy(upper);tetherTo.copy(lower);
-    tetherLights.place((t,target)=>target.lerpVectors(tetherFrom,tetherTo,t),performance.now()/1000,!reduced.matches,.04);
+    tetherOrnaments.place((t,target)=>target.lerpVectors(tetherFrom,tetherTo,t),.05);
     tether.quaternion.setFromUnitVectors(v(0,1,0),upper.sub(lower).normalize());
     tether.updateMatrixWorld(true);
   }
@@ -322,14 +324,16 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
     const canvasRect=renderer.domElement.getBoundingClientRect(),hostRect=host.getBoundingClientRect(),anchor=portraitAnchor();
     connectPortrait(anchor,canvasRect);
     renderer.render(scene,camera);
-    for(const {frame,button} of leaves){const bounds=projectedBounds(visibleImage(frame),canvasRect);button.style.left=`${bounds.x-hostRect.x+bounds.w/2}px`;button.style.top=`${bounds.y-hostRect.y+bounds.h+13}px`;button.style.maxWidth=`${bounds.w*1.2}px`;button.hidden=closeup;
-      // Labels on the far side of the ring fade out so they do not pile onto the front pictures.
-      const place=frame.getWorldPosition(v(0,0,0)),facing=place.z/Math.max(Math.hypot(place.x,place.z),.001);
-      const shown=THREE.MathUtils.smoothstep(facing,-.25,.35);button.style.opacity=shown.toFixed(2);button.classList.toggle('is-behind',shown<.3)}
-    const bellPoint=bell.node.getWorldPosition(v(0,0,0)).project(camera);
-    bellButton.style.left=`${canvasRect.x-hostRect.x+(bellPoint.x+1)*canvasRect.width/2}px`;
-    bellButton.style.top=`${canvasRect.y-hostRect.y+(1-bellPoint.y)*canvasRect.height/2}px`;
-    bellButton.hidden=closeup||artworks.length<2;
+    // Names stay hidden while the mobile turns; only a keyboard-focused picture shows its name, placed under its frame.
+    const focused=leaves.find(({button})=>button===document.activeElement);
+    if(focused){const bounds=projectedBounds(visibleImage(focused.frame),canvasRect);focused.button.style.left=`${bounds.x-hostRect.x+bounds.w/2}px`;focused.button.style.top=`${bounds.y-hostRect.y+bounds.h+13}px`}
+    // The bell's keyboard button is invisible until focused, so it is only placed over the bell then.
+    if(bellButton===document.activeElement){
+      const bellPoint=bell.node.getWorldPosition(v(0,0,0)).project(camera);
+      bellButton.style.left=`${canvasRect.x-hostRect.x+(bellPoint.x+1)*canvasRect.width/2}px`;
+      bellButton.style.top=`${canvasRect.y-hostRect.y+(1-bellPoint.y)*canvasRect.height/2}px`;
+    }
+    const bellHidden=closeup||artworks.length<2;if(bellButton.hidden!==bellHidden)bellButton.hidden=bellHidden;
   }
   host.mobile3D={renderer,scene,camera,root,pendulums,picturePendulums,hangingPendulums,cords,chainCounts:canopy.chainCounts,chainFirstYs:canopy.chainFirstYs,branchStemLengths:canopy.branchStemLengths,refreshLabels(){buttons.forEach(labelButton);refreshBellLabel()},nextBatch,setView(y,p=0){yaw=y;pitch=p;held=true;render(0)},closeup(value){closeup=value;updateCamera();render(0)},audit(){scene.updateMatrixWorld(true);return joints.map(j=>{
     const expected=j.parent.localToWorld(j.upper.clone());

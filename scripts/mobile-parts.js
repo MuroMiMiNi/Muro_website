@@ -1,12 +1,14 @@
 import * as THREE from './vendor/three.module.js';
+import { plush } from './plush-material.js';
 
 // Every component hangs from its origin: the outer top edge of its real ring.
-const silver = new THREE.MeshStandardMaterial({ color: 0x9bb6c8, metalness: .72, roughness: .32 });
-const champagne = new THREE.MeshStandardMaterial({ color: 0xd4bd8b, metalness: .7, roughness: .33 });
-const shadowSilver = new THREE.MeshStandardMaterial({ color: 0x526d88, metalness: .48, roughness: .46 });
-const moonIvory = new THREE.MeshStandardMaterial({ color: 0xd8ddce, metalness: .3, roughness: .4 });
-const enamel = new THREE.MeshStandardMaterial({ color: 0x233b57, metalness: .26, roughness: .48 });
-const midnight = new THREE.MeshStandardMaterial({ color: 0x111f33, metalness: .12, roughness: .65 });
+// Soft plush palette: the crown, charms and frames read as stuffed felt rather than metal.
+const silver = plush('#93aed0');
+const champagne = plush('#ddb978');
+const shadowSilver = plush('#5f7799');
+const moonIvory = plush('#efe3c2');
+const enamel = plush('#4d6a94');
+const midnight = plush('#1d2c47', '#6f84a6');
 
 function mesh(geometry, material, parent, x = 0, y = 0, z = 0) {
   const item = new THREE.Mesh(geometry, material);

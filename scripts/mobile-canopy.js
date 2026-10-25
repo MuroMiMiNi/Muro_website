@@ -1,7 +1,9 @@
 // A round crib mobile: arms radiate from a central hub, each carrying a chain of pictures that faces outward.
+import { plush } from './plush-material.js';
+
 export function buildCanopy({ THREE, parent, pt, bar, suspension, crownAnchor, artworkCount = 10 }) {
-  const silver = new THREE.MeshStandardMaterial({ color: 0xb2c4d0, metalness: .76, roughness: .31 });
-  const champagne = new THREE.MeshStandardMaterial({ color: 0xc8b58c, metalness: .73, roughness: .34 });
+  const silver = plush('#9ab3d3');
+  const champagne = plush('#e0bf80');
   const v = (x, y, z = 0) => new THREE.Vector3(x, y, z);
   const mesh = (host, geometry, material, position) => {
     const item = new THREE.Mesh(geometry, material);

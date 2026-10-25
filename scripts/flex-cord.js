@@ -1,30 +1,38 @@
 import * as THREE from './vendor/three.module.js';
+import {plush} from './plush-material.js';
 
-// Ribbon with string lights: a flat, gently twisting satin ribbon carrying small warm bulbs that glow in turn.
-const lightGap=.13,lightMargin=.08;
-const bulbGeometry=new THREE.SphereGeometry(.014,10,8),haloGeometry=new THREE.SphereGeometry(.036,12,10);
-const bulbMaterial=new THREE.MeshBasicMaterial({color:'#ffffff'});
-const haloMaterial=new THREE.MeshBasicMaterial({color:'#ffffff',transparent:true,opacity:.32,blending:THREE.AdditiveBlending,depthWrite:false});
-const warm=new THREE.Color('#ffe6a8'),dim=new THREE.Color('#5d5040'),lightColor=new THREE.Color(),lightMatrix=new THREE.Matrix4(),lightPoint=new THREE.Vector3();
-let lightSeed=0;
-export function lightCount(length){return Math.max(0,Math.floor((length-2*lightMargin)/lightGap)+1)}
-export function stringLights(parent,count){
+// Ribbon with felt ornaments: a flat, gently twisting satin ribbon threaded with still felt stars and pompoms.
+const ornamentGap=.3,ornamentMargin=.14;
+const starShape=new THREE.Shape();
+for(let i=0;i<10;i++){const r=i%2?.036:.078,a=Math.PI/2+i*Math.PI/5;i?starShape.lineTo(Math.cos(a)*r,Math.sin(a)*r):starShape.moveTo(Math.cos(a)*r,Math.sin(a)*r)}
+// A generous bevel puffs the star up like a stuffed felt shape.
+const starGeometry=new THREE.ExtrudeGeometry(starShape,{depth:.016,bevelEnabled:true,bevelThickness:.018,bevelSize:.016,bevelSegments:4,curveSegments:2}).center();
+const ballGeometry=new THREE.SphereGeometry(.054,20,16);
+const feltMaterial=plush('#ffffff');
+const starColors=['#f3dfb4','#efcf8d','#f5e6c6'].map(color=>new THREE.Color(color));
+const ballColors=['#e9763f','#ea8ca1','#79c2a5','#80a9e0','#eeb444'].map(color=>new THREE.Color(color));
+const ornamentMatrix=new THREE.Matrix4(),ornamentPoint=new THREE.Vector3(),ornamentTurn=new THREE.Quaternion(),ornamentScale=new THREE.Vector3(1,1,1),upAxis=new THREE.Vector3(0,1,0);
+let ornamentSeed=0;
+export function ornamentCount(length){return Math.max(0,Math.floor((length-2*ornamentMargin)/ornamentGap)+1)}
+export function stringOrnaments(parent,count){
   if(!count)return {place(){}};
-  const bulbs=new THREE.InstancedMesh(bulbGeometry,bulbMaterial,count),halos=new THREE.InstancedMesh(haloGeometry,haloMaterial,count);
-  bulbs.name=halos.name='Ribbon string lights';
-  for(const lights of [bulbs,halos]){lights.frustumCulled=false;lights.renderOrder=1;parent.add(lights)}
-  const phase=(lightSeed++)*2.3;
+  // Stars and pompoms alternate along the ribbon; each string starts at a different colour.
+  const seed=ornamentSeed++,kinds=Array.from({length:count},(_,i)=>(i+seed)%2);
+  const stars=new THREE.InstancedMesh(starGeometry,feltMaterial,Math.max(1,kinds.filter(kind=>!kind).length));
+  const balls=new THREE.InstancedMesh(ballGeometry,feltMaterial,Math.max(1,kinds.filter(Boolean).length));
+  stars.name=balls.name='Ribbon felt ornaments';
+  for(const group of [stars,balls]){group.frustumCulled=false;group.count=0;parent.add(group)}
   // pointAt(t, target) writes a point along the ribbon; margin is the fraction kept clear at each end.
-  function place(pointAt,time,twinkle,margin=0){
-    for(let i=0;i<count;i++){
+  function place(pointAt,margin=0){
+    stars.count=balls.count=0;
+    kinds.forEach((kind,i)=>{
       const t=count>1?margin+(1-2*margin)*i/(count-1):.5;
-      lightMatrix.makeTranslation(pointAt(t,lightPoint));
-      bulbs.setMatrixAt(i,lightMatrix);halos.setMatrixAt(i,lightMatrix);
-      const glow=twinkle?.5+.5*Math.sin(time*1.3-i*.85+phase):.7;
-      lightColor.lerpColors(dim,warm,.25+.75*glow);bulbs.setColorAt(i,lightColor);
-      halos.setColorAt(i,lightColor.multiplyScalar(glow));
-    }
-    for(const lights of [bulbs,halos]){lights.instanceMatrix.needsUpdate=true;lights.instanceColor.needsUpdate=true}
+      const target=kind?balls:stars,slot=target.count++;
+      ornamentTurn.setFromAxisAngle(upAxis,((i+seed)%3-1)*.35);
+      target.setMatrixAt(slot,ornamentMatrix.compose(pointAt(t,ornamentPoint),ornamentTurn,ornamentScale));
+      const palette=kind?ballColors:starColors;target.setColorAt(slot,palette[(i+seed*2)%palette.length]);
+    });
+    for(const group of [stars,balls]){group.instanceMatrix.needsUpdate=true;if(group.instanceColor)group.instanceColor.needsUpdate=true}
   }
   return {place};
 }
@@ -42,10 +50,10 @@ export function flexCord(parent,start,end,material,short=false,bendDirection=1){
   const mesh=new THREE.Mesh(geometry,material);mesh.name='Flexible suspension cord';mesh.frustumCulled=false;parent.add(mesh);
   const previous=new THREE.Vector3(),velocity=new THREE.Vector3(),nextVelocity=new THREE.Vector3();
   const position=new THREE.Vector3(),acceleration=new THREE.Vector3(),rotation=new THREE.Quaternion();
-  const state={bend:rest,speed:0};let sampled=false,time=0;
+  const state={bend:rest,speed:0};let sampled=false;
   const ribbonWidth=short?.017:.022,ribbonDepth=.0035,twist=length*2.2,twistPhase=bendDirection*.6;
-  const clearEnds=length?Math.min(lightMargin/length,.45):0;
-  const lights=stringLights(parent,lightCount(length));
+  const clearEnds=length?Math.min(ornamentMargin/length,.45):0;
+  const ornaments=stringOrnaments(parent,ornamentCount(length));
   const normal=new THREE.Vector3(),binormal=new THREE.Vector3(),offset=new THREE.Vector3(),shade=new THREE.Vector3();
   const center=new THREE.Vector3(),tangent=new THREE.Vector3(),sideways=new THREE.Vector3(),facing=new THREE.Vector3(),depthAxis=new THREE.Vector3(0,0,1);
   let shapedBend=null;
@@ -65,10 +73,10 @@ export function flexCord(parent,start,end,material,short=false,bendDirection=1){
       previous.copy(position);velocity.copy(nextVelocity);
     }
     control.copy(middle).addScaledVector(across,state.bend);
-    time+=dt;lights.place((t,target)=>curve.getPoint(t,target),time,!settle,clearEnds);
     // The ribbon only needs reshaping when its bend has actually moved.
     if(shapedBend!==null&&Math.abs(state.bend-shapedBend)<1e-5)return;
     shapedBend=state.bend;
+    ornaments.place((t,target)=>curve.getPoint(t,target),clearEnds);
     const positions=geometry.attributes.position,normals=geometry.attributes.normal;
     for(let segment=0;segment<=24;segment++){
       curve.getPoint(segment/24,center);curve.getTangent(segment/24,tangent);
