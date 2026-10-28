@@ -19,8 +19,7 @@ npm run build
 - `index.html` — site entry point.
 - `scripts/example-e.js` — homepage and dialog behavior.
 - `scripts/data/siteData.js` — profile, commission, and social-link copy.
-- `assets/artworks/` — hanging-gallery works; run `npm run sync` after changes.
-- `assets/all-artworks/` — categorized artwork shown in the all-works dialog.
+- `assets/all-artworks/` — categorized artwork shown on the hanging mobile and in the all-works dialog; the sync GitHub Action refreshes the catalog on push, or run `npm run sync` locally.
 - `styles/` — styles loaded by the current site.
 
-`scripts/data/artwork-catalog.json` and `scripts/data/all-artwork-catalog.json` are generated files and should not be edited manually.
+`scripts/data/all-artwork-catalog.json` is a generated file and should not be edited manually.

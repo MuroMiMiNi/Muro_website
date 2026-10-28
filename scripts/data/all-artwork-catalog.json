@@ -1,5 +1,137 @@
 [
   {
+    "id": "頭像/Antia 安緹婭.png",
+    "src": "./assets/all-artworks/頭像/Antia 安緹婭.png",
+    "date": null,
+    "title": {
+      "zh": "Antia 安緹婭",
+      "en": "Antia"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
+    "id": "頭像/Bernard 貝爾納.png",
+    "src": "./assets/all-artworks/頭像/Bernard 貝爾納.png",
+    "date": null,
+    "title": {
+      "zh": "Bernard 貝爾納",
+      "en": "Bernard"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
+    "id": "頭像/Cael 凱爾.png",
+    "src": "./assets/all-artworks/頭像/Cael 凱爾.png",
+    "date": null,
+    "title": {
+      "zh": "Cael 凱爾",
+      "en": "Cael"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
+    "id": "頭像/Clinika 克莉妮卡.png",
+    "src": "./assets/all-artworks/頭像/Clinika 克莉妮卡.png",
+    "date": null,
+    "title": {
+      "zh": "Clinika 克莉妮卡",
+      "en": "Clinika"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
+    "id": "頭像/Dellian 黛莉安.png",
+    "src": "./assets/all-artworks/頭像/Dellian 黛莉安.png",
+    "date": null,
+    "title": {
+      "zh": "Dellian 黛莉安",
+      "en": "Dellian"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
+    "id": "頭像/Enbui 恩布依.png",
+    "src": "./assets/all-artworks/頭像/Enbui 恩布依.png",
+    "date": null,
+    "title": {
+      "zh": "Enbui 恩布依",
+      "en": "Enbui"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
+    "id": "頭像/Farnan 費爾南.png",
+    "src": "./assets/all-artworks/頭像/Farnan 費爾南.png",
+    "date": null,
+    "title": {
+      "zh": "Farnan 費爾南",
+      "en": "Farnan"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
+    "id": "頭像/Fastr 法斯特.png",
+    "src": "./assets/all-artworks/頭像/Fastr 法斯特.png",
+    "date": null,
+    "title": {
+      "zh": "Fastr 法斯特",
+      "en": "Fastr"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
+    "id": "頭像/Flamme 芙拉姆.png",
+    "src": "./assets/all-artworks/頭像/Flamme 芙拉姆.png",
+    "date": null,
+    "title": {
+      "zh": "Flamme 芙拉姆",
+      "en": "Flamme"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
+    "id": "頭像/Hentu 亨圖.png",
+    "src": "./assets/all-artworks/頭像/Hentu 亨圖.png",
+    "date": null,
+    "title": {
+      "zh": "Hentu 亨圖",
+      "en": "Hentu"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
+    "id": "頭像/Jacob 雅各布.png",
+    "src": "./assets/all-artworks/頭像/Jacob 雅各布.png",
+    "date": null,
+    "title": {
+      "zh": "Jacob 雅各布",
+      "en": "Jacob"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
+    "id": "頭像/Isyaki 艾薩奇.png",
+    "src": "./assets/all-artworks/頭像/Isyaki 艾薩奇.png",
+    "date": null,
+    "title": {
+      "zh": "Isyaki 艾薩奇",
+      "en": "Isyaki"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
     "id": "全身/full-body-commission-example-01.png",
     "src": "./assets/all-artworks/全身/full-body-commission-example-01.png",
     "date": null,
@@ -99,50 +231,6 @@
     "category": "頭像"
   },
   {
-    "id": "頭像/Antia 安緹婭.png",
-    "src": "./assets/all-artworks/頭像/Antia 安緹婭.png",
-    "date": null,
-    "title": {
-      "zh": "Antia 安緹婭",
-      "en": "Antia 安緹婭"
-    },
-    "description": null,
-    "category": "頭像"
-  },
-  {
-    "id": "頭像/Bernard 貝爾納.png",
-    "src": "./assets/all-artworks/頭像/Bernard 貝爾納.png",
-    "date": null,
-    "title": {
-      "zh": "Bernard 貝爾納",
-      "en": "Bernard 貝爾納"
-    },
-    "description": null,
-    "category": "頭像"
-  },
-  {
-    "id": "頭像/Cael 凱爾.png",
-    "src": "./assets/all-artworks/頭像/Cael 凱爾.png",
-    "date": null,
-    "title": {
-      "zh": "Cael 凱爾",
-      "en": "Cael 凱爾"
-    },
-    "description": null,
-    "category": "頭像"
-  },
-  {
-    "id": "頭像/Clinika 克莉妮卡.png",
-    "src": "./assets/all-artworks/頭像/Clinika 克莉妮卡.png",
-    "date": null,
-    "title": {
-      "zh": "Clinika 克莉妮卡",
-      "en": "Clinika 克莉妮卡"
-    },
-    "description": null,
-    "category": "頭像"
-  },
-  {
     "id": "頭像/Commission01.png",
     "src": "./assets/all-artworks/頭像/Commission01.png",
     "date": null,
@@ -182,94 +270,6 @@
     "title": {
       "zh": "Commission04",
       "en": "Commission04"
-    },
-    "description": null,
-    "category": "頭像"
-  },
-  {
-    "id": "頭像/Dellian 黛莉安.png",
-    "src": "./assets/all-artworks/頭像/Dellian 黛莉安.png",
-    "date": null,
-    "title": {
-      "zh": "Dellian 黛莉安",
-      "en": "Dellian 黛莉安"
-    },
-    "description": null,
-    "category": "頭像"
-  },
-  {
-    "id": "頭像/Enbui 恩布依.png",
-    "src": "./assets/all-artworks/頭像/Enbui 恩布依.png",
-    "date": null,
-    "title": {
-      "zh": "Enbui 恩布依",
-      "en": "Enbui 恩布依"
-    },
-    "description": null,
-    "category": "頭像"
-  },
-  {
-    "id": "頭像/Farnan 費爾南.png",
-    "src": "./assets/all-artworks/頭像/Farnan 費爾南.png",
-    "date": null,
-    "title": {
-      "zh": "Farnan 費爾南",
-      "en": "Farnan 費爾南"
-    },
-    "description": null,
-    "category": "頭像"
-  },
-  {
-    "id": "頭像/Fastr 法斯特.png",
-    "src": "./assets/all-artworks/頭像/Fastr 法斯特.png",
-    "date": null,
-    "title": {
-      "zh": "Fastr 法斯特",
-      "en": "Fastr 法斯特"
-    },
-    "description": null,
-    "category": "頭像"
-  },
-  {
-    "id": "頭像/Flamme 芙拉姆.png",
-    "src": "./assets/all-artworks/頭像/Flamme 芙拉姆.png",
-    "date": null,
-    "title": {
-      "zh": "Flamme 芙拉姆",
-      "en": "Flamme 芙拉姆"
-    },
-    "description": null,
-    "category": "頭像"
-  },
-  {
-    "id": "頭像/Hentu 亨圖.png",
-    "src": "./assets/all-artworks/頭像/Hentu 亨圖.png",
-    "date": null,
-    "title": {
-      "zh": "Hentu 亨圖",
-      "en": "Hentu 亨圖"
-    },
-    "description": null,
-    "category": "頭像"
-  },
-  {
-    "id": "頭像/Isyaki 艾薩奇.png",
-    "src": "./assets/all-artworks/頭像/Isyaki 艾薩奇.png",
-    "date": null,
-    "title": {
-      "zh": "Isyaki 艾薩奇",
-      "en": "Isyaki 艾薩奇"
-    },
-    "description": null,
-    "category": "頭像"
-  },
-  {
-    "id": "頭像/Jacob 雅各布.png",
-    "src": "./assets/all-artworks/頭像/Jacob 雅各布.png",
-    "date": null,
-    "title": {
-      "zh": "Jacob 雅各布",
-      "en": "Jacob 雅各布"
     },
     "description": null,
     "category": "頭像"

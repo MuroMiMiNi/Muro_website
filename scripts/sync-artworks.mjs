@@ -14,7 +14,8 @@ export function filenameDate(name) {
   return !Number.isNaN(+date) && date.toISOString().startsWith(value) ? value : null;
 }
 
-export async function createCatalog(directory = path.join(root, 'assets/artworks'), prefix = './assets/artworks') {
+// The mobile and the all-works dialog share one catalog; the first folder level is the category.
+export async function createCatalog(directory = path.join(root, 'assets/all-artworks'), prefix = './assets/all-artworks') {
   async function walk(folder, relative = '') {
     const entries = await readdir(folder, { withFileTypes: true });
     const groups = await Promise.all(entries.map(entry => {
@@ -35,7 +36,7 @@ export async function createCatalog(directory = path.join(root, 'assets/artworks
       id: file, src, date,
       title: old?.title ?? { zh: title, en: title },
       description: old?.description && !/請在這裡|Add the description/.test(old.description.zh + old.description.en) ? old.description : null,
-      category: path.dirname(file) === '.' ? null : path.dirname(file),
+      category: path.dirname(file) === '.' ? null : file.split('/')[0],
       order: oldIndex < 0 ? Number.MAX_SAFE_INTEGER : oldIndex
     };
   }).sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '') || a.order - b.order || a.id.localeCompare(b.id, 'en', { numeric: true }))
@@ -44,13 +45,6 @@ export async function createCatalog(directory = path.join(root, 'assets/artworks
 
 export async function syncArtworks() {
   const catalog = await createCatalog();
-  await writeFile(path.join(root, 'scripts/data/artwork-catalog.json'), JSON.stringify(catalog, null, 2) + '\n');
-  await syncAllArtworks();
-  return catalog;
-}
-export async function syncAllArtworks() {
-  const catalog = (await createCatalog(path.join(root, 'assets/all-artworks'), './assets/all-artworks'))
-    .map(item => ({ ...item, category: item.category?.split(/[\\/]/)[0] ?? null }));
   await writeFile(path.join(root, 'scripts/data/all-artwork-catalog.json'), JSON.stringify(catalog, null, 2) + '\n');
   return catalog;
 }

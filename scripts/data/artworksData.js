@@ -1,7 +1,7 @@
 export const artworksData = [
     {
         id: "artwork-00",
-        src: "./assets/artworks/Antia 安緹婭.png",
+        src: "./assets/all-artworks/頭像/Antia 安緹婭.png",
         title: { zh: "Antia 安緹婭", en: "Antia" },
         alt: { zh: "作品集圖片 Antia 安緹婭", en: "Portfolio artwork Antia" },
         description: {
@@ -11,7 +11,7 @@ export const artworksData = [
     },
     {
         id: "artwork-01",
-        src: "./assets/artworks/Bernard 貝爾納.png",
+        src: "./assets/all-artworks/頭像/Bernard 貝爾納.png",
         title: { zh: "Bernard 貝爾納", en: "Bernard" },
         alt: { zh: "作品集圖片 Bernard 貝爾納", en: "Portfolio artwork Bernard" },
         description: {
@@ -21,7 +21,7 @@ export const artworksData = [
     },
     {
         id: "artwork-02",
-        src: "./assets/artworks/Cael 凱爾.png",
+        src: "./assets/all-artworks/頭像/Cael 凱爾.png",
         title: { zh: "Cael 凱爾", en: "Cael" },
         alt: { zh: "作品集圖片 Cael 凱爾", en: "Portfolio artwork Cael" },
         description: {
@@ -31,7 +31,7 @@ export const artworksData = [
     },
     {
         id: "artwork-03",
-        src: "./assets/artworks/Clinika 克莉妮卡.png",
+        src: "./assets/all-artworks/頭像/Clinika 克莉妮卡.png",
         title: { zh: "Clinika 克莉妮卡", en: "Clinika" },
         alt: { zh: "作品集圖片 Clinika 克莉妮卡", en: "Portfolio artwork Clinika" },
         description: {
@@ -41,7 +41,7 @@ export const artworksData = [
     },
     {
         id: "artwork-04",
-        src: "./assets/artworks/Dellian 黛莉安.png",
+        src: "./assets/all-artworks/頭像/Dellian 黛莉安.png",
         title: { zh: "Dellian 黛莉安", en: "Dellian" },
         alt: { zh: "作品集圖片 Dellian 黛莉安", en: "Portfolio artwork Dellian" },
         description: {
@@ -51,7 +51,7 @@ export const artworksData = [
     },
     {
         id: "artwork-05",
-        src: "./assets/artworks/Enbui 恩布依.png",
+        src: "./assets/all-artworks/頭像/Enbui 恩布依.png",
         title: { zh: "Enbui 恩布依", en: "Enbui" },
         alt: { zh: "作品集圖片 Enbui 恩布依", en: "Portfolio artwork Enbui" },
         description: {
@@ -61,7 +61,7 @@ export const artworksData = [
     },
     {
         id: "artwork-06",
-        src: "./assets/artworks/Farnan 費爾南.png",
+        src: "./assets/all-artworks/頭像/Farnan 費爾南.png",
         title: { zh: "Farnan 費爾南", en: "Farnan" },
         alt: { zh: "作品集圖片 Farnan 費爾南", en: "Portfolio artwork Farnan" },
         description: {
@@ -71,7 +71,7 @@ export const artworksData = [
     },
     {
         id: "artwork-07",
-        src: "./assets/artworks/Fastr 法斯特.png",
+        src: "./assets/all-artworks/頭像/Fastr 法斯特.png",
         title: { zh: "Fastr 法斯特", en: "Fastr" },
         alt: { zh: "作品集圖片 Fastr 法斯特", en: "Portfolio artwork Fastr" },
         description: {
@@ -81,7 +81,7 @@ export const artworksData = [
     },
     {
         id: "artwork-08",
-        src: "./assets/artworks/Flamme 芙拉姆.png",
+        src: "./assets/all-artworks/頭像/Flamme 芙拉姆.png",
         title: { zh: "Flamme 芙拉姆", en: "Flamme" },
         alt: { zh: "作品集圖片 Flamme 芙拉姆", en: "Portfolio artwork Flamme" },
         description: {
@@ -91,7 +91,7 @@ export const artworksData = [
     },
     {
         id: "artwork-09",
-        src: "./assets/artworks/Hentu 亨圖.png",
+        src: "./assets/all-artworks/頭像/Hentu 亨圖.png",
         title: { zh: "Hentu 亨圖", en: "Hentu" },
         alt: { zh: "作品集圖片 Hentu 亨圖", en: "Portfolio artwork Hentu" },
         description: {
@@ -101,7 +101,7 @@ export const artworksData = [
     },
     {
         id: "artwork-10",
-        src: "./assets/artworks/Jacob 雅各布.png",
+        src: "./assets/all-artworks/頭像/Jacob 雅各布.png",
         title: { zh: "Jacob 雅各布", en: "Jacob" },
         alt: { zh: "作品集圖片 Jacob 雅各布", en: "Portfolio artwork Jacob" },
         description: {
@@ -111,7 +111,7 @@ export const artworksData = [
     },
     {
         id: "artwork-11",
-        src: "./assets/artworks/Isyaki 艾薩奇.png",
+        src: "./assets/all-artworks/頭像/Isyaki 艾薩奇.png",
         title: { zh: "Isyaki 艾薩奇", en: "Isyaki" },
         alt: { zh: "作品集圖片 Isyaki 艾薩奇", en: "Portfolio artwork Isyaki" },
         description: {

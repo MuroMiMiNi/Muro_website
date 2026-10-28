@@ -1,7 +1,7 @@
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { root, syncArtworks, syncAllArtworks } from './sync-artworks.mjs';
+import { root, syncArtworks } from './sync-artworks.mjs';
 
 await syncArtworks();
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.gif': 'image/gif', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.avif': 'image/avif', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
@@ -13,8 +13,7 @@ http.createServer(async (req, res) => {
     if (relative.startsWith('..') || path.isAbsolute(relative) || relative.split(path.sep).some(part => part.startsWith('.'))) {
       res.writeHead(403).end(); return;
     }
-    if (name === '/scripts/data/artwork-catalog.json') await syncArtworks();
-    if (name === '/scripts/data/all-artwork-catalog.json') await syncAllArtworks();
+    if (name === '/scripts/data/all-artwork-catalog.json') await syncArtworks();
     const data = await readFile(file);
     res.writeHead(200, { 'Content-Type': types[path.extname(file)] ?? 'application/octet-stream', 'Cache-Control': 'no-store' });
     res.end(data);

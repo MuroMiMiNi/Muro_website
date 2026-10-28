@@ -336,7 +336,7 @@ const egg = $('#floatingGif');
 mountFloatingEgg(egg, () => openPage('about', null, egg));
 
 try {
-  const response = await fetch('./scripts/data/artwork-catalog.json');
+  const response = await fetch('./scripts/data/all-artwork-catalog.json');
   if (!response.ok) throw new Error('Artwork catalog unavailable');
   artworks = await response.json();
   await renderGallery(); setLanguage();

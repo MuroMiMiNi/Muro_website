@@ -5,7 +5,6 @@ name: Sync artwork catalogs
 on:
   push:
     paths:
-      - 'assets/artworks/**'
       - 'assets/all-artworks/**'
   workflow_dispatch:
 
@@ -31,7 +30,7 @@ jobs:
 
       - name: Commit updated catalogs
         run: |
-          git add scripts/data/artwork-catalog.json scripts/data/all-artwork-catalog.json
+          git add scripts/data/all-artwork-catalog.json
           if git diff --cached --quiet; then
             echo "Catalogs already up to date."
             exit 0
