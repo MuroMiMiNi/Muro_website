@@ -73,8 +73,8 @@ export function buildCanopy({ THREE, parent, pt, bar, suspension, crownAnchor, a
   const charmArm = arm => arms[arm % armCount];
   const midEye = arm => smallEye(charmArm(arm).host, charmArm(arm).curve.getPoint(.64), -1, .049, .012);
   const lowestFrame = Math.min(...pictureTargets.map(point => point.y - 1.964));
-  // The bell hangs far enough below the lowest frame that no frame can cover it at any spin or tilt.
-  const tailTarget = v(0, lowestFrame - .7 * radius, 0);
+  // The bell hangs far enough below the lowest frame that no frame covers it at the resting tilt.
+  const tailTarget = v(0, lowestFrame - .7 * radius + .6, 0);
   const reach = radius + .85;
   const layoutBounds = { minX: -reach, maxX: reach, minY: tailTarget.y - .95, maxY: .65 };
   return {
