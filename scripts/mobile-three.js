@@ -345,7 +345,8 @@ export async function mountMobile(host, artworks, onSelect, title = artwork => a
     return {topError:Math.max(expected.distanceTo(endpoint),topCordError),bottomError:Math.max(actualBottom.distanceTo(bottom),bottomCordError)};
   })},meshCount:0,revision:THREE.REVISION};
   scene.traverse(o=>{if(o.isMesh)host.mobile3D.meshCount++});
-  new ResizeObserver(resize).observe(host);resize();
+  // The portrait frame takes its picture's proportions, so re-anchor the tether when its height changes.
+  const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(host);resizeObserver.observe(portrait);resize();
   let visible=true;
   new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(!visible)previousTime=null},{rootMargin:'100px'}).observe(host);
   // While a dialog covers the page, the mobile keeps its last frame instead of redrawing behind it.
