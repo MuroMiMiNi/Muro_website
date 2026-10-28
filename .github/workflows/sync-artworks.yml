@@ -1,0 +1,42 @@
+# Regenerates the artwork catalogs when images are added, removed or renamed,
+# so new files show up on the deployed site without running `npm run sync` locally.
+name: Sync artwork catalogs
+
+on:
+  push:
+    paths:
+      - 'assets/artworks/**'
+      - 'assets/all-artworks/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-artworks-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Regenerate catalogs
+        run: node scripts/sync-artworks.mjs
+
+      - name: Commit updated catalogs
+        run: |
+          git add scripts/data/artwork-catalog.json scripts/data/all-artwork-catalog.json
+          if git diff --cached --quiet; then
+            echo "Catalogs already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore : sync artwork catalogs"
+          git push
