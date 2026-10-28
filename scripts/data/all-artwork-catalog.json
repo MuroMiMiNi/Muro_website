@@ -187,6 +187,17 @@
     "category": "頭像"
   },
   {
+    "id": "頭像/A-02.png",
+    "src": "./assets/all-artworks/頭像/A-02.png",
+    "date": null,
+    "title": {
+      "zh": "A-02",
+      "en": "A-02"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
     "id": "頭像/A-03.png",
     "src": "./assets/all-artworks/頭像/A-03.png",
     "date": null,
@@ -231,45 +242,67 @@
     "category": "頭像"
   },
   {
-    "id": "頭像/Commission01.png",
-    "src": "./assets/all-artworks/頭像/Commission01.png",
+    "id": "頭像/A-07.png",
+    "src": "./assets/all-artworks/頭像/A-07.png",
     "date": null,
     "title": {
-      "zh": "Commission01",
-      "en": "Commission01"
+      "zh": "A-07",
+      "en": "A-07"
     },
     "description": null,
     "category": "頭像"
   },
   {
-    "id": "頭像/Commission02.png",
-    "src": "./assets/all-artworks/頭像/Commission02.png",
+    "id": "頭像/A-08.png",
+    "src": "./assets/all-artworks/頭像/A-08.png",
     "date": null,
     "title": {
-      "zh": "Commission02",
-      "en": "Commission02"
+      "zh": "A-08",
+      "en": "A-08"
     },
     "description": null,
     "category": "頭像"
   },
   {
-    "id": "頭像/Commission03.png",
-    "src": "./assets/all-artworks/頭像/Commission03.png",
+    "id": "頭像/A-09.png",
+    "src": "./assets/all-artworks/頭像/A-09.png",
     "date": null,
     "title": {
-      "zh": "Commission03",
-      "en": "Commission03"
+      "zh": "A-09",
+      "en": "A-09"
     },
     "description": null,
     "category": "頭像"
   },
   {
-    "id": "頭像/Commission04.png",
-    "src": "./assets/all-artworks/頭像/Commission04.png",
+    "id": "頭像/A-10.png",
+    "src": "./assets/all-artworks/頭像/A-10.png",
     "date": null,
     "title": {
-      "zh": "Commission04",
-      "en": "Commission04"
+      "zh": "A-10",
+      "en": "A-10"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
+    "id": "頭像/A-11.png",
+    "src": "./assets/all-artworks/頭像/A-11.png",
+    "date": null,
+    "title": {
+      "zh": "A-11",
+      "en": "A-11"
+    },
+    "description": null,
+    "category": "頭像"
+  },
+  {
+    "id": "頭像/A-12.png",
+    "src": "./assets/all-artworks/頭像/A-12.png",
+    "date": null,
+    "title": {
+      "zh": "A-12",
+      "en": "A-12"
     },
     "description": null,
     "category": "頭像"
