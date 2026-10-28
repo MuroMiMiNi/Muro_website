@@ -32,8 +32,13 @@ let artworkSource = 'mobile';
 let guideOrigin = 'about', collectionFromGuide = false, collectionGuideArtwork = null;
 const t = (zh, en) => lang === 'zh' ? zh : en;
 const text = value => typeof value === 'string' ? value : value?.[lang] ?? '';
-const title = artwork => text(artwork.title);
 const profile = { src: './assets/profile/muro-night.png', title: { zh: '木洛 Muro', en: 'Muro' } };
+// File names stay private: artworks are only ever labelled by their category.
+const title = artwork => {
+  if (artwork === profile) return text(profile.title);
+  const label = categories.find(([zh]) => zh === artwork.category);
+  return label ? t(`${label[0]}作品`, `${label[1]} artwork`) : t('木洛的作品', 'Artwork by Muro');
+};
 const plans = [
   { id: 'avatar', zh: '頭像委託', en: 'Avatar', price: 'NT$ 500', time: { zh: '7 天', en: '7 days' }, value: '頭像委託－NT$500' },
   { id: 'half-body', zh: '半身委託', en: 'Half body', price: 'NT$ 1,100 起', priceEn: 'From NT$ 1,100', time: { zh: '7–14 天', en: '7–14 days' }, value: '半身委託－NT$1100' },
@@ -239,9 +244,10 @@ function renderDialog(preparedImage = null) {
     // Half-body and full-body artworks use their own taller display containers.
     if (groupClasses[selected.category]) layout.classList.add(groupClasses[selected.category]);
     const details = element('div', 'details');
-    details.append(element('span', 'little-star', '✦'), element('p', 'meta', t('木洛的作品', 'Artwork by Muro')));
+    // The byline doubles as the dialog title, so no file name is shown.
+    const byline = element('p', 'meta', t('木洛的作品', 'Artwork by Muro')); byline.id = 'dialogTitle'; byline.tabIndex = -1;
+    details.append(element('span', 'little-star', '✦'), byline);
     if (selected.date) details.append(element('div', 'detail-meta', selected.date));
-    details.append(heading(title(selected)));
     if (selected.category) {
       const label = categories.find(([zh]) => zh === selected.category);
       details.append(element('p', '', label ? t(...label) : selected.category));

@@ -22,9 +22,9 @@ test('folder scan adds and removes works, recurses, and sorts dates before legac
     const first = await createCatalog(folder);
     assert.deepEqual(first.map(item => item.id), ['characters/2026-10-04 newer.webp', '2025-01-01 older.png', 'Antia 安緹婭.png', 'Bernard 貝爾納.png']);
     assert.equal(first[0].category, 'characters');
-    assert.equal(first[0].title.zh, 'newer');
+    assert.equal(first[0].title, undefined);
     await writeFile(path.join(folder, '2026-10-05 newest.png'), 'fixture');
-    assert.equal((await createCatalog(folder))[0].title.zh, 'newest');
+    assert.equal((await createCatalog(folder))[0].id, '2026-10-05 newest.png');
     await unlink(path.join(folder, 'Antia 安緹婭.png'));
     const next = await createCatalog(folder);
     assert.equal(next.length, 4);

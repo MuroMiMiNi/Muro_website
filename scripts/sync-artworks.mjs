@@ -31,10 +31,9 @@ export async function createCatalog(directory = path.join(root, 'assets/all-artw
     const oldIndex = artworksData.findIndex(item => item.src === src);
     const old = artworksData[oldIndex];
     const date = filenameDate(path.basename(file));
-    const title = path.basename(file, path.extname(file)).replace(/^(?:19|20)\d{2}[-_.]?\d{2}[-_.]?\d{2}[\s_-]*/, '').replace(/_/g, ' ');
+    // No title is published: the site labels works by category so file names stay private.
     return {
       id: file, src, date,
-      title: old?.title ?? { zh: title, en: title },
       description: old?.description && !/請在這裡|Add the description/.test(old.description.zh + old.description.en) ? old.description : null,
       category: path.dirname(file) === '.' ? null : file.split('/')[0],
       order: oldIndex < 0 ? Number.MAX_SAFE_INTEGER : oldIndex

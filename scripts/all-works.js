@@ -58,7 +58,7 @@ export function mountAllWorks(host, works, lang, title, onSelect, initialCategor
     button.dataset.artwork = work.id; button.setAttribute('aria-label', title(work));
     button.setAttribute('aria-haspopup', 'dialog');
     const image = node('img', ''); image.src = work.src; image.alt = title(work); image.decoding = 'async';
-    button.append(image, node('span', 'collection-caption', title(work)));
+    button.append(image);
     button.addEventListener('click', () => { finish(); onSelect(work, button); });
     groupFor(work.category ?? '').append(button); buttons.push(button);
   }
