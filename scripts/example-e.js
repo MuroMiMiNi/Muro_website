@@ -217,7 +217,7 @@ function renderGuidelines(copy) {
       }); section.append(list);
     } else {
       const list = element('ul', 'guideline-list');
-      lines.forEach(line => list.append(element('li', '', line)));
+      lines.forEach(line => list.append(line.startsWith('!') ? element('li', 'is-highlight', line.slice(1)) : element('li', '', line)));
       section.append(list);
     }
     content.append(section);

@@ -33,6 +33,7 @@ dialog:not(.is-artwork)::backdrop{background:#030a1ba6;backdrop-filter:blur(7px)
 .guideline-list{list-style:disc;margin:0;padding-left:19px;font-family:var(--reading);font-size:16px;line-height:1.85;color:#c4d3e3}
 .guideline-list li{padding-left:3px;margin:5px 0}
 .guideline-list li::marker{color:#718da7;font-size:10px}
+.guideline-list li.is-highlight{color:#f2d77e;font-weight:600}.guideline-list li.is-highlight::marker{color:#f2d77e}
 .usage-prices{margin:0;font-family:var(--reading);font-size:16px;line-height:1.7}
 .usage-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:24px;padding:9px 0;color:#c4d3e3;border-bottom:1px solid #718da717}
 .usage-row:last-child{border-bottom:0}
