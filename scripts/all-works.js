@@ -1,8 +1,8 @@
 import { startCollectionIntro } from './collection-intro.js';
 
-export const categories = [['全部', 'All'], ['頭像', 'Avatar'], ['半身', 'Half body'], ['全身', 'Full body']];
+export const categories = [['全部', 'All'], ['頭像', 'Avatar'], ['半身', 'Half body'], ['半身小差分雜誌', 'Half-body Magazine'], ['全身', 'Full body']];
 // Each category gets its own grid so avatar, half-body and full-body sizes can be styled separately.
-export const groupClasses = { 頭像: 'is-avatar', 半身: 'is-half-body', 全身: 'is-full-body' };
+export const groupClasses = { 頭像: 'is-avatar', 半身: 'is-half-body', 半身小差分雜誌: 'is-half-body', 全身: 'is-full-body' };
 
 export function mountAllWorks(host, works, lang, title, onSelect, initialCategory = '全部', playIntro = true) {
   const node = (tag, className, text) => {
