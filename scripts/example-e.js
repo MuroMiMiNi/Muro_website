@@ -10,6 +10,7 @@ import { categories, groupClasses, mountAllWorks } from './all-works.js';
 import { mountSocialWave } from './social-wave.js';
 import { mountFloatingEgg } from './floating-egg.js';
 import { guardContent } from './content-guard.js';
+import { savedLanguage, saveLanguage } from './language.js';
 
 guardContent();
 
@@ -17,7 +18,7 @@ const $ = selector => document.querySelector(selector);
 const gallery = $('#mobileGallery');
 const dialog = $('#detailDialog');
 const content = $('#dialogContent');
-let lang = 'zh';
+let lang = savedLanguage();
 let artworks = [];
 let mobileMotion = null;
 let page = null;
@@ -323,7 +324,7 @@ function setLanguage() {
   addSocials($('#socialLinks')); mobileMotion?.refreshLabels();
   if (dialog.open) renderDialog();
 }
-$('#language').addEventListener('click', () => { if (artworkEntry) return; lang = lang === 'zh' ? 'en' : 'zh'; setLanguage(); });
+$('#language').addEventListener('click', () => { if (artworkEntry) return; lang = lang === 'zh' ? 'en' : 'zh'; saveLanguage(lang); setLanguage(); });
 let previousY = scrollY;
 let scrollPending = false;
 window.addEventListener('scroll', () => {
@@ -341,6 +342,8 @@ window.addEventListener('scroll', () => {
 const egg = $('#floatingGif');
 mountFloatingEgg(egg, () => openPage('about', null, egg));
 
+// Apply a remembered language before the gallery loads, so the header never flashes Chinese.
+setLanguage();
 try {
   const response = await fetch('./scripts/data/all-artwork-catalog.json');
   if (!response.ok) throw new Error('Artwork catalog unavailable');
