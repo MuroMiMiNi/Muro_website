@@ -188,7 +188,9 @@ dialog.addEventListener('click', event => {
 });
 function heading(value) { const h = element('h2', '', value); h.id = 'dialogTitle'; h.tabIndex = -1; return h; }
 function renderGuidelines(copy) {
-  const names = ['確認委託即默認買家成年＆詳閱下列注意事項，先付款後排單', '參考圖片', '繪製與展示', '用途與買斷'];
+  const names = lang === 'zh'
+    ? ['確認委託即默認買家成年＆詳閱下列注意事項，先付款後排單', '參考圖片', '繪製與展示', '用途與買斷']
+    : ['By commissioning, you confirm you are an adult and have read the notes below. Payment comes before scheduling', 'References', 'Drawing & display', 'Usage & buyout'];
   const groups = copy.split(/\n\/\n/);
   groups.forEach((group, index) => {
     const section = element('section', 'guideline-section');
@@ -262,9 +264,7 @@ function renderDialog(preparedImage = null) {
     layout.append(artSpace, details); content.append(layout);
   } else if (page === 'guide') {
     content.append(heading(t('委託須知', 'Commission guidelines')));
-    const copy = commissionGuidelines;
-    if (lang === 'en' && copy.en === 'Coming Soon') content.append(element('p', '', 'Guidelines are currently available in Traditional Chinese. Please review the original terms below before requesting a commission.'));
-    renderGuidelines(copy.zh);
+    renderGuidelines(text(commissionGuidelines));
     content.append(action(t('下一步：價目表', 'Next: pricing'), () => openPage('prices')));
   } else if (page === 'prices') {
     content.append(heading(t('價目表', 'Commission pricing')));

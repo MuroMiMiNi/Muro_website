@@ -42,7 +42,7 @@
     guardContent();
     mountFloatingEgg(document.querySelector('#floatingGif'), () => { location.href = './index.html#about'; });
     // 將 Google 試算表「發布到網路」產生的 CSV 網址貼在 csvUrl；notes 可直接改成你的說明。
-    const queueBoardConfig = { csvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTFgrA8LfqQEo_YHnrOh4YATHJJEiiRHCBw7JOhvrOSA14Rhvdj9X4xByxjwA6ziRSF-eqZtaxAQwiH/pub?gid=0&single=true&output=csv', notes: ['填寫表單→聯繫並確認項目內容→付款即確認排單→草稿→完稿。若為驚喜包則付款排單後一鍵出圖。', '機甲、老人、過度設定考究、過激夢向、色票綁定者', ''] };
+    const queueBoardConfig = { csvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTFgrA8LfqQEo_YHnrOh4YATHJJEiiRHCBw7JOhvrOSA14Rhvdj9X4xByxjwA6ziRSF-eqZtaxAQwiH/pub?gid=0&single=true&output=csv', notes: ['填寫表單→聯繫並確認項目內容→付款即確認排單→草稿→完稿。若為驚喜包則付款排單後一鍵出圖。', '此處列舉不接：機甲、老人、過度設定考究、過激夢向、色票綁定者', ''] };
     const $ = selector => document.querySelector(selector), tableWrap = $('#queueTableWrap'), status = $('#queueUpdated');
     function parseCsv(source) { const rows = []; let row = [], cell = '', quoted = false; for (let i = 0; i < source.length; i += 1) { const char = source[i]; if (char === '"') { if (quoted && source[i + 1] === '"') { cell += '"'; i += 1; } else quoted = !quoted; } else if (char === ',' && !quoted) { row.push(cell); cell = ''; } else if ((char === '\n' || char === '\r') && !quoted) { if (char === '\r' && source[i + 1] === '\n') i += 1; row.push(cell); if (row.some(value => value.trim())) rows.push(row); row = []; cell = ''; } else cell += char; } row.push(cell); if (row.some(value => value.trim())) rows.push(row); return rows; }
     function message(copy, className = 'queue-empty') { const p = document.createElement('p'); p.className = className; p.textContent = copy; tableWrap.replaceChildren(p); }
