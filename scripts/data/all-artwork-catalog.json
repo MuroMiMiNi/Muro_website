@@ -91,6 +91,20 @@
     "category": "全身"
   },
   {
+    "id": "半身/commission-example-04.png",
+    "src": "./assets/all-artworks/半身/commission-example-04.png",
+    "date": null,
+    "description": null,
+    "category": "半身"
+  },
+  {
+    "id": "半身/commission-example-05.png",
+    "src": "./assets/all-artworks/半身/commission-example-05.png",
+    "date": null,
+    "description": null,
+    "category": "半身"
+  },
+  {
     "id": "半身/half-body-commission-example-01.png",
     "src": "./assets/all-artworks/半身/half-body-commission-example-01.png",
     "date": null,
@@ -110,6 +124,13 @@
     "date": null,
     "description": null,
     "category": "半身"
+  },
+  {
+    "id": "半身小差分雜誌/小差01-亞斯爾.png",
+    "src": "./assets/all-artworks/半身小差分雜誌/小差01-亞斯爾.png",
+    "date": null,
+    "description": null,
+    "category": "半身小差分雜誌"
   },
   {
     "id": "頭像/A-01.png",
